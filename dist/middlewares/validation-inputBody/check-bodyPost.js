@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checksBlogId = exports.checksContent = exports.checksShortDescription = exports.checksTitle = void 0;
 const express_validator_1 = require("express-validator");
-const posts_repository_1 = require("../../repositories/posts-repository");
+const posts_db_repository_1 = require("../../repositories/db/posts-db-repository");
 exports.checksTitle = (0, express_validator_1.check)('title')
     .exists()
     .trim()
@@ -38,7 +38,7 @@ exports.checksBlogId = (0, express_validator_1.check)('blogId')
     .isString()
     .withMessage({ message: "is not a string", field: "blogId" })
     .custom((blogId) => __awaiter(void 0, void 0, void 0, function* () {
-    const validationBlogId = yield posts_repository_1.postsRepository.searchBlogIdForPost(blogId);
+    const validationBlogId = yield posts_db_repository_1.postsRepository.searchBlogIdForPost(blogId);
     if (!validationBlogId) {
         throw new Error('blogId not found');
     }

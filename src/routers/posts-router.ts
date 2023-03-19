@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts-repository";
+import {postsRepository} from "../repositories/db/posts-db-repository";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
 import {postInputModel} from "../models/modelsPosts/postInputModel";
@@ -45,7 +45,7 @@ postsRouter.put('/:id',
             return;
         }
         const foundPostForUpdate = await postsRepository
-            .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+            .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content)
 
         if (foundPostForUpdate) {
             res.sendStatus(204)

@@ -11,23 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRouter = void 0;
 const express_1 = require("express");
-const posts_repository_1 = require("../repositories/posts-repository");
+const posts_db_repository_1 = require("../repositories/db/posts-db-repository");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
 const check_bodyPost_1 = require("../middlewares/validation-inputBody/check-bodyPost");
 const check_for_errors_1 = require("../middlewares/check-for-errors");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield posts_repository_1.postsRepository.returnOfAllPosts();
+    const getAllPosts = yield posts_db_repository_1.postsRepository.returnOfAllPosts();
     res.send(getAllPosts);
     return;
 }));
 exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksTitle, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdNewPost = yield posts_repository_1.postsRepository.addNewPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
+    const createdNewPost = yield posts_db_repository_1.postsRepository.addNewPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(createdNewPost);
     return;
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield posts_repository_1.postsRepository.findPostById(req.params.id);
+    const getByIdPost = yield posts_db_repository_1.postsRepository.findPostById(req.params.id);
     if (!getByIdPost) {
         res.sendStatus(404);
     }
@@ -35,20 +35,20 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     return;
 }));
 exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksTitle, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const searchPostByIdForUpdate = yield posts_repository_1.postsRepository.findPostById(req.params.id);
+    const searchPostByIdForUpdate = yield posts_db_repository_1.postsRepository.findPostById(req.params.id);
     if (!searchPostByIdForUpdate) {
         res.sendStatus(404);
         return;
     }
-    const foundPostForUpdate = yield posts_repository_1.postsRepository
-        .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
+    const foundPostForUpdate = yield posts_db_repository_1.postsRepository
+        .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content);
     if (foundPostForUpdate) {
         res.sendStatus(204);
         return;
     }
 }));
 exports.postsRouter.delete('/:id', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundPostDelete = yield posts_repository_1.postsRepository.PostByIdDelete(req.params.id);
+    const foundPostDelete = yield posts_db_repository_1.postsRepository.PostByIdDelete(req.params.id);
     if (!foundPostDelete) {
         res.sendStatus(404);
         return;

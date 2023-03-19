@@ -1,7 +1,8 @@
 import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {postViewModel} from "../models/modelsPosts/postViewModel";
 
-export const db: {allBlogs:  blogViewModel[], allPosts: postViewModel[]} = {
+
+export const inMemory: {allBlogs:  blogViewModel[], allPosts: postViewModel[]} = {
     allBlogs: [{
         id:	"12",
         name: "IT",

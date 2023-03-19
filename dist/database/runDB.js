@@ -12,22 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const posts_router_1 = require("./routers/posts-router");
-const blogs_router_1 = require("./routers/blogs-router");
-const Testing_DB_Delete_router_1 = require("./routers/Testing-DB-Delete-router");
-const jsonBody_middleware_1 = require("./middlewares/jsonBody-middleware");
-const runDB_1 = require("./database/runDB");
-const app = (0, express_1.default)();
-const port = process.env.PORT || 3070;
-app.use(jsonBody_middleware_1.jsonBodyMiddleware);
-app.use('/posts', posts_router_1.postsRouter);
-app.use('/blogs', blogs_router_1.blogsRouter);
-app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
-const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, runDB_1.runDb)();
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
+exports.runDb = exports.client = void 0;
+const dotenv_1 = __importDefault(require("dotenv"));
+const mongodb_1 = require("mongodb");
+dotenv_1.default.config();
+const mongoURI = process.env.MONGO_URI || "mongodb://0.0.0.0:27017";
+console.log(process.env.MONGO_URI);
+exports.client = new mongodb_1.MongoClient(mongoURI);
+function runDb() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield exports.client.connect();
+            yield exports.client.db().command({ ping: 1 });
+            console.log('Connected to mongo server');
+        }
+        catch (_a) {
+            yield exports.client.close();
+            console.log('Not connect to mongo server');
+        }
     });
-});
-startApp();
+}
+exports.runDb = runDb;

@@ -1,5 +1,5 @@
 import { check } from 'express-validator'
-import {postsRepository} from "../../repositories/posts-repository";
+import {postsRepository} from "../../repositories/db/posts-db-repository";
 
 
 export const checksTitle =  check('title', )

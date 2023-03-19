@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {blogsRepository} from "../repositories/blogs-repository";
+import {blogsRepository} from "../repositories/db/blogs-db-repository";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
 import {blogInputModel} from "../models/modelsBlogs/blogInputModel";
