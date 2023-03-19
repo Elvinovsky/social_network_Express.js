@@ -1,4 +1,5 @@
 import { check } from 'express-validator'
+import {postsRepository} from "../../repositories/posts-repository";
 
 
 export const checksTitle =  check('title', )
@@ -26,5 +27,11 @@ export const checksBlogId =  check('blogId')
     .exists()
     .isString()
     .withMessage({ message: "is not a string", field: "blogId"})
-//TODO postsRepository.searchBlogIdForPost(blogId)
+    .custom(async (blogId) => {
+        const validationBlogId = await postsRepository.searchBlogIdForPost(blogId)
+        if (!validationBlogId) {
+            throw new Error('blogId not found');
+        }
+    });
+
 

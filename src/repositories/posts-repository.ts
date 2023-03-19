@@ -7,10 +7,12 @@ export const postsRepository = {
        return db.allPosts = []
     },
     // все существующие посты.
-    returnOfAllPosts: db.allPosts,
+    async returnOfAllPosts(): Promise<postViewModel[]> {
+       return db.allPosts;
+    },
     //создание и добавление нового поста в базу данных.
-    addNewPost(title: string, shortDescription: string, content: string, blogId: string): postViewModel {
-        const outputBlogName: string = this.searchBlogIdForPost(blogId)!.name
+    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <postViewModel> {
+        const outputBlogName: string = this.searchBlogIdForPost.name
         const createNewPost: postViewModel = {
             id: (+(new Date())).toString(),
             title: title,
@@ -24,12 +26,12 @@ export const postsRepository = {
         return createNewPost;
     },
     //поиск поста по ID.
-    findPostById(id: string): postViewModel | undefined {
+    async findPostById(id: string): Promise <postViewModel | undefined> {
         return  db.allPosts.find(el => el.id === id)
     },
     // обновление поста по ID.
-    updatePostById(id: string, title: string, shortDescription: string, content: string, blogId: string): boolean {
-        if(this.findPostById(id)){
+    async updatePostById(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise <boolean> {
+        if(await this.findPostById(id)){
             db.allPosts.forEach(el => {
                 el.title = title
                 el.shortDescription = shortDescription
@@ -41,11 +43,16 @@ export const postsRepository = {
         return false;
     },
     //поиск ID блога для поста.
-    searchBlogIdForPost(blogId: string):blogViewModel | undefined {
-        return db.allBlogs.find(el => el.id === blogId)
+    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | undefined> {
+        const blogIdForPost = await db.allBlogs.find(el => el.id === blogId)
+        if(blogIdForPost) {
+            return blogIdForPost
+        } else {
+            return undefined;
+        }
     },
     // поиск и удаление поста по ID.
-    searchForPostByIdDelete(id: string): boolean {
+    async PostByIdDelete(id: string):Promise <boolean> {
         const index = db.allBlogs.findIndex(b => b.id === id)
         if (index > -1) {
             db.allBlogs.splice(index, 1)

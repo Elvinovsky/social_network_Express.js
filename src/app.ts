@@ -5,7 +5,7 @@ import {deleteAllDataRouter} from "./routers/Testing-Delete-router";
 import {jsonBodyMiddleware} from "./middlewares/jsonBody-middleware";
 
 const app = express()
-const port = 3070
+const port = 3071
 
 app.use(jsonBodyMiddleware)
 

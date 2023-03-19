@@ -1,7 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checksBlogId = exports.checksContent = exports.checksShortDescription = exports.checksTitle = void 0;
 const express_validator_1 = require("express-validator");
+const posts_repository_1 = require("../../repositories/posts-repository");
 exports.checksTitle = (0, express_validator_1.check)('title')
     .exists()
     .trim()
@@ -26,5 +36,10 @@ exports.checksContent = (0, express_validator_1.check)('content')
 exports.checksBlogId = (0, express_validator_1.check)('blogId')
     .exists()
     .isString()
-    .withMessage({ message: "is not a string", field: "blogId" });
-//TODO postsRepository.searchBlogIdForPost(blogId)
+    .withMessage({ message: "is not a string", field: "blogId" })
+    .custom((blogId) => __awaiter(void 0, void 0, void 0, function* () {
+    const validationBlogId = yield posts_repository_1.postsRepository.searchBlogIdForPost(blogId);
+    if (!validationBlogId) {
+        throw new Error('blogId not found');
+    }
+}));

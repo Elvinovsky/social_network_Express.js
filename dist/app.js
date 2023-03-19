@@ -9,7 +9,7 @@ const blogs_router_1 = require("./routers/blogs-router");
 const Testing_Delete_router_1 = require("./routers/Testing-Delete-router");
 const jsonBody_middleware_1 = require("./middlewares/jsonBody-middleware");
 const app = (0, express_1.default)();
-const port = 3070;
+const port = 3071;
 app.use(jsonBody_middleware_1.jsonBodyMiddleware);
 app.use('/posts', posts_router_1.postsRouter);
 app.use('/blogs', blogs_router_1.blogsRouter);

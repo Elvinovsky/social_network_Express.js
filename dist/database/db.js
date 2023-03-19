@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
 exports.db = {
     allBlogs: [{
-            id: "1",
+            id: "12",
             name: "IT",
             description: "разработка на JS",
             websiteUrl: "https://samurai.it-incubator.io/pc/video-content/watch/624db7c56667275d6a2cb2ef",

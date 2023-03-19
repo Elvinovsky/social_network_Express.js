@@ -1,16 +1,19 @@
 import {db} from "../database/db";
 import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
 
+
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
     testingDeleteAllBlogs(): Array<null>{
         return db.allBlogs = []
     },
     //все существующие блоги.
-    returnOfAllBlogs: db.allBlogs ,
+    async returnOfAllBlogs(): Promise<blogViewModel[]> {
+       return db.allBlogs
+    } ,
     //создание и добавление нового блога.
-    addNewBlog(name: string, description: string, websiteUrl: string,): blogViewModel{
-        const createNewBlog: blogViewModel = {
+    async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
+        const createBlog: blogViewModel = {
             id:	(+(new Date())).toString(),
             name: name,
             description: description,
@@ -18,16 +21,16 @@ export const blogsRepository = {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        db.allBlogs.push(createNewBlog)
-        return createNewBlog;
+        db.allBlogs.push(createBlog)
+        return createBlog;
     },
     //поиск и возврат блога по ID.
-    findBlogById(id: string): blogViewModel | undefined {
+    async findBlogById(id: string): Promise <blogViewModel | undefined> {
         return  db.allBlogs.find(el => el.id === id)
     },
     //обновление блога по айди.
-    updateBlogById(id: string, name: string, description: string, websiteUrl: string): boolean {
-        if(this.findBlogById(id)){
+    async updateBlogById(id: string, name: string, description: string, websiteUrl: string): Promise <boolean> {
+        if (await this.findBlogById(id)) {
             db.allBlogs.forEach(el => {
                 el.name = name
                 el.description = description
@@ -35,10 +38,10 @@ export const blogsRepository = {
             })
             return true;
         }
-            return false;
+        return false;
     },
     //поиск блога по ID для удаления.
-    searchBlogByIdDelete(id: string): boolean {
+    async searchBlogByIdDelete(id: string): Promise <boolean> {
         const index = db.allBlogs.findIndex(b => b.id === id)
         if (index > -1) {
             db.allBlogs.splice(index, 1)

@@ -10,56 +10,62 @@ import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../mi
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/', (req: Request, res: Response) => {
-   const getAllBlogs: blogViewModel[] = blogsRepository.returnOfAllBlogs
+blogsRouter.get('/', async (req: Request, res: Response) => {
+    const getAllBlogs = await blogsRepository.returnOfAllBlogs()
     res.send(getAllBlogs)
+    return;
 })
 blogsRouter.post('/',
     guardAuthentication, checkInputWebsiteUrl,
     checkInputName, checkInputDescription, checkForErrors,
-    (req: RequestInputBody<blogInputModel>,
-     res: ResponseViewBody<blogViewModel>) => {
+    async (req: RequestInputBody<blogInputModel>,
+           res: ResponseViewBody<blogViewModel>) => {
 
-    const createdBlog: blogViewModel = blogsRepository
-        .addNewBlog(req.body.name,req.body.description, req.body.websiteUrl)
+        const createdBlog = await blogsRepository
+            .addNewBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
-    res.status(201).send(createdBlog)
-})
-blogsRouter.get('/:id', (req: RequestParamsId<{ id: string }>,
-                                       res: ResponseViewBody<blogViewModel>) => {
+        res.status(201).send(createdBlog)
+        return;
+    })
+blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
+                               res: ResponseViewBody<blogViewModel>) => {
 
-    const getByIdBlog = blogsRepository.findBlogById(req.params.id)
-    if(!getByIdBlog) {
+    const getByIdBlog = await blogsRepository.findBlogById(req.params.id)
+    if (!getByIdBlog) {
         res.sendStatus(404)
         return;
     }
     res.send(getByIdBlog)
+        return;
 })
 blogsRouter.put('/:id',
     guardAuthentication, checkInputWebsiteUrl,
     checkInputName, checkInputDescription, checkForErrors,
-    (req: RequestParamsAndInputBody<{ id: string },blogInputModel>,
-     res: Response) => {
+    async (req: RequestParamsAndInputBody<{ id: string }, blogInputModel>,
+           res: Response) => {
 
-    const searchBlogByIdForUpdate = blogsRepository.findBlogById(req.params.id)
-    if(!searchBlogByIdForUpdate) {
-        res.sendStatus(404)
-        return;
-    }
-    const foundBlogForUpdate = blogsRepository
-          .updateBlogById(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
-    if(foundBlogForUpdate) {
-        res.sendStatus(204)
-        return;
-    }
-})
+        const searchBlogByIdForUpdate = await blogsRepository.findBlogById(req.params.id)
+        if (!searchBlogByIdForUpdate) {
+            res.sendStatus(404)
+            return;
+        }
+        const foundBlogForUpdate = await blogsRepository
+            .updateBlogById(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
+        if (foundBlogForUpdate) {
+            res.sendStatus(204)
+            return;
+        }
+    })
 blogsRouter.delete('/:id', guardAuthentication,
-                                 (req: RequestParamsId<{ id: string }>,
-                                  res: Response) => {
-    const foundBlogDelete = blogsRepository.searchBlogByIdDelete(req.params.id)
-    if(!foundBlogDelete) {
+                                 async (req: RequestParamsId<{ id: string }>,
+                                        res: Response) => {
+    const foundBlogDelete = await blogsRepository.searchBlogByIdDelete(req.params.id)
+
+    if (!foundBlogDelete) {
         res.sendStatus(404)
+        return;
     }
     res.sendStatus(204)
+        return;
 })
 

@@ -9,61 +9,57 @@ import {checkForErrors} from "../middlewares/check-for-errors";
 
 export const postsRouter = Router()
 
-postsRouter.get('/', (req: Request, res: Response) => {
-    const getAllPosts: postViewModel[] = postsRepository.returnOfAllPosts
-    res.send(getAllPosts)})
+postsRouter.get('/', async (req: Request, res: ResponseViewBody<postViewModel[]>) => {
+    const getAllPosts: postViewModel[] = await postsRepository.returnOfAllPosts()
+    res.send(getAllPosts)
+    return;
+})
 postsRouter.post('/',
     guardAuthentication, checksShortDescription, checksTitle, checksContent, checksBlogId, checkForErrors,
-    (req: RequestInputBody<postInputModel>,
-     res: ResponseViewBody<postViewModel | string>) => {
+    async (req: RequestInputBody<postInputModel>,
+           res: ResponseViewBody<postViewModel>) => {
 
-    const validationInputBlogId = postsRepository.searchBlogIdForPost(req.body.blogId)
-    if(!validationInputBlogId) {
-        res.status(404).send("blogId not found")
+        const createdNewPost = await postsRepository.addNewPost
+        (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+
+        res.status(201).send(createdNewPost)
         return;
-    }
-    const createdNewPost = postsRepository.addNewPost
-    (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
-
-    res.status(201).send(createdNewPost)
-})
-postsRouter.get('/:id', (req: RequestParamsId<{ id: string }>,
-                                       res: ResponseViewBody<postViewModel>) => {
-    const getByIdPost = postsRepository.findPostById(req.params.id)
-    if(!getByIdPost) {
-      res.sendStatus(404);
+    })
+postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
+                               res: ResponseViewBody<postViewModel>) => {
+    const getByIdPost = await postsRepository.findPostById(req.params.id)
+    if (!getByIdPost) {
+        res.sendStatus(404);
     }
     res.send(getByIdPost)
+    return;
 })
 postsRouter.put('/:id',
     guardAuthentication, checksShortDescription, checksTitle, checksContent, checksBlogId, checkForErrors,
-    (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
-     res: ResponseViewBody<string>) => {
+    async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
+           res: ResponseViewBody<{}>) => {
 
-    const searchPostByIdForUpdate = postsRepository.findPostById(req.params.id)
-    if(!searchPostByIdForUpdate) {
-        res.sendStatus(404)
-        return;
-    }
-    const validationInputBlogId = postsRepository.searchBlogIdForPost(req.body.blogId)
-    if(!validationInputBlogId) {
-      res.status(404).send("blogId not found")
-        return;
-    }
-   const foundPostForUpdate = postsRepository
-         .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
+        const searchPostByIdForUpdate = await postsRepository.findPostById(req.params.id)
+        if (!searchPostByIdForUpdate) {
+            res.sendStatus(404)
+            return;
+        }
+        const foundPostForUpdate = await postsRepository
+            .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
 
-    if(foundPostForUpdate) {
-        res.sendStatus(204)
-    }
-})
+        if (foundPostForUpdate) {
+            res.sendStatus(204)
+            return;
+        }
+    })
 postsRouter.delete('/:id', guardAuthentication,
-    (req: RequestParamsId<{ id: string }>,
-     res: Response) => {
-    const foundPostDelete = postsRepository.searchForPostByIdDelete(req.params.id)
-    if(!foundPostDelete) {
-        res.sendStatus(404)
+    async (req: RequestParamsId<{ id: string }>,
+           res: Response) => {
+        const foundPostDelete = await postsRepository.PostByIdDelete(req.params.id)
+        if (!foundPostDelete) {
+            res.sendStatus(404)
+            return;
+        }
+        res.sendStatus(204)
         return;
-    }
-    res.sendStatus(204)
-})
+    })
