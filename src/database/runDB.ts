@@ -6,6 +6,7 @@ const mongoURI = process.env.MONGO_URL;
 if(!mongoURI) {
     throw Error ('Don-don')
 }
+
 console.log(process.env.MONGO_URL)
 
 export const client = new MongoClient(mongoURI)
