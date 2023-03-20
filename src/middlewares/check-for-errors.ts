@@ -8,7 +8,7 @@ const errorFormatter = ({msg}: ValidationError) => {
 export const checkForErrors = ((req: Request, res: Response, next: NextFunction) => {
     const error = validationResult(req).formatWith(errorFormatter);
     if (!error.isEmpty()) {
-        return res.json({errorsMessages: error.array()})
+        return res.status(400).json({errorsMessages: error.array()})
     }
    return next()
 })

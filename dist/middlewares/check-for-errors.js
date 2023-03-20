@@ -9,7 +9,7 @@ const errorFormatter = ({ msg }) => {
 exports.checkForErrors = ((req, res, next) => {
     const error = (0, express_validator_1.validationResult)(req).formatWith(errorFormatter);
     if (!error.isEmpty()) {
-        return res.json({ errorsMessages: error.array() });
+        return res.status(400).json({ errorsMessages: error.array() });
     }
     return next();
 });
