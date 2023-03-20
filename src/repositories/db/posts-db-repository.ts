@@ -6,7 +6,7 @@ import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
 export const postsRepository = {
     // тестовое удаление базы данных Постов
     async testingDeleteAllPosts() {
-        return await client.db('db').collection('posts').deleteMany()
+        return await client.db('db').collection<postViewModel[]>('posts').deleteMany({})
     },
     // все существующие посты.
     async returnOfAllPosts(): Promise<postViewModel[]> {

@@ -2,25 +2,25 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkInputDescription = exports.checkInputWebsiteUrl = exports.checkInputName = void 0;
 const express_validator_1 = require("express-validator");
-exports.checkInputName = (0, express_validator_1.check)('name')
+exports.checkInputName = (0, express_validator_1.body)('name')
     .trim()
     .isLength({ min: 3, max: 15 })
-    .withMessage({ message: "length should be no more than 15 characters", field: "name" })
+    .withMessage("length should be no more than 15 characters")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "name" });
-exports.checkInputWebsiteUrl = (0, express_validator_1.check)('websiteUrl')
+    .withMessage("is not a string");
+exports.checkInputWebsiteUrl = (0, express_validator_1.body)('websiteUrl')
     .matches(/^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)
-    .withMessage({ message: "is not a link to the site", field: "websiteUrl" })
+    .withMessage("is not a link to the site")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "websiteUrl" })
+    .withMessage("is not a string")
     .isLength({ min: 10, max: 100 })
-    .withMessage({ message: "must be at least 100 chars long", field: "websiteUrl" });
-exports.checkInputDescription = (0, express_validator_1.check)('description')
+    .withMessage("must be at least 100 chars long");
+exports.checkInputDescription = (0, express_validator_1.body)('description')
     .trim()
     .isLength({ min: 3, max: 500 })
-    .withMessage({ message: "length should be no more than 500 characters", field: "description" })
+    .withMessage("length should be no more than 500 characters")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "description" });
+    .withMessage("is not a string");

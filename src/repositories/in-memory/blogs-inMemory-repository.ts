@@ -4,7 +4,7 @@ import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
 
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
-    async testingDeleteAllBlogs(): Promise <Array<null>>{
+    async testingDeleteAllBlogs() {
         return inMemory.allBlogs = []
     },
     //все существующие блоги.

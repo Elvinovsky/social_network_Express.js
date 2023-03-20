@@ -5,7 +5,7 @@ import {blogInputModel} from "../../models/modelsBlogs/blogInputModel";
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
     async testingDeleteAllBlogs(){
-       return await client.db('db').collection('blogs').deleteMany()
+       return await client.db('db').collection<blogViewModel[]>('blogs').deleteMany({})
     },
     //все существующие блоги.
     async returnOfAllBlogs(): Promise<blogViewModel[]> {

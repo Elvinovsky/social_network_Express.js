@@ -12,35 +12,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checksBlogId = exports.checksContent = exports.checksShortDescription = exports.checksTitle = void 0;
 const express_validator_1 = require("express-validator");
 const posts_db_repository_1 = require("../../repositories/db/posts-db-repository");
-exports.checksTitle = (0, express_validator_1.check)('title')
+exports.checksTitle = (0, express_validator_1.body)('title')
     .exists()
     .trim()
     .isLength({ min: 3, max: 30 })
-    .withMessage({ message: "length should be no more than 30 characters", field: "title" })
+    .withMessage("length should be no more than 30 characters")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "title" });
-exports.checksShortDescription = (0, express_validator_1.check)('shortDescription')
+    .withMessage("is not a string");
+exports.checksShortDescription = (0, express_validator_1.body)('shortDescription')
     .trim()
     .isLength({ min: 3, max: 100 })
-    .withMessage({ message: "must be at least 100 chars long", field: "shortDescription" })
+    .withMessage("must be at least 100 chars long")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "shortDescription" });
-exports.checksContent = (0, express_validator_1.check)('content')
+    .withMessage("is not a string");
+exports.checksContent = (0, express_validator_1.body)('content')
     .trim()
     .isLength({ min: 3, max: 1000 })
-    .withMessage({ message: "length should be no more than 1000 characters", field: "content" })
+    .withMessage("length should be no more than 1000 characters")
     .bail()
     .isString()
-    .withMessage({ message: "is not a string", field: "content" });
-exports.checksBlogId = (0, express_validator_1.check)('blogId')
+    .withMessage("is not a string");
+exports.checksBlogId = (0, express_validator_1.body)('blogId')
     .isString()
-    .withMessage({ message: "is not a string", field: "blogId" })
+    .withMessage("is not a string")
     .bail()
     .custom((blogId) => __awaiter(void 0, void 0, void 0, function* () {
     const validationBlogId = yield posts_db_repository_1.postsRepository.searchBlogIdForPost(blogId);
     if (!validationBlogId) {
-        throw new Error('blogId not found');
+        throw new Error("blogId not found");
     }
 }));

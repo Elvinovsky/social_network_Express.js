@@ -3,7 +3,7 @@ import {postViewModel} from "../../models/modelsPosts/postViewModel";
 import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
 export const postsRepository = {
     // тестовое удаление базы данных Постов
-    async testingDeleteAllPosts(): Promise <Array<null>>{
+    async testingDeleteAllPosts() {
        return inMemory.allPosts = []
     },
     // все существующие посты.

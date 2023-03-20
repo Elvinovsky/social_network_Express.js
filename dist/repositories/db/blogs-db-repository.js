@@ -15,7 +15,7 @@ exports.blogsRepository = {
     //тестовое удаление базы данных о блогах.
     testingDeleteAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('blogs').deleteMany();
+            return yield runDB_1.client.db('db').collection('blogs').deleteMany({});
         });
     },
     //все существующие блоги.

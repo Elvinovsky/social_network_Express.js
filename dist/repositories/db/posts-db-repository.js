@@ -15,7 +15,7 @@ exports.postsRepository = {
     // тестовое удаление базы данных Постов
     testingDeleteAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('posts').deleteMany();
+            return yield runDB_1.client.db('db').collection('posts').deleteMany({});
         });
     },
     // все существующие посты.
