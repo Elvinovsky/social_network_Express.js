@@ -15,7 +15,7 @@ postsRouter.get('/', async (req: Request, res: ResponseViewBody<postViewModel[]>
     return;
 })
 postsRouter.post('/',
-    guardAuthentication, checksShortDescription, checksTitle, checksContent, checksBlogId, checkForErrors,
+    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
     async (req: RequestInputBody<postInputModel>,
            res: ResponseViewBody<postViewModel>) => {
 
@@ -35,7 +35,7 @@ postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     return;
 })
 postsRouter.put('/:id',
-    guardAuthentication, checksShortDescription, checksTitle, checksContent, checksBlogId, checkForErrors,
+    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
            res: ResponseViewBody<{}>) => {
 

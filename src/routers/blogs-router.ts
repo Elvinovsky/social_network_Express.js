@@ -16,8 +16,8 @@ blogsRouter.get('/', async (req: Request, res: Response) => {
     return;
 })
 blogsRouter.post('/',
-    guardAuthentication, checkInputWebsiteUrl,
-    checkInputName, checkInputDescription, checkForErrors,
+    guardAuthentication, checkInputName, checkInputWebsiteUrl,
+     checkInputDescription, checkForErrors,
     async (req: RequestInputBody<blogInputModel>,
            res: ResponseViewBody<blogViewModel>) => {
 
@@ -39,8 +39,8 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
         return;
 })
 blogsRouter.put('/:id',
-    guardAuthentication, checkInputWebsiteUrl,
-    checkInputName, checkInputDescription, checkForErrors,
+    guardAuthentication, checkInputName, checkInputWebsiteUrl,
+     checkInputDescription, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, blogInputModel>,
            res: Response) => {
 
