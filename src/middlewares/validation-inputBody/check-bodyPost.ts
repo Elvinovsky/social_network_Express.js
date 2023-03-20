@@ -12,7 +12,7 @@ export const checksTitle =  check('title', )
     .withMessage({ message: "is not a string", field: "title"})
 export const checksShortDescription =  check('shortDescription')
     .trim()
-    .isLength({min:10, max: 100 })
+    .isLength({min: 3, max: 100 })
     .withMessage({ message: "must be at least 100 chars long", field: "shortDescription"})
     .bail()
     .isString()
@@ -34,5 +34,8 @@ export const checksBlogId =  check('blogId')
             throw new Error('blogId not found');
         }
     });
+
+
+
 
 

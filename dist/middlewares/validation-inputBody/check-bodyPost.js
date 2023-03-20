@@ -22,7 +22,7 @@ exports.checksTitle = (0, express_validator_1.check)('title')
     .withMessage({ message: "is not a string", field: "title" });
 exports.checksShortDescription = (0, express_validator_1.check)('shortDescription')
     .trim()
-    .isLength({ min: 10, max: 100 })
+    .isLength({ min: 3, max: 100 })
     .withMessage({ message: "must be at least 100 chars long", field: "shortDescription" })
     .bail()
     .isString()
