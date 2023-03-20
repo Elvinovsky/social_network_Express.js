@@ -21,7 +21,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.send(getAllBlogs);
     return;
 }));
-exports.blogsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdBlog = yield blogs_db_repository_1.blogsRepository
         .addNewBlog(req.body.name, req.body.description, req.body.websiteUrl);
     res.status(201).send(createdBlog);
@@ -36,7 +36,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     res.send(getByIdBlog);
     return;
 }));
-exports.blogsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const searchBlogByIdForUpdate = yield blogs_db_repository_1.blogsRepository.findBlogById(req.params.id);
     if (!searchBlogByIdForUpdate) {
         res.sendStatus(404);

@@ -17,23 +17,27 @@ exports.checksTitle = (0, express_validator_1.check)('title')
     .trim()
     .isLength({ min: 3, max: 30 })
     .withMessage({ message: "length should be no more than 30 characters", field: "title" })
+    .bail()
     .isString()
     .withMessage({ message: "is not a string", field: "title" });
 exports.checksShortDescription = (0, express_validator_1.check)('shortDescription')
     .trim()
     .isLength({ min: 10, max: 100 })
     .withMessage({ message: "must be at least 100 chars long", field: "shortDescription" })
+    .bail()
     .isString()
     .withMessage({ message: "is not a string", field: "shortDescription" });
 exports.checksContent = (0, express_validator_1.check)('content')
     .trim()
-    .isLength({ min: 10, max: 1000 })
+    .isLength({ min: 3, max: 1000 })
     .withMessage({ message: "length should be no more than 1000 characters", field: "content" })
+    .bail()
     .isString()
     .withMessage({ message: "is not a string", field: "content" });
 exports.checksBlogId = (0, express_validator_1.check)('blogId')
     .isString()
     .withMessage({ message: "is not a string", field: "blogId" })
+    .bail()
     .custom((blogId) => __awaiter(void 0, void 0, void 0, function* () {
     const validationBlogId = yield posts_db_repository_1.postsRepository.searchBlogIdForPost(blogId);
     if (!validationBlogId) {

@@ -21,7 +21,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.send(getAllPosts);
     return;
 }));
-exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksTitle, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdNewPost = yield posts_db_repository_1.postsRepository.addNewPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(createdNewPost);
     return;
@@ -34,7 +34,7 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     res.send(getByIdPost);
     return;
 }));
-exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksTitle, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const searchPostByIdForUpdate = yield posts_db_repository_1.postsRepository.findPostById(req.params.id);
     if (!searchPostByIdForUpdate) {
         res.sendStatus(404);
