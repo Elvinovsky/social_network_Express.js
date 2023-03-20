@@ -2,6 +2,7 @@ import {client} from "../../database/runDB";
 import {postViewModel} from "../../models/modelsPosts/postViewModel";
 import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
 
+
 export const postsRepository = {
     // тестовое удаление базы данных Постов
     async testingDeleteAllPosts() {
@@ -9,12 +10,12 @@ export const postsRepository = {
     },
     // все существующие посты.
     async returnOfAllPosts(): Promise<postViewModel[]> {
-        return await client.db('db').collection<postViewModel>('posts').find({}).toArray()
+        return await client.db('db').collection<postViewModel>('posts').find({}, {projection:{ _id: 0 }}).toArray()
     },
     //создание и добавление нового поста в базу данных.
     async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <postViewModel> {
         const outputBlogName: string = this.searchBlogIdForPost.name
-        const createNewPost: postViewModel = {
+        const createPost: postViewModel = {
             id: (+(new Date())).toString(),
             title: title,
             shortDescription: shortDescription,
@@ -23,12 +24,20 @@ export const postsRepository = {
             blogName: outputBlogName,
             createdAt: new Date().toISOString()
         }
-        await client.db('db').collection<postViewModel>('posts').insertOne(createNewPost)
-        return createNewPost;
+        await client.db('db').collection<postViewModel>('posts').insertOne(createPost)
+        return {
+            id: createPost.id,
+            title: createPost.title,
+            shortDescription: createPost.shortDescription,
+            content: createPost.content,
+            blogId:	createPost.blogId,
+            blogName: createPost.blogName,
+            createdAt: createPost.createdAt
+        }
     },
     //поиск поста по ID.
     async findPostById(id: string): Promise <postViewModel | undefined> {
-       const post = await client.db('db').collection<postViewModel>('posts').findOne({id})
+       const post = await client.db('db').collection<postViewModel>('posts').findOne({id},{projection:{ _id: 0 }})
         if (post) {
             return post;
         } else {

@@ -21,14 +21,14 @@ exports.postsRepository = {
     // все существующие посты.
     returnOfAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('posts').find({}).toArray();
+            return yield runDB_1.client.db('db').collection('posts').find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     //создание и добавление нового поста в базу данных.
     addNewPost(title, shortDescription, content, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const outputBlogName = this.searchBlogIdForPost.name;
-            const createNewPost = {
+            const createPost = {
                 id: (+(new Date())).toString(),
                 title: title,
                 shortDescription: shortDescription,
@@ -37,14 +37,22 @@ exports.postsRepository = {
                 blogName: outputBlogName,
                 createdAt: new Date().toISOString()
             };
-            yield runDB_1.client.db('db').collection('posts').insertOne(createNewPost);
-            return createNewPost;
+            yield runDB_1.client.db('db').collection('posts').insertOne(createPost);
+            return {
+                id: createPost.id,
+                title: createPost.title,
+                shortDescription: createPost.shortDescription,
+                content: createPost.content,
+                blogId: createPost.blogId,
+                blogName: createPost.blogName,
+                createdAt: createPost.createdAt
+            };
         });
     },
     //поиск поста по ID.
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield runDB_1.client.db('db').collection('posts').findOne({ id });
+            const post = yield runDB_1.client.db('db').collection('posts').findOne({ id }, { projection: { _id: 0 } });
             if (post) {
                 return post;
             }

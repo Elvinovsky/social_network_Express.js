@@ -21,7 +21,7 @@ exports.blogsRepository = {
     //все существующие блоги.
     returnOfAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('blogs').find({}).toArray();
+            return yield runDB_1.client.db('db').collection('blogs').find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     //создание и добавление нового блога.
@@ -36,13 +36,20 @@ exports.blogsRepository = {
                 isMembership: false
             };
             yield runDB_1.client.db('db').collection('blogs').insertOne(createBlog);
-            return createBlog;
+            return {
+                id: createBlog.id,
+                name: createBlog.name,
+                description: createBlog.description,
+                websiteUrl: createBlog.websiteUrl,
+                createdAt: createBlog.createdAt,
+                isMembership: createBlog.isMembership
+            };
         });
     },
     //поиск и возврат блога по ID.
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield runDB_1.client.db('db').collection('blogs').findOne({ id });
+            const blog = yield runDB_1.client.db('db').collection('blogs').findOne({ id }, { projection: { _id: 0 } });
             if (blog) {
                 return blog;
             }

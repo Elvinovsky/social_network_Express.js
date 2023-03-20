@@ -9,12 +9,13 @@ export const blogsRepository = {
     },
     //все существующие блоги.
     async returnOfAllBlogs(): Promise<blogViewModel[]> {
-       return await client.db('db').collection<blogViewModel>('blogs').find({}).toArray()
+       return await client.db('db').collection<blogViewModel>('blogs').find({}, {projection:{ _id: 0 }}).toArray()
     } ,
     //создание и добавление нового блога.
     async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
+
         const createBlog: blogViewModel = {
-            id:	(+(new Date())).toString(),
+            id: (+(new Date())).toString(),
             name: name,
             description: description,
             websiteUrl: websiteUrl,
@@ -22,11 +23,18 @@ export const blogsRepository = {
             isMembership: false
         }
         await client.db('db').collection<blogViewModel>('blogs').insertOne(createBlog)
-        return createBlog;
+        return {
+            id: createBlog.id,
+            name: createBlog.name,
+            description: createBlog.description,
+            websiteUrl: createBlog.websiteUrl,
+            createdAt: createBlog.createdAt,
+            isMembership: createBlog.isMembership
+        }
     },
     //поиск и возврат блога по ID.
     async findBlogById(id: string): Promise <blogViewModel | undefined> {
-        const blog: blogViewModel | null = await client.db('db').collection<blogViewModel>('blogs').findOne({id})
+        const blog: blogViewModel | null = await client.db('db').collection<blogViewModel>('blogs').findOne({id}, {projection:{ _id: 0 }})
         if (blog) {
             return blog;
         } else {
