@@ -11,17 +11,12 @@ export const blogsRepository = {
     async returnOfAllBlogs(): Promise<blogViewModel[]> {
        return await blogsCollection.find({}, {projection:{ _id: 0 }}).toArray()
     } ,
+    //поиск и возврат блога по ID.
+    async findBlogById(id: string): Promise <blogViewModel | null> {
+        return  await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
+    },
     //создание и добавление нового блога.
-    async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
-
-        const createBlog: blogViewModel = {
-            id: (+(new Date())).toString(),
-            name: name,
-            description: description,
-            websiteUrl: websiteUrl,
-            createdAt: new Date().toISOString(),
-            isMembership: false
-        }
+    async addNewBlog(createBlog: blogViewModel): Promise <blogViewModel> {
         await blogsCollection.insertOne(createBlog)
         return {
             id: createBlog.id,
@@ -31,11 +26,6 @@ export const blogsRepository = {
             createdAt: createBlog.createdAt,
             isMembership: createBlog.isMembership
         }
-    },
-    //поиск и возврат блога по ID.
-    async findBlogById(id: string): Promise <blogViewModel | null> {
-        const blog = await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
-        return blog? blog : null;
     },
     //обновление блога по айди.
     async updateBlogById(id: string, name: string, description: string, websiteUrl: string): Promise <boolean> {

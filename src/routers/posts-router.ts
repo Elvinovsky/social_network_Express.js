@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/db/posts-db-repository";
+import {postsService} from "../domains/posts-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
 import {postInputModel} from "../models/modelsPosts/postInputModel";
@@ -10,7 +10,7 @@ import {checkForErrors} from "../middlewares/check-for-errors";
 export const postsRouter = Router()
 
 postsRouter.get('/', async (req: Request, res: ResponseViewBody<postViewModel[]>) => {
-    const getAllPosts: postViewModel[] = await postsRepository.returnOfAllPosts()
+    const getAllPosts: postViewModel[] = await postsService.returnOfAllPosts()
     res.send(getAllPosts)
     return;
 })
@@ -19,7 +19,7 @@ postsRouter.post('/',
     async (req: RequestInputBody<postInputModel>,
            res: ResponseViewBody<postViewModel>) => {
 
-        const createdNewPost = await postsRepository.addNewPost
+        const createdNewPost = await postsService.createPost
         (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
 
         res.status(201).send(createdNewPost)
@@ -27,27 +27,25 @@ postsRouter.post('/',
     })
 postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
                                res: ResponseViewBody<postViewModel>) => {
-    const getByIdPost = await postsRepository.findPostById(req.params.id)
-    if (!getByIdPost) {
-        res.sendStatus(404);
-    }
-    res.send(getByIdPost)
-    return;
+    const getByIdPost = await postsService.findPostById(req.params.id)
+    return getByIdPost === null
+           ? res.sendStatus(404)
+           : res.send(getByIdPost)
 })
 postsRouter.put('/:id',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
            res: ResponseViewBody<{}>) => {
 
-        const searchPostByIdForUpdate = await postsRepository.findPostById(req.params.id)
-        if (!searchPostByIdForUpdate) {
+        const postByIdForUpdate = await postsService.findPostById(req.params.id)
+        if (!postByIdForUpdate) {
             res.sendStatus(404)
             return;
         }
-        const foundPostForUpdate = await postsRepository
+        const postForUpdate = await postsService
             .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content)
 
-        if (foundPostForUpdate) {
+        if (postForUpdate) {
             res.sendStatus(204)
             return;
         }
@@ -55,7 +53,7 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id', guardAuthentication,
     async (req: RequestParamsId<{ id: string }>,
            res: Response) => {
-        const foundPostDelete = await postsRepository.PostByIdDelete(req.params.id)
+        const foundPostDelete = await postsService.postByIdDelete(req.params.id)
         if (!foundPostDelete) {
             res.sendStatus(404)
             return;

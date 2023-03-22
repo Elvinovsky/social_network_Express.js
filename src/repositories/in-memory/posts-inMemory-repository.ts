@@ -51,7 +51,7 @@ export const postsRepository = {
         }
     },
     // поиск и удаление поста по ID.
-    async PostByIdDelete(id: string):Promise <boolean> {
+    async postByIdDelete(id: string):Promise <boolean> {
         const index = inMemory.allBlogs.findIndex(b => b.id === id)
         if (index > -1) {
             inMemory.allBlogs.splice(index, 1)

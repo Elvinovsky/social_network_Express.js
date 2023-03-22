@@ -14,32 +14,22 @@ export const postsRepository = {
         return await postsCollection.find({}, {projection:{ _id: 0 }}).toArray()
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <postViewModel> {
-        const outputBlogName: string = this.searchBlogIdForPost.name
-        const createPost: postViewModel = {
-            id: (+(new Date())).toString(),
-            title: title,
-            shortDescription: shortDescription,
-            content: content,
-            blogId:	blogId,
-            blogName: outputBlogName,
-            createdAt: new Date().toISOString()
-        }
-        await postsCollection.insertOne(createPost)
-        return {
-            id: createPost.id,
-            title: createPost.title,
-            shortDescription: createPost.shortDescription,
-            content: createPost.content,
-            blogId:	createPost.blogId,
-            blogName: createPost.blogName,
-            createdAt: createPost.createdAt
-        }
-    },
+
     //поиск поста по ID.
-    async findPostById(id: string): Promise <postViewModel | undefined> {
-        const post = await postsCollection.findOne({id}, {projection: {_id: 0}})
-        return post ? post : undefined
+    async findPostById(id: string): Promise <postViewModel | null> {
+        return  await postsCollection.findOne({id}, {projection: {_id: 0}})
+    },
+    async addNewPost(newPost: postViewModel): Promise <postViewModel> {
+        await postsCollection.insertOne(newPost)
+        return {
+            id: newPost.id,
+            title: newPost.title,
+            shortDescription: newPost.shortDescription,
+            content: newPost.content,
+            blogId:	newPost.blogId,
+            blogName: newPost.blogName,
+            createdAt: newPost.createdAt
+        }
     },
     // обновление поста по ID.
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {
@@ -52,7 +42,7 @@ export const postsRepository = {
         return blogIdForPost? blogIdForPost : null
     },
     // поиск и удаление поста по ID.
-    async PostByIdDelete(id: string):Promise <boolean> {
+    async postByIdDelete(id: string):Promise <boolean> {
         const deleteResult = await postsCollection.deleteOne({id})
         return deleteResult.deletedCount === 1
     }

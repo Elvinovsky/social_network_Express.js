@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {blogsRepository} from "../repositories/db/blogs-db-repository";
+import {blogsService} from "../domains/blogs-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
 import {blogInputModel} from "../models/modelsBlogs/blogInputModel";
@@ -11,7 +11,7 @@ export const blogsRouter = Router ()
 
 
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const getAllBlogs = await blogsRepository.returnOfAllBlogs()
+    const getAllBlogs = await blogsService.returnOfAllBlogs()
     res.send(getAllBlogs)
     return;
 })
@@ -21,8 +21,8 @@ blogsRouter.post('/',
     async (req: RequestInputBody<blogInputModel>,
            res: ResponseViewBody<blogViewModel>) => {
 
-        const createdBlog = await blogsRepository
-            .addNewBlog(req.body.name, req.body.description, req.body.websiteUrl)
+        const createdBlog = await blogsService
+            .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
         res.status(201).send(createdBlog)
         return;
@@ -30,7 +30,7 @@ blogsRouter.post('/',
 blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
                                res: ResponseViewBody<blogViewModel>) => {
 
-    const getByIdBlog = await blogsRepository.findBlogById(req.params.id)
+    const getByIdBlog = await blogsService.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
         return;
@@ -44,12 +44,12 @@ blogsRouter.put('/:id',
     async (req: RequestParamsAndInputBody<{ id: string }, blogInputModel>,
            res: Response) => {
 
-        const searchBlogByIdForUpdate = await blogsRepository.findBlogById(req.params.id)
+        const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)
         if (!searchBlogByIdForUpdate) {
             res.sendStatus(404)
             return;
         }
-        const foundBlogForUpdate = await blogsRepository
+        const foundBlogForUpdate = await blogsService
             .updateBlogById(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
         if (foundBlogForUpdate) {
             res.sendStatus(204)
@@ -59,7 +59,7 @@ blogsRouter.put('/:id',
 blogsRouter.delete('/:id', guardAuthentication,
                                  async (req: RequestParamsId<{ id: string }>,
                                         res: Response) => {
-    const foundBlogDelete = await blogsRepository.searchBlogByIdDelete(req.params.id)
+    const foundBlogDelete = await blogsService.BlogByIdDelete(req.params.id)
 
     if (!foundBlogDelete) {
         res.sendStatus(404)
