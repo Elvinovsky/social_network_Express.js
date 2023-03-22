@@ -2,9 +2,10 @@ import express from 'express'
 import {postsRouter} from "./routers/posts-router";
 import {blogsRouter} from "./routers/blogs-router";
 import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
-import {jsonBodyMiddleware} from "./middlewares/jsonBody-middleware";
 import {runDb} from "./database/runDB";
+import bodyParser from "body-parser";
 
+const jsonBodyMiddleware = bodyParser()
 const app = express()
 const port = process.env.PORT || 3070
 

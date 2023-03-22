@@ -1,15 +1,15 @@
-import {client} from "../../database/runDB";
+import {blogsCollection} from "../../database/runDB";
 import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
-import {blogInputModel} from "../../models/modelsBlogs/blogInputModel";
+import {DeleteResult} from "mongodb";
 
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
-    async testingDeleteAllBlogs(){
-       return await client.db('db').collection<blogViewModel[]>('blogs').deleteMany({})
+    async testingDeleteAllBlogs(): Promise<DeleteResult>{
+       return await blogsCollection.deleteMany({})
     },
     //все существующие блоги.
     async returnOfAllBlogs(): Promise<blogViewModel[]> {
-       return await client.db('db').collection<blogViewModel>('blogs').find({}, {projection:{ _id: 0 }}).toArray()
+       return await blogsCollection.find({}, {projection:{ _id: 0 }}).toArray()
     } ,
     //создание и добавление нового блога.
     async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
@@ -22,7 +22,7 @@ export const blogsRepository = {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        await client.db('db').collection<blogViewModel>('blogs').insertOne(createBlog)
+        await blogsCollection.insertOne(createBlog)
         return {
             id: createBlog.id,
             name: createBlog.name,
@@ -33,22 +33,18 @@ export const blogsRepository = {
         }
     },
     //поиск и возврат блога по ID.
-    async findBlogById(id: string): Promise <blogViewModel | undefined> {
-        const blog: blogViewModel | null = await client.db('db').collection<blogViewModel>('blogs').findOne({id}, {projection:{ _id: 0 }})
-        if (blog) {
-            return blog;
-        } else {
-            return undefined;
-        }
+    async findBlogById(id: string): Promise <blogViewModel | null> {
+        const blog = await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
+        return blog? blog : null;
     },
     //обновление блога по айди.
     async updateBlogById(id: string, name: string, description: string, websiteUrl: string): Promise <boolean> {
-        const result = await client.db('db').collection<blogInputModel>('blogs').updateOne({id}, {$set: {name, description, websiteUrl}})
+        const result = await blogsCollection.updateOne({id}, {$set: {name, description, websiteUrl}})
       return result.matchedCount === 1
      },
     //поиск блога по ID для удаления.
     async searchBlogByIdDelete(id: string): Promise <boolean> {
-        const deleteResult = await client.db('db').collection<blogViewModel>('blogs').deleteOne({id})
+        const deleteResult = await blogsCollection.deleteOne({id})
         return deleteResult.deletedCount === 1
     }
 }
