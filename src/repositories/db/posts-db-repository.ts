@@ -37,9 +37,9 @@ export const postsRepository = {
         }
     },
     //поиск поста по ID.
-    async findPostById(id: string): Promise <postViewModel | null> {
+    async findPostById(id: string): Promise <postViewModel | undefined> {
         const post = await postsCollection.findOne({id}, {projection: {_id: 0}})
-        return post ? post : null
+        return post ? post : undefined
     },
     // обновление поста по ID.
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {
@@ -47,7 +47,7 @@ export const postsRepository = {
        return updateResult.matchedCount === 1;
     },
     //поиск ID блога для поста.
-    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | null> {
+    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | null > {
         const blogIdForPost = await blogsCollection.findOne({id: blogId})
         return blogIdForPost? blogIdForPost : null
     },
