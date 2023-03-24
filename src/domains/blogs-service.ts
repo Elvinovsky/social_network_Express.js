@@ -3,12 +3,6 @@ import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
 
 
 export const blogsService = {
-    async returnOfAllBlogs(): Promise<blogViewModel[]> {
-        return blogsRepository.returnOfAllBlogs()
-    } ,
-    async findBlogById(id: string): Promise <blogViewModel | null> {
-        return blogsRepository.findBlogById(id)
-    },
     async CreateBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
 
         const createBlog: blogViewModel = {

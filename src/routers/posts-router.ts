@@ -2,17 +2,32 @@ import {Request, Response, Router} from "express";
 import {postsService} from "../domains/posts-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
-import {postInputModel} from "../models/modelsPosts/postInputModel";
+import {BlogPostInputModel, postInputModel} from "../models/modelsPosts/postInputModel";
 import {postViewModel} from "../models/modelsPosts/postViewModel";
 import {checksContent, checksBlogId, checksTitle, checksShortDescription} from "../middlewares/validation-inputBody/check-bodyPost";
 import {checkForErrors} from "../middlewares/check-for-errors";
+import {queryDbRepository} from "../repositories/db/query-db-repository";
 
 export const postsRouter = Router()
 
 postsRouter.get('/', async (req: Request, res: ResponseViewBody<postViewModel[]>) => {
-    const getAllPosts: postViewModel[] = await postsService.returnOfAllPosts()
+    const getAllPosts: postViewModel[] = await queryDbRepository.returnOfAllPosts()
     res.send(getAllPosts)
     return;
+})
+postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
+                               res: ResponseViewBody<postViewModel>) => {
+    const getByIdPost = await queryDbRepository.findPostById(req.params.id)
+    return getByIdPost === null
+        ? res.sendStatus(404)
+        : res.send(getByIdPost)
+})
+postsRouter.get('/blogs/:blogId', async (req: RequestParamsId<{ blogId: string }>,
+                                         res: ResponseViewBody<postViewModel[]>) => {
+    const getByIdPost = await queryDbRepository.searchBlogIdForPost(req.params.blogId)
+    return getByIdPost === null
+        ? res.sendStatus(404)
+        : res.send(getByIdPost)
 })
 postsRouter.post('/',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
@@ -25,13 +40,15 @@ postsRouter.post('/',
         res.status(201).send(createdNewPost)
         return;
     })
-postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
-                               res: ResponseViewBody<postViewModel>) => {
-    const getByIdPost = await postsService.findPostById(req.params.id)
-    return getByIdPost === null
-           ? res.sendStatus(404)
-           : res.send(getByIdPost)
-})
+postsRouter.post('/blogs/:blogId',
+    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
+    async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
+           res: ResponseViewBody<postViewModel>) => {
+        const createdNewPost = await postsService.createPost
+        (req.body.title, req.body.shortDescription, req.body.content, req.params.blogId)
+        res.status(201).send(createdNewPost)
+        return;
+    })
 postsRouter.put('/:id',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,

@@ -13,12 +13,11 @@ export const postsRepository = {
     async returnOfAllPosts(): Promise<postViewModel[]> {
         return await postsCollection.find({}, {projection:{ _id: 0 }}).toArray()
     },
-    //создание и добавление нового поста в базу данных.
-
     //поиск поста по ID.
     async findPostById(id: string): Promise <postViewModel | null> {
         return  await postsCollection.findOne({id}, {projection: {_id: 0}})
     },
+    //создание и добавление нового поста в базу данных.
     async addNewPost(newPost: postViewModel): Promise <postViewModel> {
         await postsCollection.insertOne(newPost)
         return {
