@@ -7,6 +7,10 @@ export const blogsRepository = {
     async testingDeleteAllBlogs(): Promise<DeleteResult>{
        return await blogsCollection.deleteMany({})
     },
+    //поиск блога по ID.
+    async findBlogById(id: string): Promise <blogViewModel | null> {
+        return  await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
+    },
     //создание и добавление нового блога.
     async addNewBlog(createBlog: blogViewModel): Promise <blogViewModel> {
         await blogsCollection.insertOne(createBlog)
