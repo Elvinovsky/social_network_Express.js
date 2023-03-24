@@ -1,20 +1,19 @@
-import {postViewModel} from "../models/modelsPosts/postViewModel";
+import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsRepository} from "../repositories/db/posts-db-repository";
-import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
-import {blogsCollection} from "../database/runDB";
+import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 
 
 export const postsService = {
-    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | null > {
+    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | null > {
         return await postsRepository.searchBlogIdForPost(blogId)
 
     },
-    async findPostById(id: string): Promise <postViewModel | null> {
+    async findPostById(id: string): Promise <PostViewModel | null> {
         return await postsRepository.findPostById(id)
     },
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise <postViewModel> {
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostViewModel> {
         const outputBlogName: string = postsRepository.searchBlogIdForPost.name
-        const newPost: postViewModel = {
+        const newPost: PostViewModel = {
             id: (+(new Date())).toString(),
             title: title,
             shortDescription: shortDescription,

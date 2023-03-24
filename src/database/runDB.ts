@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import {MongoClient} from "mongodb";
-import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
-import {postViewModel} from "../models/modelsPosts/postViewModel";
+import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {PostViewModel} from "../models/modelsPosts/postViewModel";
 
 dotenv.config()
 
@@ -13,8 +13,8 @@ console.log(process.env.MONGO_URL)
 
 export const client = new MongoClient(mongoURI)
 const db = client.db('lesson');
-export const blogsCollection = db.collection<blogViewModel>('blogs');
-export const postsCollection = db.collection<postViewModel>('posts');
+export const blogsCollection = db.collection<BlogViewModel>('blogs');
+export const postsCollection = db.collection<PostViewModel>('posts');
 export async function runDb() {
     try {
         await client.connect()

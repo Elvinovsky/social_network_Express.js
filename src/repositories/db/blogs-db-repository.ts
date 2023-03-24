@@ -1,5 +1,5 @@
 import {blogsCollection} from "../../database/runDB";
-import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {DeleteResult} from "mongodb";
 
 export const blogsRepository = {
@@ -8,11 +8,11 @@ export const blogsRepository = {
        return await blogsCollection.deleteMany({})
     },
     //поиск блога по ID.
-    async findBlogById(id: string): Promise <blogViewModel | null> {
+    async findBlogById(id: string): Promise <BlogViewModel | null> {
         return  await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
     },
     //создание и добавление нового блога.
-    async addNewBlog(createBlog: blogViewModel): Promise <blogViewModel> {
+    async addNewBlog(createBlog: BlogViewModel): Promise <BlogViewModel> {
         await blogsCollection.insertOne(createBlog)
         return {
             id: createBlog.id,

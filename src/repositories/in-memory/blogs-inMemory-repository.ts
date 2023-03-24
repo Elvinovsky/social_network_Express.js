@@ -1,5 +1,5 @@
 import {inMemory} from "../../database/in-memory";
-import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 
 
 export const blogsRepository = {
@@ -8,12 +8,12 @@ export const blogsRepository = {
         return inMemory.allBlogs = []
     },
     //все существующие блоги.
-    async returnOfAllBlogs(): Promise<blogViewModel[]> {
+    async returnOfAllBlogs(): Promise<BlogViewModel[]> {
        return inMemory.allBlogs
     } ,
     //создание и добавление нового блога.
-    async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <blogViewModel> {
-        const createBlog: blogViewModel = {
+    async addNewBlog(name: string, description: string, websiteUrl: string,): Promise <BlogViewModel> {
+        const createBlog: BlogViewModel = {
             id:	(+(new Date())).toString(),
             name: name,
             description: description,
@@ -25,7 +25,7 @@ export const blogsRepository = {
         return createBlog;
     },
     //поиск и возврат блога по ID.
-    async findBlogById(id: string): Promise <blogViewModel | undefined> {
+    async findBlogById(id: string): Promise <BlogViewModel | undefined> {
         return  inMemory.allBlogs.find(el => el.id === id)
     },
     //обновление блога по айди.

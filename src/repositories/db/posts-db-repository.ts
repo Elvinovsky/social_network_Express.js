@@ -1,6 +1,6 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
-import {postViewModel} from "../../models/modelsPosts/postViewModel";
-import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {DeleteResult} from "mongodb";
 
 
@@ -10,15 +10,15 @@ export const postsRepository = {
         return await postsCollection.deleteMany({})
     },
     // все существующие посты.
-    async returnOfAllPosts(): Promise<postViewModel[]> {
+    async returnOfAllPosts(): Promise<PostViewModel[]> {
         return await postsCollection.find({}, {projection:{ _id: 0 }}).toArray()
     },
     //поиск поста по ID.
-    async findPostById(id: string): Promise <postViewModel | null> {
+    async findPostById(id: string): Promise <PostViewModel | null> {
         return  await postsCollection.findOne({id}, {projection: {_id: 0}})
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(newPost: postViewModel): Promise <postViewModel> {
+    async addNewPost(newPost: PostViewModel): Promise <PostViewModel> {
         await postsCollection.insertOne(newPost)
         return {
             id: newPost.id,
@@ -36,7 +36,7 @@ export const postsRepository = {
        return updateResult.matchedCount === 1;
     },
     //поиск ID блога для поста.
-    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | null > {
+    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | null > {
         const blogIdForPost = await blogsCollection.findOne({id: blogId})
         return blogIdForPost? blogIdForPost : null
     },

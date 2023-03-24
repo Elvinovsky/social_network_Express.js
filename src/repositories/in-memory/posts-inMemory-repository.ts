@@ -1,19 +1,19 @@
 import {inMemory} from "../../database/in-memory";
-import {postViewModel} from "../../models/modelsPosts/postViewModel";
-import {blogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 export const postsRepository = {
     // тестовое удаление базы данных Постов
     async testingDeleteAllPosts() {
        return inMemory.allPosts = []
     },
     // все существующие посты.
-    async returnOfAllPosts(): Promise<postViewModel[]> {
+    async returnOfAllPosts(): Promise<PostViewModel[]> {
        return inMemory.allPosts;
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <postViewModel> {
+    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostViewModel> {
         const outputBlogName: string = this.searchBlogIdForPost.name
-        const createNewPost: postViewModel = {
+        const createNewPost: PostViewModel = {
             id: (+(new Date())).toString(),
             title: title,
             shortDescription: shortDescription,
@@ -26,7 +26,7 @@ export const postsRepository = {
         return createNewPost;
     },
     //поиск поста по ID.
-    async findPostById(id: string): Promise <postViewModel | undefined> {
+    async findPostById(id: string): Promise <PostViewModel | undefined> {
         return  inMemory.allPosts.find(el => el.id === id)
     },
     // обновление поста по ID.
@@ -42,7 +42,7 @@ export const postsRepository = {
         return false;
     },
     //поиск ID блога для поста.
-    async searchBlogIdForPost(blogId: string):Promise <blogViewModel | undefined> {
+    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | undefined> {
         const blogIdForPost = await inMemory.allBlogs.find(el => el.id === blogId)
         if(blogIdForPost) {
             return blogIdForPost

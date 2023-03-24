@@ -13,17 +13,17 @@ exports.postsRouter = void 0;
 const express_1 = require("express");
 const posts_service_1 = require("../domains/posts-service");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
-const check_bodyPost_1 = require("../middlewares/validation-inputBody/check-bodyPost");
+const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
 const check_for_errors_1 = require("../middlewares/check-for-errors");
-const query_db_repository_1 = require("../repositories/db/query-db-repository");
+const query_repository_1 = require("../repositories/query-repository");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield query_db_repository_1.queryDbRepository.returnOfAllPosts();
+    const getAllPosts = yield query_repository_1.queryRepository.returnOfAllPosts();
     res.send(getAllPosts);
     return;
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield query_db_repository_1.queryDbRepository.findPostById(req.params.id);
+    const getByIdPost = yield query_repository_1.queryRepository.findPostById(req.params.id);
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost);

@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body} from 'express-validator'
 
 export const checkInputName =  body('name', )
     .trim()

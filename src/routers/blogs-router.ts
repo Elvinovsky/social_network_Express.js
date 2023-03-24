@@ -3,26 +3,29 @@ import {blogsService} from "../domains/blogs-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
 import {blogInputModel} from "../models/modelsBlogs/blogInputModel";
-import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {checkForErrors} from "../middlewares/check-for-errors";
-import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../middlewares/validation-inputBody/check-bodyBlog";
-import {queryDbRepository} from "../repositories/db/query-db-repository";
-import {checksContent, checksShortDescription, checksTitle} from "../middlewares/validation-inputBody/check-bodyPost";
+import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../middlewares/body-validator/check-bodyBlog";
+import {queryRepository} from "../repositories/query-repository";
+import {checksContent, checksShortDescription, checksTitle} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
-import {postViewModel} from "../models/modelsPosts/postViewModel";
+import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
+
+
 
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/', async (req: Request, res: Response) => {
-    const getAllBlogs = await queryDbRepository.returnOfAllBlogs()
+blogsRouter.get('/', async (req: Request<{},{},{},{name: string | null}>, res: Response) => {
+
+    const getAllBlogs = await queryRepository.returnOfAllBlogs(req.query.name)
     res.send(getAllBlogs)
     return;
 })
 blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
-                               res: ResponseViewBody<blogViewModel>) => {
-    const getByIdBlog = await queryDbRepository.findBlogById(req.params.id)
+                               res: ResponseViewBody<BlogViewModel>) => {
+    const getByIdBlog = await queryRepository.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
         return;
@@ -31,8 +34,8 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     return;
 })
 blogsRouter.get('/:blogId/posts', async (req: RequestParamsId<{ blogId: string }>,
-                                         res: ResponseViewBody<postViewModel[]>) => {
-    const getByIdPost = await queryDbRepository.searchPostByBlogId(req.params.blogId)
+                                         res: ResponseViewBody<PostViewModel[]>) => {
+    const getByIdPost = await queryRepository.searchPostByBlogId(req.params.blogId)
     return getByIdPost === null  || []
         ? res.sendStatus(404)
         : res.send(getByIdPost)
@@ -41,7 +44,7 @@ blogsRouter.post('/',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
      checkInputDescription, checkForErrors,
     async (req: RequestInputBody<blogInputModel>,
-           res: ResponseViewBody<blogViewModel>) => {
+           res: ResponseViewBody<BlogViewModel>) => {
 
         const createdBlog = await blogsService
             .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)
@@ -52,7 +55,7 @@ blogsRouter.post('/',
 blogsRouter.post('/:blogId/posts',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
-           res: ResponseViewBody<postViewModel>) => {
+           res: ResponseViewBody<PostViewModel>) => {
         const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
         if (!validatorBlogIdForCreatePost) {
             res.sendStatus(404)
@@ -67,7 +70,7 @@ blogsRouter.post('/',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
     checkInputDescription, checkForErrors,
     async (req: RequestInputBody<blogInputModel>,
-           res: ResponseViewBody<blogViewModel>) => {
+           res: ResponseViewBody<BlogViewModel>) => {
 
         const createdBlog = await blogsService
             .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)

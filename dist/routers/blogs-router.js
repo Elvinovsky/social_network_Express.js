@@ -14,18 +14,18 @@ const express_1 = require("express");
 const blogs_service_1 = require("../domains/blogs-service");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
 const check_for_errors_1 = require("../middlewares/check-for-errors");
-const check_bodyBlog_1 = require("../middlewares/validation-inputBody/check-bodyBlog");
-const query_db_repository_1 = require("../repositories/db/query-db-repository");
-const check_bodyPost_1 = require("../middlewares/validation-inputBody/check-bodyPost");
+const check_bodyBlog_1 = require("../middlewares/body-validator/check-bodyBlog");
+const query_repository_1 = require("../repositories/query-repository");
+const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
 const posts_service_1 = require("../domains/posts-service");
 exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllBlogs = yield query_db_repository_1.queryDbRepository.returnOfAllBlogs();
+    const getAllBlogs = yield query_repository_1.queryRepository.returnOfAllBlogs(req.query.name);
     res.send(getAllBlogs);
     return;
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdBlog = yield query_db_repository_1.queryDbRepository.findBlogById(req.params.id);
+    const getByIdBlog = yield query_repository_1.queryRepository.findBlogById(req.params.id);
     if (!getByIdBlog) {
         res.sendStatus(404);
         return;
@@ -34,7 +34,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     return;
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield query_db_repository_1.queryDbRepository.searchPostByBlogId(req.params.blogId);
+    const getByIdPost = yield query_repository_1.queryRepository.searchPostByBlogId(req.params.blogId);
     return getByIdPost === null || []
         ? res.sendStatus(404)
         : res.send(getByIdPost);
