@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {postsService} from "../domains/posts-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
 import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
-import {BlogPostInputModel, postInputModel} from "../models/modelsPosts/postInputModel";
+import {postInputModel} from "../models/modelsPosts/postInputModel";
 import {postViewModel} from "../models/modelsPosts/postViewModel";
 import {checksContent, checksBlogId, checksTitle, checksShortDescription} from "../middlewares/validation-inputBody/check-bodyPost";
 import {checkForErrors} from "../middlewares/check-for-errors";
@@ -22,13 +22,6 @@ postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })
-postsRouter.get('/blogs/:blogId', async (req: RequestParamsId<{ blogId: string }>,
-                                         res: ResponseViewBody<postViewModel[]>) => {
-    const getByIdPost = await queryDbRepository.searchBlogIdForPost(req.params.blogId)
-    return getByIdPost === null
-        ? res.sendStatus(404)
-        : res.send(getByIdPost)
-})
 postsRouter.post('/',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
     async (req: RequestInputBody<postInputModel>,
@@ -37,20 +30,6 @@ postsRouter.post('/',
         const createdNewPost = await postsService.createPost
         (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
 
-        res.status(201).send(createdNewPost)
-        return;
-    })
-postsRouter.post('/blogs/:blogId',
-    guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
-    async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
-           res: ResponseViewBody<postViewModel>) => {
-        const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
-        if (!validatorBlogIdForCreatePost) {
-            res.sendStatus(404)
-            return;
-        }
-        const createdNewPost = await postsService.createPost
-        (req.body.title, req.body.shortDescription, req.body.content, req.params.blogId)
         res.status(201).send(createdNewPost)
         return;
     })

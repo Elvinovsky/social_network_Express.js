@@ -28,24 +28,8 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
         ? res.sendStatus(404)
         : res.send(getByIdPost);
 }));
-exports.postsRouter.get('/blogs/:blogId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield query_db_repository_1.queryDbRepository.searchBlogIdForPost(req.params.blogId);
-    return getByIdPost === null
-        ? res.sendStatus(404)
-        : res.send(getByIdPost);
-}));
 exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdNewPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
-    res.status(201).send(createdNewPost);
-    return;
-}));
-exports.postsRouter.post('/blogs/:blogId', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const validatorBlogIdForCreatePost = yield posts_service_1.postsService.searchBlogIdForPost(req.params.blogId);
-    if (!validatorBlogIdForCreatePost) {
-        res.sendStatus(404);
-        return;
-    }
-    const createdNewPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId);
     res.status(201).send(createdNewPost);
     return;
 }));

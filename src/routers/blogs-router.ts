@@ -7,6 +7,10 @@ import {blogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {checkForErrors} from "../middlewares/check-for-errors";
 import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../middlewares/validation-inputBody/check-bodyBlog";
 import {queryDbRepository} from "../repositories/db/query-db-repository";
+import {checksContent, checksShortDescription, checksTitle} from "../middlewares/validation-inputBody/check-bodyPost";
+import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
+import {postViewModel} from "../models/modelsPosts/postViewModel";
+import {postsService} from "../domains/posts-service";
 
 export const blogsRouter = Router ()
 
@@ -26,6 +30,13 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     res.send(getByIdBlog)
     return;
 })
+blogsRouter.get('/:blogId/posts', async (req: RequestParamsId<{ blogId: string }>,
+                                         res: ResponseViewBody<postViewModel[]>) => {
+    const getByIdPost = await queryDbRepository.searchBlogIdForPost(req.params.blogId)
+    return getByIdPost === null
+        ? res.sendStatus(404)
+        : res.send(getByIdPost)
+})
 blogsRouter.post('/',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
      checkInputDescription, checkForErrors,
@@ -36,6 +47,20 @@ blogsRouter.post('/',
             .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
         res.status(201).send(createdBlog)
+        return;
+    })
+blogsRouter.post('/:blogId/posts',
+    guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
+    async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
+           res: ResponseViewBody<postViewModel>) => {
+        const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
+        if (!validatorBlogIdForCreatePost) {
+            res.sendStatus(404)
+            return;
+        }
+        const createdNewPost = await postsService.createPost
+        (req.body.title, req.body.shortDescription, req.body.content, req.params.blogId)
+        res.status(201).send(createdNewPost)
         return;
     })
 blogsRouter.post('/',
