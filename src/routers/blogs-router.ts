@@ -32,8 +32,8 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
 })
 blogsRouter.get('/:blogId/posts', async (req: RequestParamsId<{ blogId: string }>,
                                          res: ResponseViewBody<postViewModel[]>) => {
-    const getByIdPost = await queryDbRepository.searchBlogIdForPost(req.params.blogId)
-    return getByIdPost === null
+    const getByIdPost = await queryDbRepository.searchPostByBlogId(req.params.blogId)
+    return getByIdPost === null  || []
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })

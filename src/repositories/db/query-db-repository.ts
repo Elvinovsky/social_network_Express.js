@@ -14,7 +14,7 @@ export const queryDbRepository = {
     async findBlogById(id: string): Promise <blogViewModel | null> {
         return  await blogsCollection.findOne({id}, {projection:{ _id: 0 }})
     },
-    async searchBlogIdForPost(blogId: string):Promise <postViewModel[] | null > {
+    async searchPostByBlogId(blogId: string):Promise<postViewModel[] | null> {
         return  await postsCollection.find({blogId: blogId}).toArray()
     },
     async returnOfAllPosts(): Promise<postViewModel[]> {

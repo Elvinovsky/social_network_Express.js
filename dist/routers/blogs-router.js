@@ -34,8 +34,8 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     return;
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield query_db_repository_1.queryDbRepository.searchBlogIdForPost(req.params.blogId);
-    return getByIdPost === null
+    const getByIdPost = yield query_db_repository_1.queryDbRepository.searchPostByBlogId(req.params.blogId);
+    return getByIdPost === null || []
         ? res.sendStatus(404)
         : res.send(getByIdPost);
 }));

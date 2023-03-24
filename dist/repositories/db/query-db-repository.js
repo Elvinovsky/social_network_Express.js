@@ -24,7 +24,7 @@ exports.queryDbRepository = {
             return yield runDB_1.blogsCollection.findOne({ id }, { projection: { _id: 0 } });
         });
     },
-    searchBlogIdForPost(blogId) {
+    searchPostByBlogId(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield runDB_1.postsCollection.find({ blogId: blogId }).toArray();
         });
