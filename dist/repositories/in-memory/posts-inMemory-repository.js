@@ -74,7 +74,7 @@ exports.postsRepository = {
         });
     },
     // поиск и удаление поста по ID.
-    PostByIdDelete(id) {
+    postByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const index = in_memory_1.inMemory.allBlogs.findIndex(b => b.id === id);
             if (index > -1) {

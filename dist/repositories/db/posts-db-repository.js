@@ -15,75 +15,54 @@ exports.postsRepository = {
     // тестовое удаление базы данных Постов
     testingDeleteAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('posts').deleteMany({});
+            return yield runDB_1.postsCollection.deleteMany({});
         });
     },
     // все существующие посты.
     returnOfAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.client.db('db').collection('posts').find({}, { projection: { _id: 0 } }).toArray();
-        });
-    },
-    //создание и добавление нового поста в базу данных.
-    addNewPost(title, shortDescription, content, blogId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const outputBlogName = this.searchBlogIdForPost.name;
-            const createPost = {
-                id: (+(new Date())).toString(),
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                blogId: blogId,
-                blogName: outputBlogName,
-                createdAt: new Date().toISOString()
-            };
-            yield runDB_1.client.db('db').collection('posts').insertOne(createPost);
-            return {
-                id: createPost.id,
-                title: createPost.title,
-                shortDescription: createPost.shortDescription,
-                content: createPost.content,
-                blogId: createPost.blogId,
-                blogName: createPost.blogName,
-                createdAt: createPost.createdAt
-            };
+            return yield runDB_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
         });
     },
     //поиск поста по ID.
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield runDB_1.client.db('db').collection('posts').findOne({ id }, { projection: { _id: 0 } });
-            if (post) {
-                return post;
-            }
-            else {
-                return undefined;
-            }
+            return yield runDB_1.postsCollection.findOne({ id }, { projection: { _id: 0 } });
+        });
+    },
+    //создание и добавление нового поста в базу данных.
+    addNewPost(newPost) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield runDB_1.postsCollection.insertOne(newPost);
+            return {
+                id: newPost.id,
+                title: newPost.title,
+                shortDescription: newPost.shortDescription,
+                content: newPost.content,
+                blogId: newPost.blogId,
+                blogName: newPost.blogName,
+                createdAt: newPost.createdAt
+            };
         });
     },
     // обновление поста по ID.
     updatePostById(id, title, shortDescription, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateResult = yield runDB_1.client.db('db').collection('posts').updateOne({ id }, { $set: { title, shortDescription, content } });
+            const updateResult = yield runDB_1.postsCollection.updateOne({ id }, { $set: { title, shortDescription, content } });
             return updateResult.matchedCount === 1;
         });
     },
     //поиск ID блога для поста.
     searchBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogIdForPost = yield runDB_1.client.db('db').collection('blogs').findOne({ id: blogId });
-            if (blogIdForPost) {
-                return blogIdForPost;
-            }
-            else {
-                return undefined;
-            }
+            const blogIdForPost = yield runDB_1.blogsCollection.findOne({ id: blogId });
+            return blogIdForPost ? blogIdForPost : null;
         });
     },
     // поиск и удаление поста по ID.
-    PostByIdDelete(id) {
+    postByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.client.db('db').collection('posts').deleteOne({ id });
+            const deleteResult = yield runDB_1.postsCollection.deleteOne({ id });
             return deleteResult.deletedCount === 1;
         });
     }

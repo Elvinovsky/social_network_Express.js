@@ -44,7 +44,7 @@ postsRouter.post('/blogs/:blogId',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
            res: ResponseViewBody<postViewModel>) => {
-        const validatorBlogIdForCreatePost = await postsService.findPostById(req.params.blogId)
+        const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
         if (!validatorBlogIdForCreatePost) {
             res.sendStatus(404)
             return;

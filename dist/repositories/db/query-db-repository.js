@@ -9,47 +9,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepository = void 0;
+exports.queryDbRepository = void 0;
 const runDB_1 = require("../../database/runDB");
-exports.blogsRepository = {
-    //тестовое удаление базы данных о блогах.
-    testingDeleteAllBlogs() {
+exports.queryDbRepository = {
+    //все существующие блоги.
+    returnOfAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.blogsCollection.deleteMany({});
+            return yield runDB_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
         });
     },
-    //поиск блога по ID.
+    //поиск и возврат блога по ID.
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield runDB_1.blogsCollection.findOne({ id }, { projection: { _id: 0 } });
         });
     },
-    //создание и добавление нового блога.
-    addNewBlog(createBlog) {
+    searchBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield runDB_1.blogsCollection.insertOne(createBlog);
-            return {
-                id: createBlog.id,
-                name: createBlog.name,
-                description: createBlog.description,
-                websiteUrl: createBlog.websiteUrl,
-                createdAt: createBlog.createdAt,
-                isMembership: createBlog.isMembership
-            };
+            return yield runDB_1.postsCollection.find({ id: blogId }).toArray();
         });
     },
-    //обновление блога по айди.
-    updateBlogById(id, name, description, websiteUrl) {
+    returnOfAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield runDB_1.blogsCollection.updateOne({ id }, { $set: { name, description, websiteUrl } });
-            return result.matchedCount === 1;
+            return yield runDB_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
         });
     },
-    //поиск блога по ID для удаления.
-    searchBlogByIdDelete(id) {
+    //поиск поста по ID.
+    findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.blogsCollection.deleteOne({ id });
-            return deleteResult.deletedCount === 1;
+            return yield runDB_1.postsCollection.findOne({ id }, { projection: { _id: 0 } });
         });
-    }
+    },
 };

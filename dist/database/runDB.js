@@ -32,16 +32,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDb = exports.client = void 0;
+exports.runDb = exports.postsCollection = exports.blogsCollection = exports.client = void 0;
 const dotenv = __importStar(require("dotenv"));
 const mongodb_1 = require("mongodb");
 dotenv.config();
 const mongoURI = process.env.MONGO_URL;
 if (!mongoURI) {
-    throw Error('Don-don');
+    throw Error(`not found`);
 }
 console.log(process.env.MONGO_URL);
 exports.client = new mongodb_1.MongoClient(mongoURI);
+const db = exports.client.db('lesson');
+exports.blogsCollection = db.collection('blogs');
+exports.postsCollection = db.collection('posts');
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
