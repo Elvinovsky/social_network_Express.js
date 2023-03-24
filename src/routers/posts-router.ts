@@ -41,9 +41,14 @@ postsRouter.post('/',
         return;
     })
 postsRouter.post('/blogs/:blogId',
-    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
+    guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
            res: ResponseViewBody<postViewModel>) => {
+        const validatorBlogIdForCreatePost = await postsService.findPostById(req.params.blogId)
+        if (!validatorBlogIdForCreatePost) {
+            res.sendStatus(404)
+            return;
+        }
         const createdNewPost = await postsService.createPost
         (req.body.title, req.body.shortDescription, req.body.content, req.params.blogId)
         res.status(201).send(createdNewPost)
@@ -54,8 +59,8 @@ postsRouter.put('/:id',
     async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
            res: ResponseViewBody<{}>) => {
 
-        const postByIdForUpdate = await postsService.findPostById(req.params.id)
-        if (!postByIdForUpdate) {
+        const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)
+        if (!validatorPostByIdForUpdate) {
             res.sendStatus(404)
             return;
         }
