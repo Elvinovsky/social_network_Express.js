@@ -20,7 +20,7 @@ const runDB_1 = require("./database/runDB");
 const body_parser_1 = __importDefault(require("body-parser"));
 const jsonBodyMiddleware = (0, body_parser_1.default)();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3070;
+const port = process.env.PORT || 3499;
 app.use(jsonBodyMiddleware);
 app.use('/posts', posts_router_1.postsRouter);
 app.use('/blogs', blogs_router_1.blogsRouter);

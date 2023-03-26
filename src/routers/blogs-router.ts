@@ -17,14 +17,17 @@ import {checksContent, checksShortDescription, checksTitle} from "../middlewares
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
-import {QueryParams} from "../models/query-params";
-
 
 
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/', async (req: RequestQuery<QueryParams & { searchNameTerm: string }>, res: Response) => {
+blogsRouter.get('/', async (req: RequestQuery< {
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string,
+    sortDirection: string,
+    searchNameTerm: string }>, res: Response) => {
 
     const getAllBlogs = await queryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
@@ -45,7 +48,8 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     res.send(getByIdBlog)
     return;
 })
-blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{ blogId: string }, QueryParams>,
+blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId: string },
+                                             { pageNumber: number, pageSize: number, sortBy: string, sortDirection: string} >,
                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,

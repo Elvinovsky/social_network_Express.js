@@ -13,11 +13,11 @@ import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {checksContent, checksBlogId, checksTitle, checksShortDescription} from "../middlewares/body-validator/check-bodyPost";
 import {checkForErrors} from "../middlewares/check-for-errors";
 import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
-import {QueryParams} from "../models/query-params";
 
 export const postsRouter = Router()
 
-postsRouter.get('/', async (req: RequestQuery<QueryParams & { searchTitleTerm: string }>,
+postsRouter.get('/', async (req: RequestQuery<
+    { pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTitleTerm: string }>,
                                           res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
     const getAllPosts: PaginatorOutputPosts<PostViewModel[]> = await queryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
