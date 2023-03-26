@@ -18,7 +18,7 @@ const check_for_errors_1 = require("../middlewares/check-for-errors");
 const query_repository_1 = require("../repositories/query-repository");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield query_repository_1.queryRepository.returnOfAllPosts();
+    const getAllPosts = yield query_repository_1.queryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
     res.send(getAllPosts);
     return;
 }));

@@ -1,4 +1,4 @@
-export type blogInputModel = {
+export type BlogInputModel = {
     /**
      * name input Blog {maxLength: 15}
      */

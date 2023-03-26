@@ -18,12 +18,6 @@ exports.postsRepository = {
             return yield runDB_1.postsCollection.deleteMany({});
         });
     },
-    // все существующие посты.
-    returnOfAllPosts() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
-        });
-    },
     //поиск поста по ID.
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {

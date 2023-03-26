@@ -1,17 +1,30 @@
-import {Request, Response, Router} from "express";
+import {Response, Router} from "express";
 import {postsService} from "../domains/posts-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
-import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
-import {postInputModel} from "../models/modelsPosts/postInputModel";
+import {
+    RequestInputBody,
+    RequestParamsAndInputBody,
+    ResponseViewBody,
+    RequestParamsId,
+    RequestQuery
+} from "../req-res-types";
+import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {checksContent, checksBlogId, checksTitle, checksShortDescription} from "../middlewares/body-validator/check-bodyPost";
 import {checkForErrors} from "../middlewares/check-for-errors";
-import {queryRepository} from "../repositories/query-repository";
+import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
+import {QueryParams} from "../models/query-params";
 
 export const postsRouter = Router()
 
-postsRouter.get('/', async (req: Request<{},{},{},{title: string | null}>, res: ResponseViewBody<PostViewModel[]>) => {
-    const getAllPosts: PostViewModel[] = await queryRepository.returnOfAllPosts(req.query.title)
+postsRouter.get('/', async (req: RequestQuery<QueryParams & { searchTitleTerm: string }>,
+                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> = await queryRepository.returnOfAllPosts(
+        req.query.searchTitleTerm,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection)
     res.send(getAllPosts)
     return;
 })
@@ -24,7 +37,7 @@ postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
 })
 postsRouter.post('/',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
-    async (req: RequestInputBody<postInputModel>,
+    async (req: RequestInputBody<PostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
 
         const createdNewPost = await postsService.createPost
@@ -35,7 +48,7 @@ postsRouter.post('/',
     })
 postsRouter.put('/:id',
     guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
-    async (req: RequestParamsAndInputBody<{ id: string }, postInputModel>,
+    async (req: RequestParamsAndInputBody<{ id: string }, PostInputModel>,
            res: ResponseViewBody<{}>) => {
 
         const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)

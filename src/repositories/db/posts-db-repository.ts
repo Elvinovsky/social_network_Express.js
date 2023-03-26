@@ -9,10 +9,6 @@ export const postsRepository = {
     async testingDeleteAllPosts(): Promise<DeleteResult> {
         return await postsCollection.deleteMany({})
     },
-    // все существующие посты.
-    async returnOfAllPosts(): Promise<PostViewModel[]> {
-        return await postsCollection.find({}, {projection:{ _id: 0 }}).toArray()
-    },
     //поиск поста по ID.
     async findPostById(id: string): Promise <PostViewModel | null> {
         return  await postsCollection.findOne({id}, {projection: {_id: 0}})

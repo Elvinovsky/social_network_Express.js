@@ -1,25 +1,37 @@
-import {Request, Response, Router} from "express";
+import {Response, Router} from "express";
 import {blogsService} from "../domains/blogs-service";
 import {guardAuthentication} from "../middlewares/guard-authentication";
-import {RequestInputBody, RequestParamsAndInputBody, ResponseViewBody, RequestParamsId} from "../req-res-types";
-import {blogInputModel} from "../models/modelsBlogs/blogInputModel";
+import {
+    RequestInputBody,
+    RequestParamsAndInputBody,
+    ResponseViewBody,
+    RequestParamsId,
+    RequestParamsAndInputQuery, RequestQuery
+} from "../req-res-types";
+import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {checkForErrors} from "../middlewares/check-for-errors";
 import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../middlewares/body-validator/check-bodyBlog";
-import {queryRepository} from "../repositories/query-repository";
+import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
 import {checksContent, checksShortDescription, checksTitle} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
+import {QueryParams} from "../models/query-params";
 
 
 
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/', async (req: Request<{},{},{},{name: string | null}>, res: Response) => {
+blogsRouter.get('/', async (req: RequestQuery<QueryParams & { searchNameTerm: string }>, res: Response) => {
 
-    const getAllBlogs = await queryRepository.returnOfAllBlogs(req.query.name)
+    const getAllBlogs = await queryRepository.returnOfAllBlogs(
+        req.query.searchNameTerm,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection)
     res.send(getAllBlogs)
     return;
 })
@@ -33,21 +45,27 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     res.send(getByIdBlog)
     return;
 })
-blogsRouter.get('/:blogId/posts', async (req: RequestParamsId<{ blogId: string }>,
-                                         res: ResponseViewBody<PostViewModel[]>) => {
-    const getByIdPost = await queryRepository.searchPostByBlogId(req.params.blogId)
-    return getByIdPost === null  || []
+blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{ blogId: string }, QueryParams>,
+                                         res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+    const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
+        req.params.blogId,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection,)
+
+    return getByBlogIdPosts === null  || []
         ? res.sendStatus(404)
-        : res.send(getByIdPost)
+        : res.send(getByBlogIdPosts)
 })
 blogsRouter.post('/',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
      checkInputDescription, checkForErrors,
-    async (req: RequestInputBody<blogInputModel>,
+    async (req: RequestInputBody<BlogInputModel>,
            res: ResponseViewBody<BlogViewModel>) => {
 
         const createdBlog = await blogsService
-            .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)
+            .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
         res.status(201).send(createdBlog)
         return;
@@ -69,11 +87,11 @@ blogsRouter.post('/:blogId/posts',
 blogsRouter.post('/',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
     checkInputDescription, checkForErrors,
-    async (req: RequestInputBody<blogInputModel>,
+    async (req: RequestInputBody<BlogInputModel>,
            res: ResponseViewBody<BlogViewModel>) => {
 
         const createdBlog = await blogsService
-            .CreateBlog(req.body.name, req.body.description, req.body.websiteUrl)
+            .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
         res.status(201).send(createdBlog)
         return;
@@ -81,7 +99,7 @@ blogsRouter.post('/',
 blogsRouter.put('/:id',
     guardAuthentication, checkInputName, checkInputWebsiteUrl,
      checkInputDescription, checkForErrors,
-    async (req: RequestParamsAndInputBody<{ id: string }, blogInputModel>,
+    async (req: RequestParamsAndInputBody<{ id: string }, BlogInputModel>,
            res: Response) => {
 
         const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)

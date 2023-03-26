@@ -6,7 +6,7 @@ export const blogsService = {
     async findBlogById(id: string): Promise <BlogViewModel | null> {
         return blogsRepository.findBlogById(id)
     },
-    async CreateBlog(name: string, description: string, websiteUrl: string,): Promise <BlogViewModel> {
+    async createBlog(name: string, description: string, websiteUrl: string,): Promise <BlogViewModel> {
 
         const createBlog: BlogViewModel = {
             id: (+(new Date())).toString(),

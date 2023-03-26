@@ -1,4 +1,4 @@
-export type postInputModel = {
+export type PostInputModel = {
     /**
      * title input  model {maxLength: 30 }
      */

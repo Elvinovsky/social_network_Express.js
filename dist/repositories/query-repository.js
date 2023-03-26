@@ -11,31 +11,97 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.queryRepository = void 0;
 const runDB_1 = require("../database/runDB");
+const blogMapping_1 = require("../functions/blogMapping");
+const postMapping_1 = require("../functions/postMapping");
+const blockMongo_Id = { projection: { _id: 0 } };
 exports.queryRepository = {
-    returnOfAllBlogs(name) {
+    returnOfAllBlogs(searchNameTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return name ? yield runDB_1.blogsCollection.find({ name: { $regex: name } }, { projection: { _id: 0 } }).toArray()
-                : yield runDB_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
+            const mongoPageNumber = pageNumber || 1;
+            const mongoPageSize = pageSize || 10;
+            const mongoSortBy = sortBy || 'createdAt';
+            const mongoSortDirection = sortDirection === 'asc' ? 1 : -1;
+            const mongoBlogsToSkip = (mongoPageNumber - 1) * mongoPageSize;
+            const numberOfFiles = yield runDB_1.postsCollection.countDocuments();
+            const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
+            const foundBlogsName = yield runDB_1.blogsCollection
+                .find({ name: { $regex: searchNameTerm, $options: "i" } }, blockMongo_Id)
+                .sort({ [mongoSortBy]: mongoSortDirection })
+                .skip(mongoBlogsToSkip)
+                .limit(mongoPageSize).toArray();
+            const foundBlogs = yield runDB_1.blogsCollection
+                .find({}, blockMongo_Id)
+                .sort({ [mongoSortBy]: mongoSortDirection })
+                .skip(mongoBlogsToSkip)
+                .limit(mongoPageSize).toArray();
+            return {
+                pagesCount: pagesCountOfPosts,
+                page: mongoPageNumber,
+                pageSize: mongoPageSize,
+                totalCount: numberOfFiles,
+                items: searchNameTerm ? (0, blogMapping_1.blogMapping)(foundBlogsName) : (0, blogMapping_1.blogMapping)(foundBlogs)
+            };
         });
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.blogsCollection.findOne({ id }, { projection: { _id: 0 } });
+            return yield runDB_1.blogsCollection.findOne({ id }, blockMongo_Id);
         });
     },
-    searchPostByBlogId(blogId) {
+    searchPostByBlogId(blogId, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.find({ blogId: blogId }).toArray();
+            const mongoPageNumber = pageNumber || 1;
+            const mongoPageSize = pageSize || 10;
+            const mongoSortBy = sortBy || 'createdAt';
+            const mongoSortDirection = sortDirection === 'asc' ? 1 : -1;
+            const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize;
+            const numberOfFiles = yield runDB_1.postsCollection.countDocuments({ blogId });
+            const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
+            const foundBlogs = yield runDB_1.postsCollection
+                .find({ blogId: blogId })
+                .sort({ [mongoSortBy]: mongoSortDirection })
+                .skip(mongoPostsToSkip)
+                .limit(mongoPageSize).toArray();
+            return {
+                pagesCount: pagesCountOfPosts,
+                page: mongoPageNumber,
+                pageSize: mongoPageSize,
+                totalCount: numberOfFiles,
+                items: (0, postMapping_1.postMapping)(foundBlogs)
+            };
         });
     },
-    returnOfAllPosts() {
+    returnOfAllPosts(searchTitleTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
+            const mongoPageNumber = pageNumber || 1;
+            const mongoPageSize = pageSize || 10;
+            const mongoSortBy = sortBy || 'createdAt';
+            const mongoSortDirection = sortDirection === 'asc' ? 1 : -1;
+            const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize;
+            const numberOfFiles = yield runDB_1.postsCollection.countDocuments(searchTitleTerm ? { searchTitleTerm } : {});
+            const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
+            const foundPostsTitle = yield runDB_1.postsCollection
+                .find({ title: { $regex: searchTitleTerm, $options: "i" } }, blockMongo_Id)
+                .sort({ [mongoSortBy]: mongoSortDirection })
+                .skip(mongoPostsToSkip)
+                .limit(mongoPageSize).toArray();
+            const foundPosts = yield runDB_1.postsCollection
+                .find({}, blockMongo_Id)
+                .sort({ [mongoSortBy]: mongoSortDirection })
+                .skip(mongoPostsToSkip)
+                .limit(mongoPageSize).toArray();
+            return {
+                pagesCount: pagesCountOfPosts,
+                page: mongoPageNumber,
+                pageSize: mongoPageSize,
+                totalCount: numberOfFiles,
+                items: searchTitleTerm ? (0, postMapping_1.postMapping)(foundPostsTitle) : (0, postMapping_1.postMapping)(foundPosts)
+            };
         });
     },
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.findOne({ id }, { projection: { _id: 0 } });
+            return yield runDB_1.postsCollection.findOne({ id }, blockMongo_Id);
         });
     },
 };

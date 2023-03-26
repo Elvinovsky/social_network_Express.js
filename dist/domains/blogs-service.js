@@ -17,7 +17,7 @@ exports.blogsService = {
             return blogs_db_repository_1.blogsRepository.findBlogById(id);
         });
     },
-    CreateBlog(name, description, websiteUrl) {
+    createBlog(name, description, websiteUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             const createBlog = {
                 id: (+(new Date())).toString(),
