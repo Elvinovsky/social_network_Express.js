@@ -71,7 +71,12 @@ export const queryRepository = {
                              pageNumber: number | null,
                              pageSize: number | null,
                              sortBy: string | null,
-                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]>> {
+                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
+        const blogIdForPost = await postsCollection.findOne({blogId: blogId})
+        if (!blogIdForPost){
+            return null
+        }
+
         const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
@@ -101,7 +106,7 @@ export const queryRepository = {
 
         const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
-        const mongoSortBy = sortBy? sortBy : 'createdAt'
+        const mongoSortBy = sortBy? sortBy : 'createdAt' // todo
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {title: {$regex: searchTitleTerm, $options: "i"}} : {})
