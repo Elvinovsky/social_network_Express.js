@@ -32,8 +32,8 @@ export const queryRepository = {
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
         const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
-        const numberOfFiles = await blogsCollection.countDocuments(searchNameTerm !== null ? {name: {$regex: searchNameTerm, $options: "i"}} : {})
-        const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
+        const numberOfFiles = await blogsCollection.countDocuments(searchNameTerm? {name: {$regex: searchNameTerm, $options: "i"}} : {})
+        const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize)
 
 
         if(searchNameTerm){
@@ -43,7 +43,7 @@ export const queryRepository = {
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
             return {
-                pagesCount: pagesCountOfPosts,
+                pagesCount: pagesCountOfBlogs,
                 page: mongoPageNumber,
                 pageSize: mongoPageSize,
                 totalCount: numberOfFiles,
@@ -57,7 +57,7 @@ export const queryRepository = {
             .skip(mongoBlogsToSkip)
             .limit(mongoPageSize).toArray()
         return {
-            pagesCount: pagesCountOfPosts,
+            pagesCount: pagesCountOfBlogs,
             page: mongoPageNumber,
             pageSize: mongoPageSize,
             totalCount: numberOfFiles,
