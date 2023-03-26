@@ -52,7 +52,7 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     return;
 })
 blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId: string },
-                                             { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null} >,
+                                             { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string} >,
                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,
@@ -61,7 +61,7 @@ blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId
         req.query.sortBy,
         req.query.sortDirection,)
 
-    return getByBlogIdPosts === null
+    return getByBlogIdPosts === null || []
         ? res.sendStatus(404)
         : res.send(getByBlogIdPosts)
 })

@@ -34,14 +34,14 @@ export const queryRepository = {
         const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
         const numberOfFiles = await postsCollection
             .countDocuments(searchNameTerm
-                                 ? {name: {$regex: new RegExp(searchNameTerm), $options: "i"}}
+                                 ? {name: {$regex: searchNameTerm, $options: "i"}}
                                  : {})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
 
         if(searchNameTerm){
             const foundBlogsName: BlogViewModel[] = await blogsCollection
-                .find({name: {$regex: new RegExp(searchNameTerm), $options: "i"}}, blockMongo_Id)
+                .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
                 .sort({[mongoSortBy]: mongoSortDirection})
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
@@ -108,7 +108,7 @@ export const queryRepository = {
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {title: {$regex: searchTitleTerm, $options: "i"}} : {})
-        const pagesCountOfPosts = Math.ceil(numberOfFiles / +mongoPageSize)
+        const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
        if(searchTitleTerm) {
             const foundPostsTitle: PostViewModel[] = await postsCollection
