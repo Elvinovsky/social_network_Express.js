@@ -27,9 +27,9 @@ export const queryRepository = {
                            sortBy?: string,
                            sortDirection?: string,): Promise<PaginatorOutputBlogs<BlogViewModel[]>> {
 
-        const mongoPageNumber = pageNumber || 1
-        const mongoPageSize = pageSize || 10
-        const mongoSortBy = sortBy || 'createdAt'
+        const mongoPageNumber = pageNumber? pageNumber : 1
+        const mongoPageSize = pageSize? pageSize : 10
+        const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
         const mongoBlogsToSkip = (mongoPageNumber - 1) * mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments()
@@ -62,10 +62,10 @@ export const queryRepository = {
                              pageSize?: number,
                              sortBy?: string,
                              sortDirection?: string,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
-        const mongoPageNumber = pageNumber || 1
-        const mongoPageSize = pageSize || 10
-        const mongoSortBy = sortBy || 'createdAt'
-        const mongoSortDirection = sortDirection === 'asc'? 1 : -1
+        const mongoPageNumber = pageNumber? pageNumber : 1
+        const mongoPageSize = pageSize? pageSize : 10
+        const mongoSortBy = sortBy? sortBy : 'createdAt'
+        const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments({blogId})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
@@ -89,10 +89,10 @@ export const queryRepository = {
             sortBy?: string,
             sortDirection?: string,): Promise<PaginatorOutputPosts<PostViewModel[]>> {
 
-        const mongoPageNumber = pageNumber || 1
-        const mongoPageSize = pageSize || 10
-        const mongoSortBy = sortBy || 'createdAt'
-        const mongoSortDirection = sortDirection === 'asc'? 1 : -1
+        const mongoPageNumber = pageNumber? pageNumber : 1
+        const mongoPageSize = pageSize? pageSize : 10
+        const mongoSortBy = sortBy? sortBy : 'createdAt'
+        const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {searchTitleTerm} : {})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
