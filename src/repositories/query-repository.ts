@@ -25,7 +25,7 @@ export const queryRepository = {
                            pageNumber: number | null,
                            pageSize: number | null,
                            sortBy: string | null,
-                           sortDirection: string | null,): Promise<PaginatorOutputBlogs<BlogViewModel[]>> {
+                           sortDirection: string | null): Promise<PaginatorOutputBlogs<BlogViewModel[]> | null> {
 
         const mongoPageNumber = pageNumber? pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
@@ -41,10 +41,14 @@ export const queryRepository = {
 
         if(searchNameTerm){
             const foundBlogsName: BlogViewModel[] = await blogsCollection
-                .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
+                .find({name: {$regex: new RegExp(searchNameTerm), $options: "i"}}, blockMongo_Id)
                 .sort({[mongoSortBy]: mongoSortDirection})
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
+
+            if (foundBlogsName.length === 0){
+                return null
+            }
             return {
                 pagesCount: pagesCountOfPosts,
                 page: mongoPageNumber,
@@ -54,7 +58,7 @@ export const queryRepository = {
             }
         }
 
-        const foundBlogs= await blogsCollection
+        const foundBlogs = await blogsCollection
             .find({},blockMongo_Id)
             .sort({[mongoSortBy]: mongoSortDirection})
             .skip(mongoBlogsToSkip)
@@ -72,62 +76,77 @@ export const queryRepository = {
        return await blogsCollection.findOne({id}, blockMongo_Id)
     },
     async searchPostByBlogId(blogId: string,
-                             pageNumber?: number,
-                             pageSize?: number,
-                             sortBy?: string,
-                             sortDirection?: string,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
+                             pageNumber: number | null,
+                             pageSize: number | null,
+                             sortBy: string | null,
+                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
         const mongoPageNumber = pageNumber? pageNumber : 1
         const mongoPageSize = pageSize? pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
-        const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize
+        const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
         const numberOfFiles = await postsCollection.countDocuments({blogId})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
+
         const foundBlogs: PostViewModel[] = await postsCollection
             .find({blogId: blogId})
             .sort({[mongoSortBy]: mongoSortDirection})
             .skip(mongoPostsToSkip)
             .limit(mongoPageSize).toArray()
 
+        if (foundBlogs.length === 0){
+            return null
+        }
         return {
             pagesCount: pagesCountOfPosts,
-            page: mongoPageNumber,
+                page: mongoPageNumber,
             pageSize: mongoPageSize,
             totalCount: numberOfFiles,
             items: postMapping(foundBlogs)
         }
     },
-    async returnOfAllPosts(searchTitleTerm?: string,
-            pageNumber?: number,
-            pageSize?: number,
-            sortBy?: string,
-            sortDirection?: string,): Promise<PaginatorOutputPosts<PostViewModel[]>> {
+    async returnOfAllPosts(searchTitleTerm: string | null,
+                           pageNumber: number | null,
+                           pageSize: number | null,
+                           sortBy: string | null,
+                           sortDirection: string | null,): Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
 
         const mongoPageNumber = pageNumber? pageNumber : 1
         const mongoPageSize = pageSize? pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
-        const mongoPostsToSkip = (mongoPageNumber - 1) * mongoPageSize
-        const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {searchTitleTerm} : {})
+        const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
+        const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {title: {$regex: searchTitleTerm, $options: "i"}} : {})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
-        const foundPostsTitle: PostViewModel[] = await postsCollection
-            .find({title: {$regex: searchTitleTerm, $options: "i"}}, blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection})
-            .skip(mongoPostsToSkip)
-            .limit(mongoPageSize).toArray()
-        const foundPosts: PostViewModel[] = await postsCollection
+       if(searchTitleTerm) {
+            const foundPostsTitle: PostViewModel[] = await postsCollection
+                .find({title: {$regex: searchTitleTerm, $options: "i"}}, blockMongo_Id)
+                .sort({[mongoSortBy]: mongoSortDirection})
+                .skip(mongoPostsToSkip)
+                .limit(mongoPageSize).toArray()
+           if (foundPostsTitle.length === 0) {
+               return null
+           }
+            return {
+               pagesCount: pagesCountOfPosts,
+               page: mongoPageNumber,
+               pageSize: mongoPageSize,
+               totalCount: numberOfFiles,
+               items: postMapping(foundPostsTitle)
+           }
+        }
+       const foundPosts: PostViewModel[] = await postsCollection
             .find({},blockMongo_Id)
             .sort({[mongoSortBy]: mongoSortDirection})
             .skip(mongoPostsToSkip)
             .limit(mongoPageSize).toArray()
-
-        return {
+       return {
             pagesCount: pagesCountOfPosts,
             page: mongoPageNumber,
             pageSize: mongoPageSize,
             totalCount: numberOfFiles,
-            items: searchTitleTerm? postMapping(foundPostsTitle) : postMapping(foundPosts)
+            items: postMapping(foundPosts)
         }
     },
     async findPostById(id: string): Promise <PostViewModel | null> {

@@ -17,16 +17,18 @@ import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repos
 export const postsRouter = Router()
 
 postsRouter.get('/', async (req: RequestQuery<
-    { pageNumber: number, pageSize: number, sortBy: string, sortDirection: string, searchTitleTerm: string }>,
-                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
-    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> = await queryRepository.returnOfAllPosts(
+    { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
+                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]> | string>) => {
+    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         req.query.pageNumber,
         req.query.pageSize,
         req.query.sortBy,
         req.query.sortDirection)
-    res.send(getAllPosts)
-    return;
+
+    return getAllPosts === null
+        ? res.sendStatus(404).send("searchTitleTerm not found")
+        : res.send(getAllPosts)
 })
 postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
                                res: ResponseViewBody<PostViewModel>) => {

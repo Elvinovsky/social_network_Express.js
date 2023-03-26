@@ -35,8 +35,11 @@ blogsRouter.get('/', async (req: RequestQuery< {
         req.query.pageSize,
         req.query.sortBy,
         req.query.sortDirection)
-    res.send(getAllBlogs)
-    return;
+
+    return getAllBlogs === null
+        ? res.sendStatus(404).send("searchNameTerm not found")
+        : res.send(getAllBlogs)
+
 })
 blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
                                res: ResponseViewBody<BlogViewModel>) => {
@@ -49,7 +52,7 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     return;
 })
 blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId: string },
-                                             { pageNumber: number, pageSize: number, sortBy: string, sortDirection: string} >,
+                                             { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null} >,
                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,
@@ -58,7 +61,7 @@ blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId
         req.query.sortBy,
         req.query.sortDirection,)
 
-    return getByBlogIdPosts === null  || []
+    return getByBlogIdPosts === null
         ? res.sendStatus(404)
         : res.send(getByBlogIdPosts)
 })
