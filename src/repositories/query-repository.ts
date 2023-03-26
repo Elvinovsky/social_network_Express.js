@@ -28,11 +28,14 @@ export const queryRepository = {
                            sortDirection: string | null,): Promise<PaginatorOutputBlogs<BlogViewModel[]>> {
 
         const mongoPageNumber = pageNumber? pageNumber : 1
-        const mongoPageSize = pageSize? pageSize : 10
+        const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
-        const mongoBlogsToSkip = (mongoPageNumber - 1) * mongoPageSize
-        const numberOfFiles = await postsCollection.countDocuments(searchNameTerm? {searchNameTerm} : {})
+        const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
+        const numberOfFiles = await postsCollection
+            .countDocuments(searchNameTerm
+                                 ? {name: {$regex: new RegExp(searchNameTerm), $options: "i"}}
+                                 : {})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
 
