@@ -115,7 +115,7 @@ export const queryRepository = {
        if(searchTitleTerm) {
             const foundPostsTitle: PostViewModel[] = await postsCollection
                 .find({title: {$regex: searchTitleTerm, $options: "i"}}, blockMongo_Id)
-                .sort({[mongoSortBy]: mongoSortDirection, "createdAt": mongoSortDirection} )
+                .sort({[mongoSortBy]: mongoSortDirection, "createdAt": -1} )
                 .skip(mongoPostsToSkip)
                 .limit(+mongoPageSize).toArray()
             return {
