@@ -55,12 +55,6 @@ blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId
                                              { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string} >,
                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
 
-    const validatorBlogIdForPost = await postsService.searchBlogIdForPost(req.params.blogId)
-
-    if (!validatorBlogIdForPost) {
-        res.sendStatus(404)
-        return;
-    }
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,
         req.query.pageNumber,

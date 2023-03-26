@@ -72,8 +72,8 @@ export const queryRepository = {
                              pageSize: number | null,
                              sortBy: string | null,
                              sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]>> {
-        const mongoPageNumber = pageNumber? pageNumber : 1
-        const mongoPageSize = pageSize? pageSize : 10
+        const mongoPageNumber = pageNumber? +pageNumber : 1
+        const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
