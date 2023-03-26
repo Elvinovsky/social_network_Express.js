@@ -39,7 +39,7 @@ export const queryRepository = {
         if(searchNameTerm){
             const foundBlogsName: BlogViewModel[] = await blogsCollection
                 .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
-                .sort({[mongoSortBy]: mongoSortDirection, created: mongoSortDirection})
+                .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
             return {
@@ -53,7 +53,7 @@ export const queryRepository = {
 
         const foundBlogs = await blogsCollection
             .find({},blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection, created: mongoSortDirection})
+            .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
             .skip(mongoBlogsToSkip)
             .limit(mongoPageSize).toArray()
         return {
@@ -87,7 +87,7 @@ export const queryRepository = {
 
         const foundBlogs: PostViewModel[] = await postsCollection
             .find({blogId: blogId})
-            .sort({[mongoSortBy]: mongoSortDirection, created: mongoSortDirection})
+            .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
             .skip(mongoPostsToSkip)
             .limit(mongoPageSize).toArray()
         return {
@@ -128,7 +128,7 @@ export const queryRepository = {
         }
        const foundPosts: PostViewModel[] = await postsCollection
             .find({},blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection, created: mongoSortDirection})
+            .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
             .skip(mongoPostsToSkip)
             .limit(mongoPageSize).toArray()
        return {
