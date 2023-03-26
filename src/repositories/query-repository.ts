@@ -45,10 +45,6 @@ export const queryRepository = {
                 .sort({[mongoSortBy]: mongoSortDirection})
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
-
-            if (foundBlogsName.length === 0){
-                return null
-            }
             return {
                 pagesCount: pagesCountOfPosts,
                 page: mongoPageNumber,
@@ -63,7 +59,6 @@ export const queryRepository = {
             .sort({[mongoSortBy]: mongoSortDirection})
             .skip(mongoBlogsToSkip)
             .limit(mongoPageSize).toArray()
-
         return {
             pagesCount: pagesCountOfPosts,
             page: mongoPageNumber,
@@ -93,10 +88,6 @@ export const queryRepository = {
             .sort({[mongoSortBy]: mongoSortDirection})
             .skip(mongoPostsToSkip)
             .limit(mongoPageSize).toArray()
-
-        if (foundBlogs.length === 0){
-            return null
-        }
         return {
             pagesCount: pagesCountOfPosts,
                 page: mongoPageNumber,
@@ -125,9 +116,6 @@ export const queryRepository = {
                 .sort({[mongoSortBy]: mongoSortDirection})
                 .skip(mongoPostsToSkip)
                 .limit(mongoPageSize).toArray()
-           if (foundPostsTitle.length === 0) {
-               return null
-           }
             return {
                pagesCount: pagesCountOfPosts,
                page: mongoPageNumber,
