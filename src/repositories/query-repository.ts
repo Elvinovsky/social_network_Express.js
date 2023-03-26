@@ -21,25 +21,36 @@ export type PaginatorOutputBlogs<BlogViewModel> = {
 const blockMongo_Id =  {projection:{ _id: 0 }}
 
 export const queryRepository = {
-    async returnOfAllBlogs(searchNameTerm?: string,
-                           pageNumber?: number,
-                           pageSize?: number,
-                           sortBy?: string,
-                           sortDirection?: string,): Promise<PaginatorOutputBlogs<BlogViewModel[]>> {
+    async returnOfAllBlogs(searchNameTerm: string  | null,
+                           pageNumber: number | null,
+                           pageSize: number | null,
+                           sortBy: string | null,
+                           sortDirection: string | null,): Promise<PaginatorOutputBlogs<BlogViewModel[]>> {
 
         const mongoPageNumber = pageNumber? pageNumber : 1
         const mongoPageSize = pageSize? pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
         const mongoBlogsToSkip = (mongoPageNumber - 1) * mongoPageSize
-        const numberOfFiles = await postsCollection.countDocuments()
+        const numberOfFiles = await postsCollection.countDocuments(searchNameTerm? {searchNameTerm} : {})
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
-        const foundBlogsName: BlogViewModel[] = await blogsCollection
-            .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection})
-            .skip(mongoBlogsToSkip)
-            .limit(mongoPageSize).toArray()
+
+        if(searchNameTerm){
+            const foundBlogsName: BlogViewModel[] = await blogsCollection
+                .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
+                .sort({[mongoSortBy]: mongoSortDirection})
+                .skip(mongoBlogsToSkip)
+                .limit(mongoPageSize).toArray()
+            return {
+                pagesCount: pagesCountOfPosts,
+                page: mongoPageNumber,
+                pageSize: mongoPageSize,
+                totalCount: numberOfFiles,
+                items: blogMapping(foundBlogsName)
+            }
+        }
+
         const foundBlogs= await blogsCollection
             .find({},blockMongo_Id)
             .sort({[mongoSortBy]: mongoSortDirection})
@@ -51,7 +62,7 @@ export const queryRepository = {
             page: mongoPageNumber,
             pageSize: mongoPageSize,
             totalCount: numberOfFiles,
-            items: searchNameTerm? blogMapping(foundBlogsName) : blogMapping(foundBlogs)
+            items: blogMapping(foundBlogs)
         }
     },
     async findBlogById(id: string): Promise <BlogViewModel | null> {

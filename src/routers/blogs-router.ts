@@ -23,11 +23,11 @@ export const blogsRouter = Router ()
 
 
 blogsRouter.get('/', async (req: RequestQuery< {
-    pageNumber?: number,
-    pageSize?: number,
-    sortBy?: string,
-    sortDirection?: string,
-    searchNameTerm?: string }>, res: Response) => {
+    pageNumber: number | null,
+    pageSize: number | null,
+    sortBy: string | null,
+    sortDirection: string | null,
+    searchNameTerm: string | null }>, res: Response) => {
 
     const getAllBlogs = await queryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
