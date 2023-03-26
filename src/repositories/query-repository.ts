@@ -74,7 +74,7 @@ export const queryRepository = {
                              pageNumber: number | null,
                              pageSize: number | null,
                              sortBy: string | null,
-                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
+                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]>> {
         const mongoPageNumber = pageNumber? pageNumber : 1
         const mongoPageSize = pageSize? pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
@@ -115,7 +115,7 @@ export const queryRepository = {
                 .find({title: {$regex: searchTitleTerm, $options: "i"}}, blockMongo_Id)
                 .sort({[mongoSortBy]: mongoSortDirection})
                 .skip(mongoPostsToSkip)
-                .limit(mongoPageSize).toArray()
+                .limit(+mongoPageSize).toArray()
             return {
                pagesCount: pagesCountOfPosts,
                page: mongoPageNumber,
