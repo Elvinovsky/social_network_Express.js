@@ -102,7 +102,7 @@ export const queryRepository = {
                            sortBy: string | null,
                            sortDirection: string | null,): Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
 
-        const mongoPageNumber = pageNumber? pageNumber : 1
+        const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
