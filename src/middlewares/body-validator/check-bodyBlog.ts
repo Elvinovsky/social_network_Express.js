@@ -26,12 +26,10 @@ const checkInputDescription =  body ( 'description')
     .withMessage("is not a string")
 
 
-export const validatorBlogInputBody = () => {
-    return {
+export const validatorBlogInputBody = [
         guardAuthentication,
         checkInputName,
         checkInputWebsiteUrl,
         checkInputDescription,
         checkForErrors
-    }
-}
+    ]

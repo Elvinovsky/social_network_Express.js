@@ -39,25 +39,21 @@ const checksBlogId =  body('blogId')
 
 
 
- export const validatorInputPostBody = () => {
-   return  {
+ export const validatorInputPostBody = [
        guardAuthentication,
        checksTitle,
        checksShortDescription,
        checksContent,
        checksBlogId,
        checkForErrors
-     }
- }
-export const validatorInputBlogPostBody = () => {
-    return {
+  ]
+export const validatorInputBlogPostBody = [
         guardAuthentication,
         checksTitle,
         checksShortDescription,
         checksContent,
         checkForErrors
-    }
-}
+   ]
 
 
 
