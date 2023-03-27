@@ -4,6 +4,7 @@ import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {blogMapping} from "../functions/blogMapping";
 import {postMapping} from "../functions/postMapping";
 
+
 export type PaginatorOutputPosts<PostViewModel> = {
     "pagesCount": number,
     "page": number,
@@ -76,7 +77,6 @@ export const queryRepository = {
         if (!blogIdForPost){
             return null
         }
-
         const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'

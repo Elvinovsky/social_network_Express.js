@@ -2,7 +2,7 @@ import { body } from 'express-validator'
 import {postsRepository} from "../../repositories/db/posts-db-repository";
 
 
-export const checksTitle =  body('title', )
+const checksTitle =  body('title', )
     .exists()
     .trim()
     .isLength({min: 3, max: 30 })
@@ -10,25 +10,25 @@ export const checksTitle =  body('title', )
     .bail()
     .isString()
     .withMessage("is not a string")
-export const checksShortDescription =  body('shortDescription')
+const checksShortDescription =  body('shortDescription')
     .trim()
     .isLength({min: 3, max: 100 })
     .withMessage("must be at least 100 chars long")
     .bail()
     .isString()
     .withMessage("is not a string")
-export const checksContent =  body('content')
+const checksContent =  body('content')
     .trim()
     .isLength({ min: 3, max: 1000 })
     .withMessage("length should be no more than 1000 characters")
     .bail()
     .isString()
     .withMessage("is not a string")
-export const checksBlogId =  body('blogId')
+const checksBlogId =  body('blogId')
     .isString()
     .withMessage("is not a string")
     .bail()
-    .custom(async (blogId) => {
+    .custom(async (blogId: string) => {
         const validationBlogId = await postsRepository.searchBlogIdForPost(blogId)
         if (!validationBlogId) {
             throw new Error("blogId not found");
@@ -37,6 +37,21 @@ export const checksBlogId =  body('blogId')
 
 
 
+ export const validatorInputPostBody = () => {
+   return  {
+             checksTitle,
+             checksShortDescription,
+             checksContent,
+             checksBlogId,
+     }
+ }
+export const validatorInputBlogPostBody = () => {
+    return {
+        checksTitle,
+        checksShortDescription,
+        checksContent,
+    }
+}
 
 
 

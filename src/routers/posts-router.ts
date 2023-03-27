@@ -10,16 +10,17 @@ import {
 } from "../req-res-types";
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
-import {checksContent, checksBlogId, checksTitle, checksShortDescription} from "../middlewares/body-validator/check-bodyPost";
+import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {checkForErrors} from "../middlewares/check-for-errors";
 import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
 
 export const postsRouter = Router()
 
-postsRouter.get('/', async (req: RequestQuery<
-    { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
-                                          res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]> | string>) => {
-    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
+postsRouter.get('/',
+    async (req: RequestQuery<{ pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
+                   res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+
+    const getAllPosts = await queryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         req.query.pageNumber,
         req.query.pageSize,
@@ -27,18 +28,19 @@ postsRouter.get('/', async (req: RequestQuery<
         req.query.sortDirection)
 
     return getAllPosts === null
-        ? res.sendStatus(404).send("searchTitleTerm not found")
-        : res.send(getAllPosts)
+           ? res.sendStatus(404)
+           : res.send(getAllPosts)
 })
-postsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
-                               res: ResponseViewBody<PostViewModel>) => {
+postsRouter.get('/:id',
+    async (req: RequestParamsId<{ id: string }>,
+                   res: ResponseViewBody<PostViewModel>) => {
     const getByIdPost = await queryRepository.findPostById(req.params.id)
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })
 postsRouter.post('/',
-    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
+    guardAuthentication, validatorInputPostBody, checkForErrors,
     async (req: RequestInputBody<PostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
 
@@ -49,7 +51,7 @@ postsRouter.post('/',
         return;
     })
 postsRouter.put('/:id',
-    guardAuthentication, checksTitle, checksShortDescription, checksContent, checksBlogId, checkForErrors,
+    guardAuthentication, validatorInputPostBody, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, PostInputModel>,
            res: ResponseViewBody<{}>) => {
 

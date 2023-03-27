@@ -11,23 +11,21 @@ import {
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {checkForErrors} from "../middlewares/check-for-errors";
-import {checkInputWebsiteUrl, checkInputDescription, checkInputName} from "../middlewares/body-validator/check-bodyBlog";
+import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
 import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
-import {checksContent, checksShortDescription, checksTitle} from "../middlewares/body-validator/check-bodyPost";
+import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
+import {QueryParams, QueryParamsNameTerm} from "../models/query-params";
 
 
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/', async (req: RequestQuery< {
-    pageNumber: number | null,
-    pageSize: number | null,
-    sortBy: string | null,
-    sortDirection: string | null,
-    searchNameTerm: string | null }>, res: Response) => {
+blogsRouter.get('/',
+    async (req: RequestQuery<QueryParamsNameTerm>,
+                   res: Response) => {
 
     const getAllBlogs = await queryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
@@ -41,8 +39,9 @@ blogsRouter.get('/', async (req: RequestQuery< {
         : res.send(getAllBlogs)
 
 })
-blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
-                               res: ResponseViewBody<BlogViewModel>) => {
+blogsRouter.get('/:id',
+    async (req: RequestParamsId<{ id: string }>,
+                   res: ResponseViewBody<BlogViewModel>) => {
     const getByIdBlog = await queryRepository.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
@@ -51,9 +50,9 @@ blogsRouter.get('/:id', async (req: RequestParamsId<{ id: string }>,
     res.send(getByIdBlog)
     return;
 })
-blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId: string },
-                                             { pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string} >,
-                                         res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+blogsRouter.get('/:blogId/posts',
+    async (req: RequestParamsAndInputQuery<{blogId: string }, QueryParams>,
+                   res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,
         req.query.pageNumber,
@@ -67,20 +66,8 @@ blogsRouter.get('/:blogId/posts', async (req: RequestParamsAndInputQuery<{blogId
     }
     res.send(getByBlogIdPosts)
 })
-blogsRouter.post('/',
-    guardAuthentication, checkInputName, checkInputWebsiteUrl,
-     checkInputDescription, checkForErrors,
-    async (req: RequestInputBody<BlogInputModel>,
-           res: ResponseViewBody<BlogViewModel>) => {
-
-        const createdBlog = await blogsService
-            .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
-
-        res.status(201).send(createdBlog)
-        return;
-    })
 blogsRouter.post('/:blogId/posts',
-    guardAuthentication, checksTitle, checksShortDescription, checksContent, checkForErrors,
+    guardAuthentication,validatorInputBlogPostBody, checkForErrors,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
         const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
@@ -94,29 +81,26 @@ blogsRouter.post('/:blogId/posts',
         return;
     })
 blogsRouter.post('/',
-    guardAuthentication, checkInputName, checkInputWebsiteUrl,
-    checkInputDescription, checkForErrors,
+    guardAuthentication, validatorBlogInputBody, checkForErrors,
     async (req: RequestInputBody<BlogInputModel>,
            res: ResponseViewBody<BlogViewModel>) => {
 
-        const createdBlog = await blogsService
-            .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+    const createdBlog = await blogsService
+        .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
 
-        res.status(201).send(createdBlog)
+    res.status(201).send(createdBlog)
         return;
     })
 blogsRouter.put('/:id',
-    guardAuthentication, checkInputName, checkInputWebsiteUrl,
-     checkInputDescription, checkForErrors,
+    guardAuthentication,validatorBlogInputBody, checkForErrors,
     async (req: RequestParamsAndInputBody<{ id: string }, BlogInputModel>,
            res: Response) => {
-
-        const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)
+    const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)
         if (!searchBlogByIdForUpdate) {
             res.sendStatus(404)
             return;
         }
-        const foundBlogForUpdate = await blogsService
+    const foundBlogForUpdate = await blogsService
             .updateBlogById(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
         if (foundBlogForUpdate) {
             res.sendStatus(204)
@@ -127,11 +111,10 @@ blogsRouter.delete('/:id', guardAuthentication,
                                  async (req: RequestParamsId<{ id: string }>,
                                         res: Response) => {
     const foundBlogDelete = await blogsService.BlogByIdDelete(req.params.id)
-
-    if (!foundBlogDelete) {
+      if (!foundBlogDelete) {
         res.sendStatus(404)
         return;
-    }
+      }
     res.sendStatus(204)
         return;
 })
