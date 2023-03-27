@@ -19,8 +19,9 @@ const query_repository_1 = require("../repositories/query-repository");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllPosts = yield query_repository_1.queryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
-    res.send(getAllPosts);
-    return;
+    return getAllPosts === null
+        ? res.sendStatus(404)
+        : res.send(getAllPosts);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByIdPost = yield query_repository_1.queryRepository.findPostById(req.params.id);
@@ -28,12 +29,12 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
         ? res.sendStatus(404)
         : res.send(getByIdPost);
 }));
-exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.validatorInputPostBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdNewPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(createdNewPost);
     return;
 }));
-exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_bodyPost_1.checksBlogId, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.validatorInputPostBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorPostByIdForUpdate = yield posts_service_1.postsService.findPostById(req.params.id);
     if (!validatorPostByIdForUpdate) {
         res.sendStatus(404);

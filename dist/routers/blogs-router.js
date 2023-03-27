@@ -21,8 +21,9 @@ const posts_service_1 = require("../domains/posts-service");
 exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllBlogs = yield query_repository_1.queryRepository.returnOfAllBlogs(req.query.searchNameTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
-    res.send(getAllBlogs);
-    return;
+    return getAllBlogs === null
+        ? res.sendStatus(404).send("searchNameTerm not found")
+        : res.send(getAllBlogs);
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByIdBlog = yield query_repository_1.queryRepository.findBlogById(req.params.id);
@@ -35,17 +36,13 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByBlogIdPosts = yield query_repository_1.queryRepository.searchPostByBlogId(req.params.blogId, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
-    return getByBlogIdPosts === null || []
-        ? res.sendStatus(404)
-        : res.send(getByBlogIdPosts);
+    if (!getByBlogIdPosts) {
+        res.sendStatus(404);
+        return;
+    }
+    res.send(getByBlogIdPosts);
 }));
-exports.blogsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdBlog = yield blogs_service_1.blogsService
-        .createBlog(req.body.name, req.body.description, req.body.websiteUrl);
-    res.status(201).send(createdBlog);
-    return;
-}));
-exports.blogsRouter.post('/:blogId/posts', guard_authentication_1.guardAuthentication, check_bodyPost_1.checksTitle, check_bodyPost_1.checksShortDescription, check_bodyPost_1.checksContent, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.post('/:blogId/posts', guard_authentication_1.guardAuthentication, check_bodyPost_1.validatorInputBlogPostBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorBlogIdForCreatePost = yield posts_service_1.postsService.searchBlogIdForPost(req.params.blogId);
     if (!validatorBlogIdForCreatePost) {
         res.sendStatus(404);
@@ -55,13 +52,13 @@ exports.blogsRouter.post('/:blogId/posts', guard_authentication_1.guardAuthentic
     res.status(201).send(createdNewPost);
     return;
 }));
-exports.blogsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyBlog_1.validatorBlogInputBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdBlog = yield blogs_service_1.blogsService
         .createBlog(req.body.name, req.body.description, req.body.websiteUrl);
     res.status(201).send(createdBlog);
     return;
 }));
-exports.blogsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyBlog_1.checkInputName, check_bodyBlog_1.checkInputWebsiteUrl, check_bodyBlog_1.checkInputDescription, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyBlog_1.validatorBlogInputBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const searchBlogByIdForUpdate = yield blogs_service_1.blogsService.findBlogById(req.params.id);
     if (!searchBlogByIdForUpdate) {
         res.sendStatus(404);

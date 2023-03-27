@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checksBlogId = exports.checksContent = exports.checksShortDescription = exports.checksTitle = void 0;
+exports.validatorInputBlogPostBody = exports.validatorInputPostBody = void 0;
 const express_validator_1 = require("express-validator");
 const posts_db_repository_1 = require("../../repositories/db/posts-db-repository");
-exports.checksTitle = (0, express_validator_1.body)('title')
+const checksTitle = (0, express_validator_1.body)('title')
     .exists()
     .trim()
     .isLength({ min: 3, max: 30 })
@@ -20,21 +20,21 @@ exports.checksTitle = (0, express_validator_1.body)('title')
     .bail()
     .isString()
     .withMessage("is not a string");
-exports.checksShortDescription = (0, express_validator_1.body)('shortDescription')
+const checksShortDescription = (0, express_validator_1.body)('shortDescription')
     .trim()
     .isLength({ min: 3, max: 100 })
     .withMessage("must be at least 100 chars long")
     .bail()
     .isString()
     .withMessage("is not a string");
-exports.checksContent = (0, express_validator_1.body)('content')
+const checksContent = (0, express_validator_1.body)('content')
     .trim()
     .isLength({ min: 3, max: 1000 })
     .withMessage("length should be no more than 1000 characters")
     .bail()
     .isString()
     .withMessage("is not a string");
-exports.checksBlogId = (0, express_validator_1.body)('blogId')
+const checksBlogId = (0, express_validator_1.body)('blogId')
     .isString()
     .withMessage("is not a string")
     .bail()
@@ -44,3 +44,20 @@ exports.checksBlogId = (0, express_validator_1.body)('blogId')
         throw new Error("blogId not found");
     }
 }));
+const validatorInputPostBody = () => {
+    return {
+        checksTitle,
+        checksShortDescription,
+        checksContent,
+        checksBlogId,
+    };
+};
+exports.validatorInputPostBody = validatorInputPostBody;
+const validatorInputBlogPostBody = () => {
+    return {
+        checksTitle,
+        checksShortDescription,
+        checksContent,
+    };
+};
+exports.validatorInputBlogPostBody = validatorInputBlogPostBody;
