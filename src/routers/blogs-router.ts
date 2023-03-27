@@ -10,7 +10,6 @@ import {
 } from "../req-res-types";
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
-import {checkForErrors} from "../middlewares/check-for-errors";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
 import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
@@ -26,7 +25,6 @@ export const blogsRouter = Router ()
 blogsRouter.get('/',
     async (req: RequestQuery<QueryParamsNameTerm>,
                    res: Response) => {
-
     const getAllBlogs = await queryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
         req.query.pageNumber,
@@ -66,8 +64,7 @@ blogsRouter.get('/:blogId/posts',
     }
     res.send(getByBlogIdPosts)
 })
-blogsRouter.post('/:blogId/posts',
-    guardAuthentication,validatorInputBlogPostBody, checkForErrors,
+blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
         const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
@@ -80,8 +77,7 @@ blogsRouter.post('/:blogId/posts',
         res.status(201).send(createdNewPost)
         return;
     })
-blogsRouter.post('/',
-    guardAuthentication, validatorBlogInputBody, checkForErrors,
+blogsRouter.post('/', validatorBlogInputBody,
     async (req: RequestInputBody<BlogInputModel>,
            res: ResponseViewBody<BlogViewModel>) => {
 
@@ -91,8 +87,7 @@ blogsRouter.post('/',
     res.status(201).send(createdBlog)
         return;
     })
-blogsRouter.put('/:id',
-    guardAuthentication,validatorBlogInputBody, checkForErrors,
+blogsRouter.put('/:id', validatorBlogInputBody,
     async (req: RequestParamsAndInputBody<{ id: string }, BlogInputModel>,
            res: Response) => {
     const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)

@@ -11,7 +11,6 @@ import {
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
-import {checkForErrors} from "../middlewares/check-for-errors";
 import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
 
 export const postsRouter = Router()
@@ -20,7 +19,7 @@ postsRouter.get('/',
     async (req: RequestQuery<{ pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
                    res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
 
-    const getAllPosts = await queryRepository.returnOfAllPosts(
+    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         req.query.pageNumber,
         req.query.pageSize,
@@ -39,8 +38,7 @@ postsRouter.get('/:id',
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })
-postsRouter.post('/',
-    guardAuthentication, validatorInputPostBody, checkForErrors,
+postsRouter.post('/', validatorInputPostBody,
     async (req: RequestInputBody<PostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
 
@@ -50,8 +48,7 @@ postsRouter.post('/',
         res.status(201).send(createdNewPost)
         return;
     })
-postsRouter.put('/:id',
-    guardAuthentication, validatorInputPostBody, checkForErrors,
+postsRouter.put('/:id', validatorInputPostBody,
     async (req: RequestParamsAndInputBody<{ id: string }, PostInputModel>,
            res: ResponseViewBody<{}>) => {
 

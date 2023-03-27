@@ -1,5 +1,7 @@
 import { body } from 'express-validator'
 import {postsRepository} from "../../repositories/db/posts-db-repository";
+import {guardAuthentication} from "../guard-authentication";
+import {checkForErrors} from "../check-for-errors";
 
 
 const checksTitle =  body('title', )
@@ -39,17 +41,21 @@ const checksBlogId =  body('blogId')
 
  export const validatorInputPostBody = () => {
    return  {
-             checksTitle,
-             checksShortDescription,
-             checksContent,
-             checksBlogId,
+       guardAuthentication,
+       checksTitle,
+       checksShortDescription,
+       checksContent,
+       checksBlogId,
+       checkForErrors
      }
  }
 export const validatorInputBlogPostBody = () => {
     return {
+        guardAuthentication,
         checksTitle,
         checksShortDescription,
         checksContent,
+        checkForErrors
     }
 }
 
