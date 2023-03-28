@@ -14,27 +14,26 @@ const express_1 = require("express");
 const posts_service_1 = require("../domains/posts-service");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
 const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
-const check_for_errors_1 = require("../middlewares/check-for-errors");
-const query_repository_1 = require("../repositories/query-repository");
+const posts_query_repository_1 = require("../repositories/queryRepository/posts-query-repository");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield query_repository_1.queryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
+    const getAllPosts = yield posts_query_repository_1.postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
     return getAllPosts === null
         ? res.sendStatus(404)
         : res.send(getAllPosts);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield query_repository_1.queryRepository.findPostById(req.params.id);
+    const getByIdPost = yield posts_query_repository_1.postQueryRepository.findPostById(req.params.id);
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost);
 }));
-exports.postsRouter.post('/', guard_authentication_1.guardAuthentication, check_bodyPost_1.validatorInputPostBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', check_bodyPost_1.validatorInputPostBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdNewPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(createdNewPost);
     return;
 }));
-exports.postsRouter.put('/:id', guard_authentication_1.guardAuthentication, check_bodyPost_1.validatorInputPostBody, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', check_bodyPost_1.validatorInputPostBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorPostByIdForUpdate = yield posts_service_1.postsService.findPostById(req.params.id);
     if (!validatorPostByIdForUpdate) {
         res.sendStatus(404);

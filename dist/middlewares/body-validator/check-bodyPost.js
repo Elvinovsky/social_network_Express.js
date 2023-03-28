@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorInputBlogPostBody = exports.validatorInputPostBody = void 0;
 const express_validator_1 = require("express-validator");
 const posts_db_repository_1 = require("../../repositories/db/posts-db-repository");
+const guard_authentication_1 = require("../guard-authentication");
+const check_for_errors_1 = require("../check-for-errors");
 const checksTitle = (0, express_validator_1.body)('title')
     .exists()
     .trim()
@@ -44,20 +46,18 @@ const checksBlogId = (0, express_validator_1.body)('blogId')
         throw new Error("blogId not found");
     }
 }));
-const validatorInputPostBody = () => {
-    return {
-        checksTitle,
-        checksShortDescription,
-        checksContent,
-        checksBlogId,
-    };
-};
-exports.validatorInputPostBody = validatorInputPostBody;
-const validatorInputBlogPostBody = () => {
-    return {
-        checksTitle,
-        checksShortDescription,
-        checksContent,
-    };
-};
-exports.validatorInputBlogPostBody = validatorInputBlogPostBody;
+exports.validatorInputPostBody = [
+    guard_authentication_1.guardAuthentication,
+    checksTitle,
+    checksShortDescription,
+    checksContent,
+    checksBlogId,
+    check_for_errors_1.checkForErrors
+];
+exports.validatorInputBlogPostBody = [
+    guard_authentication_1.guardAuthentication,
+    checksTitle,
+    checksShortDescription,
+    checksContent,
+    check_for_errors_1.checkForErrors
+];

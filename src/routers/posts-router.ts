@@ -11,7 +11,8 @@ import {
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
-import {PaginatorType, queryRepository} from "../repositories/query-repository";
+import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
+import {PaginatorType} from "../helpers/pagination-helpers";
 
 export const postsRouter = Router()
 
@@ -19,7 +20,7 @@ postsRouter.get('/',
     async (req: RequestQuery<{ pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
                    res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
 
-    const getAllPosts: PaginatorType<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
+    const getAllPosts: PaginatorType<PostViewModel[]> | null = await postQueryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         req.query.pageNumber,
         req.query.pageSize,
@@ -33,7 +34,7 @@ postsRouter.get('/',
 postsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
                    res: ResponseViewBody<PostViewModel>) => {
-    const getByIdPost = await queryRepository.findPostById(req.params.id)
+    const getByIdPost = await postQueryRepository.findPostById(req.params.id)
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost)

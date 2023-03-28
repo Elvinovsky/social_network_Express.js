@@ -6,7 +6,7 @@ import {runDb} from "./database/runDB";
 import bodyParser from "body-parser";
 
 const jsonBodyMiddleware = bodyParser()
-const app = express()
+export const app = express()
 const port = process.env.PORT || 3499
 
 app.use(jsonBodyMiddleware)

@@ -11,12 +11,13 @@ import {
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
-import {PaginatorType, queryRepository} from "../repositories/query-repository";
+import {blogsQueryRepository} from "../repositories/queryRepository/blogs-query-repository";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
 import {QueryParams, QueryParamsNameTerm} from "../models/query-params";
+import {PaginatorType} from "../helpers/pagination-helpers";
 
 
 
@@ -26,7 +27,7 @@ export const blogsRouter = Router ()
 blogsRouter.get('/',
     async (req: RequestQuery<QueryParamsNameTerm>,
                    res: Response) => {
-    const getAllBlogs = await queryRepository.returnOfAllBlogs(
+    const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
         req.query.pageNumber,
         req.query.pageSize,
@@ -41,7 +42,7 @@ blogsRouter.get('/',
 blogsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
                    res: ResponseViewBody<BlogViewModel>) => {
-    const getByIdBlog = await queryRepository.findBlogById(req.params.id)
+    const getByIdBlog = await blogsQueryRepository.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
         return;
@@ -52,7 +53,7 @@ blogsRouter.get('/:id',
 blogsRouter.get('/:blogId/posts',
     async (req: RequestParamsAndInputQuery<{blogId: string }, QueryParams>,
                    res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
-    const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
+    const getByBlogIdPosts = await blogsQueryRepository.searchPostByBlogId(
         req.params.blogId,
         req.query.pageNumber,
         req.query.pageSize,
