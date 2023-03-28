@@ -11,7 +11,7 @@ import {
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
-import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
+import {PaginatorType, queryRepository} from "../repositories/query-repository";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
@@ -51,7 +51,7 @@ blogsRouter.get('/:id',
 })
 blogsRouter.get('/:blogId/posts',
     async (req: RequestParamsAndInputQuery<{blogId: string }, QueryParams>,
-                   res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
     const getByBlogIdPosts = await queryRepository.searchPostByBlogId(
         req.params.blogId,
         req.query.pageNumber,

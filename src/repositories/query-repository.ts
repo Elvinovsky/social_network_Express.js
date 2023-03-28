@@ -5,35 +5,32 @@ import {blogMapping} from "../functions/blogMapping";
 import {postMapping} from "../functions/postMapping";
 
 
-export type PaginatorOutputPosts<PostViewModel> = {
+
+export type PaginatorType<T> = {
     "pagesCount": number,
     "page": number,
     "pageSize": number,
     "totalCount": number,
-    "items": PostViewModel
+    "items": T
 }
-export type PaginatorOutputBlogs<BlogViewModel> = {
-    "pagesCount": number,
-    "page": number,
-    "pageSize": number,
-    "totalCount": number,
-    "items": BlogViewModel
-}
+
 const blockMongo_Id =  {projection:{ _id: 0 }}
+
 
 export const queryRepository = {
     async returnOfAllBlogs(searchNameTerm: string  | null,
                            pageNumber: number | null,
                            pageSize: number | null,
                            sortBy: string | null,
-                           sortDirection: string | null): Promise<PaginatorOutputBlogs<BlogViewModel[]> | null> {
+                           sortDirection: string | null): Promise<PaginatorType<BlogViewModel[]> | null> {
 
         const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
         const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
-        const numberOfFiles = await blogsCollection.countDocuments(searchNameTerm? {name: {$regex: searchNameTerm, $options: "i"}} : {})
+        const numberOfFiles = await blogsCollection
+            .countDocuments(searchNameTerm? {name: {$regex: searchNameTerm, $options: "i"}} : {})
         const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize)
 
 
@@ -72,7 +69,7 @@ export const queryRepository = {
                              pageNumber: number | null,
                              pageSize: number | null,
                              sortBy: string | null,
-                             sortDirection: string | null,):Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
+                             sortDirection: string | null,):Promise<PaginatorType<PostViewModel[]> | null> {
         const blogIdForPost = await postsCollection.findOne({blogId: blogId})
         if (!blogIdForPost){
             return null
@@ -102,7 +99,7 @@ export const queryRepository = {
                            pageNumber: number | null,
                            pageSize: number | null,
                            sortBy: string | null,
-                           sortDirection: string | null,): Promise<PaginatorOutputPosts<PostViewModel[]> | null> {
+                           sortDirection: string | null,): Promise<PaginatorType<PostViewModel[]> | null> {
 
         const mongoPageNumber = pageNumber? +pageNumber : 1
         const mongoPageSize = pageSize? +pageSize : 10

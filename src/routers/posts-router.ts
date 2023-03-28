@@ -11,15 +11,15 @@ import {
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
-import {PaginatorOutputPosts, queryRepository} from "../repositories/query-repository";
+import {PaginatorType, queryRepository} from "../repositories/query-repository";
 
 export const postsRouter = Router()
 
 postsRouter.get('/',
     async (req: RequestQuery<{ pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
-                   res: ResponseViewBody<PaginatorOutputPosts<PostViewModel[]>>) => {
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
 
-    const getAllPosts: PaginatorOutputPosts<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
+    const getAllPosts: PaginatorType<PostViewModel[]> | null = await queryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         req.query.pageNumber,
         req.query.pageSize,
