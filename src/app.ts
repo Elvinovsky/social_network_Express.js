@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 
 const jsonBodyMiddleware = bodyParser()
 export const app = express()
-const port = process.env.PORT || 3499
+const port = process.env.PORT || 2700
 
 app.use(jsonBodyMiddleware)
 
