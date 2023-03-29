@@ -1,19 +1,8 @@
-import express from 'express'
-import {postsRouter} from "./routers/posts-router";
-import {blogsRouter} from "./routers/blogs-router";
-import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
+
 import {runDb} from "./database/runDB";
-import bodyParser from "body-parser";
+import { app } from './settings'
 
-const jsonBodyMiddleware = bodyParser()
-export const app = express()
-const port = process.env.PORT || 2700
-
-app.use(jsonBodyMiddleware)
-
-app.use('/posts', postsRouter)
-app.use('/blogs', blogsRouter)
-app.use('/testing', deleteAllDataRouter)
+const port = process.env.PORT || 3999
 
 const startApp = async () => {
     await runDb()
