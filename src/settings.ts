@@ -2,9 +2,8 @@ import express, {Request, Response} from "express";
 import {postsRouter} from "./routers/posts-router";
 import {blogsRouter} from "./routers/blogs-router";
 import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
-import bodyParser from "body-parser";
 
-const jsonBodyMiddleware = bodyParser()
+const jsonBodyMiddleware = express.json()
 export const app = express()
 
 app.use(jsonBodyMiddleware)

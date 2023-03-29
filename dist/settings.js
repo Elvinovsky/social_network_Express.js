@@ -8,8 +8,7 @@ const express_1 = __importDefault(require("express"));
 const posts_router_1 = require("./routers/posts-router");
 const blogs_router_1 = require("./routers/blogs-router");
 const Testing_DB_Delete_router_1 = require("./routers/Testing-DB-Delete-router");
-const body_parser_1 = __importDefault(require("body-parser"));
-const jsonBodyMiddleware = (0, body_parser_1.default)();
+const jsonBodyMiddleware = express_1.default.json();
 exports.app = (0, express_1.default)();
 exports.app.use(jsonBodyMiddleware);
 exports.app.get('/', (req, res) => {
