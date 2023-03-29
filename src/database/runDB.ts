@@ -6,6 +6,7 @@ import {PostViewModel} from "../models/modelsPosts/postViewModel";
 dotenv.config()
 
 const mongoURI = process.env.MONGO_URL;
+// const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
 if(!mongoURI) {
     throw Error (`not found`)
 }

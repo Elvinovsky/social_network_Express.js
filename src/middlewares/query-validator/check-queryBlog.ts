@@ -1,3 +1,3 @@
-import {query} from "express-validator";
+/*import {query} from "express-validator";
 
-const checkSearchNameTerm=  query('searchNameTerm', ).default(null)
+const checkSearchNameTerm=  query('searchNameTerm', ).default(null)*/

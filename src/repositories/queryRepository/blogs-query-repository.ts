@@ -5,7 +5,7 @@ import {blogMapping} from "../../functions/blogMapping";
 import {postMapping} from "../../functions/postMapping";
 import {PaginatorType} from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../helpers/blogs-helpers";
-import {filter} from "../../functions/filters";
+import {filterName} from "../../functions/filters";
 
 
 
@@ -21,37 +21,24 @@ export const blogsQueryRepository = {
         const mongoSortBy = sortBy? sortBy : 'createdAt'
         const mongoSortDirection = sortDirection === 'asc'? 1 : -1
         const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
-        const numberOfFiles = await blogsCollection.countDocuments(filter(searchNameTerm))
+        const numberOfFiles = await blogsCollection.countDocuments(filterName(searchNameTerm))
+        if(numberOfFiles === 0) {
+            return null
+        }
         const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize)
 
-
-        if(searchNameTerm){
-            const foundBlogsName: BlogViewModel[] = await blogsCollection
-                .find({name: {$regex: searchNameTerm, $options: "i"}}, blockMongo_Id)
+        const foundBlogs: BlogViewModel[] = await blogsCollection
+                .find(filterName(searchNameTerm), blockMongo_Id)
                 .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray()
-            return {
+        return {
                 pagesCount: pagesCountOfBlogs,
                 page: mongoPageNumber,
                 pageSize: mongoPageSize,
                 totalCount: numberOfFiles,
-                items: blogMapping(foundBlogsName)
+                items: blogMapping(foundBlogs)
             }
-        }
-
-        const foundBlogs = await blogsCollection
-            .find({},blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
-            .skip(mongoBlogsToSkip)
-            .limit(mongoPageSize).toArray()
-        return {
-            pagesCount: pagesCountOfBlogs,
-            page: mongoPageNumber,
-            pageSize: mongoPageSize,
-            totalCount: numberOfFiles,
-            items: blogMapping(foundBlogs)
-        }
     },
     async findBlogById(id: string): Promise <BlogViewModel | null> {
        return await blogsCollection.findOne({id}, blockMongo_Id)
@@ -80,7 +67,7 @@ export const blogsQueryRepository = {
             .limit(mongoPageSize).toArray()
         return {
             pagesCount: pagesCountOfPosts,
-                page: mongoPageNumber,
+            page: mongoPageNumber,
             pageSize: mongoPageSize,
             totalCount: numberOfFiles,
             items: postMapping(foundBlogs)

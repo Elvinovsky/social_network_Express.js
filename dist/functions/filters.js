@@ -1,9 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filter = void 0;
-const filter = (searchNameTerm) => {
-    return searchNameTerm
-        ? { name: { $regex: 'searchNameTerm', $options: 'i' } }
+exports.filterName = exports.filterTitle = void 0;
+const filterTitle = (searchTerm) => {
+    return searchTerm
+        ? { title: { $regex: searchTerm, $options: 'i' } }
         : {};
 };
-exports.filter = filter;
+exports.filterTitle = filterTitle;
+const filterName = (searchTerm) => {
+    return searchTerm
+        ? { name: { $regex: searchTerm, $options: 'i' } }
+        : {};
+};
+exports.filterName = filterName;

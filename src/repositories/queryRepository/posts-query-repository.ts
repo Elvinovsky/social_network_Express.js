@@ -3,6 +3,7 @@ import {postsCollection} from "../../database/runDB";
 import {postMapping} from "../../functions/postMapping";
 import {PaginatorType} from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../helpers/posts-helpers";
+import {filterTitle} from "../../functions/filters";
 
 
 export const postQueryRepository = {
@@ -17,35 +18,25 @@ export const postQueryRepository = {
         const mongoSortBy = sortBy? sortBy : "createdAt"
         const mongoSortDirection = sortDirection? (sortDirection === 'asc'? 1 : -1) : -1
         const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize
-        const numberOfFiles = await postsCollection.countDocuments(searchTitleTerm? {title: {$regex: searchTitleTerm, $options: "i"}} : {})
+        const numberOfFiles = await postsCollection.countDocuments(filterTitle(searchTitleTerm))
+        if (numberOfFiles === 0) {
+            return null
+        }
         const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize)
 
-        if(searchTitleTerm) {
-            const foundPostsTitle: PostViewModel[] = await postsCollection
-                .find({title: {$regex: searchTitleTerm, $options: "i"}}, blockMongo_Id)
+
+        const foundPosts: PostViewModel[] = await postsCollection
+                .find(filterTitle(searchTitleTerm), blockMongo_Id)
                 .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection} )
                 .skip(mongoPostsToSkip)
                 .limit(+mongoPageSize).toArray()
-            return {
+        return {
                 pagesCount: pagesCountOfPosts,
                 page: mongoPageNumber,
                 pageSize: mongoPageSize,
                 totalCount: numberOfFiles,
-                items: postMapping(foundPostsTitle)
+                items: postMapping(foundPosts)
             }
-        }
-        const foundPosts: PostViewModel[] = await postsCollection
-            .find({},blockMongo_Id)
-            .sort({[mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection})
-            .skip(mongoPostsToSkip)
-            .limit(mongoPageSize).toArray()
-        return {
-            pagesCount: pagesCountOfPosts,
-            page: mongoPageNumber,
-            pageSize: mongoPageSize,
-            totalCount: numberOfFiles,
-            items: postMapping(foundPosts)
-        }
     },
     async findPostById(id: string): Promise <PostViewModel | null> {
         return  await postsCollection.findOne({id}, blockMongo_Id)

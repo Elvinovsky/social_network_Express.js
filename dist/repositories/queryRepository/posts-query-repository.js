@@ -13,6 +13,7 @@ exports.postQueryRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const postMapping_1 = require("../../functions/postMapping");
 const posts_helpers_1 = require("../../helpers/posts-helpers");
+const filters_1 = require("../../functions/filters");
 exports.postQueryRepository = {
     returnOfAllPosts(searchTitleTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21,27 +22,16 @@ exports.postQueryRepository = {
             const mongoSortBy = sortBy ? sortBy : "createdAt";
             const mongoSortDirection = sortDirection ? (sortDirection === 'asc' ? 1 : -1) : -1;
             const mongoPostsToSkip = (+mongoPageNumber - 1) * +mongoPageSize;
-            const numberOfFiles = yield runDB_1.postsCollection.countDocuments(searchTitleTerm ? { title: { $regex: searchTitleTerm, $options: "i" } } : {});
-            const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
-            if (searchTitleTerm) {
-                const foundPostsTitle = yield runDB_1.postsCollection
-                    .find({ title: { $regex: searchTitleTerm, $options: "i" } }, posts_helpers_1.blockMongo_Id)
-                    .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
-                    .skip(mongoPostsToSkip)
-                    .limit(+mongoPageSize).toArray();
-                return {
-                    pagesCount: pagesCountOfPosts,
-                    page: mongoPageNumber,
-                    pageSize: mongoPageSize,
-                    totalCount: numberOfFiles,
-                    items: (0, postMapping_1.postMapping)(foundPostsTitle)
-                };
+            const numberOfFiles = yield runDB_1.postsCollection.countDocuments((0, filters_1.filterTitle)(searchTitleTerm));
+            if (numberOfFiles === 0) {
+                return null;
             }
+            const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
             const foundPosts = yield runDB_1.postsCollection
-                .find({}, posts_helpers_1.blockMongo_Id)
+                .find((0, filters_1.filterTitle)(searchTitleTerm), posts_helpers_1.blockMongo_Id)
                 .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
                 .skip(mongoPostsToSkip)
-                .limit(mongoPageSize).toArray();
+                .limit(+mongoPageSize).toArray();
             return {
                 pagesCount: pagesCountOfPosts,
                 page: mongoPageNumber,

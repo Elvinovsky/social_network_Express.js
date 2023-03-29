@@ -21,7 +21,7 @@ exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllBlogs = yield blogs_query_repository_1.blogsQueryRepository.returnOfAllBlogs(req.query.searchNameTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
     return getAllBlogs === null
-        ? res.sendStatus(404).send("searchNameTerm not found")
+        ? res.status(404).send("searchNameTerm not found")
         : res.send(getAllBlogs);
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

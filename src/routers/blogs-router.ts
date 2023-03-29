@@ -16,7 +16,7 @@ import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bo
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
-import {QueryParams, QueryParamsNameTerm} from "../models/query-params";
+import {QueryParams, QueryParamsAndNameTerm} from "../models/query-params";
 import {PaginatorType} from "../helpers/pagination-helpers";
 
 
@@ -25,7 +25,7 @@ export const blogsRouter = Router ()
 
 
 blogsRouter.get('/',
-    async (req: RequestQuery<QueryParamsNameTerm>,
+    async (req: RequestQuery<QueryParamsAndNameTerm>,
                    res: Response) => {
     const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
@@ -35,7 +35,7 @@ blogsRouter.get('/',
         req.query.sortDirection)
 
     return getAllBlogs === null
-        ? res.sendStatus(404).send("searchNameTerm not found")
+        ? res.status(404).send("searchNameTerm not found")
         : res.send(getAllBlogs)
 
 })

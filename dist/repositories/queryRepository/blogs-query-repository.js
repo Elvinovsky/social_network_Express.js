@@ -23,24 +23,13 @@ exports.blogsQueryRepository = {
             const mongoSortBy = sortBy ? sortBy : 'createdAt';
             const mongoSortDirection = sortDirection === 'asc' ? 1 : -1;
             const mongoBlogsToSkip = (+mongoPageNumber - 1) * +mongoPageSize;
-            const numberOfFiles = yield runDB_1.blogsCollection.countDocuments((0, filters_1.filter)(searchNameTerm));
-            const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize);
-            if (searchNameTerm) {
-                const foundBlogsName = yield runDB_1.blogsCollection
-                    .find({ name: { $regex: searchNameTerm, $options: "i" } }, blogs_helpers_1.blockMongo_Id)
-                    .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
-                    .skip(mongoBlogsToSkip)
-                    .limit(mongoPageSize).toArray();
-                return {
-                    pagesCount: pagesCountOfBlogs,
-                    page: mongoPageNumber,
-                    pageSize: mongoPageSize,
-                    totalCount: numberOfFiles,
-                    items: (0, blogMapping_1.blogMapping)(foundBlogsName)
-                };
+            const numberOfFiles = yield runDB_1.blogsCollection.countDocuments((0, filters_1.filterName)(searchNameTerm));
+            if (numberOfFiles === 0) {
+                return null;
             }
+            const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize);
             const foundBlogs = yield runDB_1.blogsCollection
-                .find({}, blogs_helpers_1.blockMongo_Id)
+                .find((0, filters_1.filterName)(searchNameTerm), blogs_helpers_1.blockMongo_Id)
                 .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray();

@@ -13,12 +13,13 @@ import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
 import {PaginatorType} from "../helpers/pagination-helpers";
+import {QueryParamsAndTitleTerm} from "../models/query-params";
 
 export const postsRouter = Router()
 
 postsRouter.get('/',
-    async (req: RequestQuery<{ pageNumber: number | null, pageSize: number | null, sortBy: string | null, sortDirection: string | null, searchTitleTerm: string | null}>,
-                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
+    async (req: RequestQuery<QueryParamsAndTitleTerm>,
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]> | string>) => {
 
     const getAllPosts: PaginatorType<PostViewModel[]> | null = await postQueryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
@@ -28,7 +29,7 @@ postsRouter.get('/',
         req.query.sortDirection)
 
     return getAllPosts === null
-           ? res.sendStatus(404)
+           ? res.status(404).send("searchNameTerm not found")
            : res.send(getAllPosts)
 })
 postsRouter.get('/:id',
