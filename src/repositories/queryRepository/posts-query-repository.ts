@@ -2,10 +2,9 @@ import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {postsCollection} from "../../database/runDB";
 import {postMapping} from "../../functions/postMapping";
 import {PaginatorType} from "../../helpers/pagination-helpers";
-import {blockMongo_Id} from "../../helpers/posts-helpers";
 import {filterTitle} from "../../functions/filters";
 
-
+const blockMongo_Id =  {projection:{ _id: 0 }}
 export const postQueryRepository = {
     async returnOfAllPosts(searchTitleTerm: string | null,
                            pageNumber: number | null,

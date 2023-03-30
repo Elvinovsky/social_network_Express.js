@@ -13,6 +13,6 @@ const runDB_1 = require("./database/runDB");
 const settings_1 = require("./settings");
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, runDB_1.runDb)();
-    (0, settings_1.startServer)();
+    yield (0, settings_1.startServer)();
 });
 startApp();

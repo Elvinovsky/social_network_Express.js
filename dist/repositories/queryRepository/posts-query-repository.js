@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postQueryRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const postMapping_1 = require("../../functions/postMapping");
-const posts_helpers_1 = require("../../helpers/posts-helpers");
 const filters_1 = require("../../functions/filters");
+const blockMongo_Id = { projection: { _id: 0 } };
 exports.postQueryRepository = {
     returnOfAllPosts(searchTitleTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,7 +28,7 @@ exports.postQueryRepository = {
             }
             const pagesCountOfPosts = Math.ceil(numberOfFiles / mongoPageSize);
             const foundPosts = yield runDB_1.postsCollection
-                .find((0, filters_1.filterTitle)(searchTitleTerm), posts_helpers_1.blockMongo_Id)
+                .find((0, filters_1.filterTitle)(searchTitleTerm), blockMongo_Id)
                 .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
                 .skip(mongoPostsToSkip)
                 .limit(+mongoPageSize).toArray();
@@ -43,7 +43,7 @@ exports.postQueryRepository = {
     },
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.findOne({ id }, posts_helpers_1.blockMongo_Id);
+            return yield runDB_1.postsCollection.findOne({ id }, blockMongo_Id);
         });
     },
 };

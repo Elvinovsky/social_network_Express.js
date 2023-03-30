@@ -13,8 +13,8 @@ exports.blogsQueryRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const blogMapping_1 = require("../../functions/blogMapping");
 const postMapping_1 = require("../../functions/postMapping");
-const blogs_helpers_1 = require("../../helpers/blogs-helpers");
 const filters_1 = require("../../functions/filters");
+const blockMongo_Id = { projection: { _id: 0 } };
 exports.blogsQueryRepository = {
     returnOfAllBlogs(searchNameTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,7 +29,7 @@ exports.blogsQueryRepository = {
             }
             const pagesCountOfBlogs = Math.ceil(numberOfFiles / mongoPageSize);
             const foundBlogs = yield runDB_1.blogsCollection
-                .find((0, filters_1.filterName)(searchNameTerm), blogs_helpers_1.blockMongo_Id)
+                .find((0, filters_1.filterName)(searchNameTerm), blockMongo_Id)
                 .sort({ [mongoSortBy]: mongoSortDirection, createdAt: mongoSortDirection })
                 .skip(mongoBlogsToSkip)
                 .limit(mongoPageSize).toArray();
@@ -44,7 +44,7 @@ exports.blogsQueryRepository = {
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.blogsCollection.findOne({ id }, blogs_helpers_1.blockMongo_Id);
+            return yield runDB_1.blogsCollection.findOne({ id }, blockMongo_Id);
         });
     },
     searchPostByBlogId(blogId, pageNumber, pageSize, sortBy, sortDirection) {

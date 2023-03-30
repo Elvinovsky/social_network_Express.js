@@ -14,11 +14,16 @@ app.use('/posts', postsRouter)
 app.use('/blogs', blogsRouter)
 app.use('/testing', deleteAllDataRouter)
 
-const startServer = () => {
+const startServer = async () => {
     const port = process.env.PORT || 3999;
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`);
-    });
+    try {
+        await app.listen(port, () => {
+            console.log(`Example app listening on port ${port}`);
+        });
+    }
+    catch {
+        console.log(`not connect`);
+    }
 };
 
 export { app, startServer };

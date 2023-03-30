@@ -3,7 +3,7 @@ import { startServer } from "./settings";
 
 const startApp = async () => {
     await runDb();
-    startServer();
+    await startServer();
 };
 
 startApp()
