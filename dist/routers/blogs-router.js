@@ -14,33 +14,54 @@ const express_1 = require("express");
 const blogs_service_1 = require("../domains/blogs-service");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
 const check_bodyBlog_1 = require("../middlewares/body-validator/check-bodyBlog");
-const blogs_query_repository_1 = require("../repositories/queryRepository/blogs-query-repository");
+//import {blogsQueryRepository} from "../repositories/queryRepository/blogs-query-repository";
 const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
 const posts_service_1 = require("../domains/posts-service");
+//import {QueryParams, QueryParamsAndNameTerm} from "../models/query-params";
+//import {PaginatorType} from "../helpers/pagination-helpers";
 exports.blogsRouter = (0, express_1.Router)();
-exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllBlogs = yield blogs_query_repository_1.blogsQueryRepository.returnOfAllBlogs(req.query.searchNameTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
+/*blogsRouter.get('/',
+    async (req: RequestQuery<QueryParamsAndNameTerm>,
+                   res: Response) => {
+    const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
+        req.query.searchNameTerm,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection)
+
     return getAllBlogs === null
         ? res.status(404).send("searchNameTerm not found")
-        : res.send(getAllBlogs);
-}));
-exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.id);
+        : res.send(getAllBlogs)
+
+})
+blogsRouter.get('/:id',
+    async (req: RequestParamsId<{ id: string }>,
+                   res: ResponseViewBody<BlogViewModel>) => {
+    const getByIdBlog = await blogsQueryRepository.findBlogById(req.params.id)
     if (!getByIdBlog) {
-        res.sendStatus(404);
+        res.sendStatus(404)
         return;
     }
-    res.send(getByIdBlog);
+    res.send(getByIdBlog)
     return;
-}));
-exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByBlogIdPosts = yield blogs_query_repository_1.blogsQueryRepository.searchPostByBlogId(req.params.blogId, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
+})
+blogsRouter.get('/:blogId/posts',
+    async (req: RequestParamsAndInputQuery<{blogId: string }, QueryParams>,
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
+    const getByBlogIdPosts = await blogsQueryRepository.searchPostByBlogId(
+        req.params.blogId,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection,)
+
     if (!getByBlogIdPosts) {
-        res.sendStatus(404);
+        res.sendStatus(404)
         return;
     }
-    res.send(getByBlogIdPosts);
-}));
+    res.send(getByBlogIdPosts)
+})*/
 exports.blogsRouter.post('/:blogId/posts', check_bodyPost_1.validatorInputBlogPostBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorBlogIdForCreatePost = yield posts_service_1.postsService.searchBlogIdForPost(req.params.blogId);
     if (!validatorBlogIdForCreatePost) {

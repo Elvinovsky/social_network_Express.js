@@ -6,25 +6,25 @@ import {
     RequestParamsAndInputBody,
     ResponseViewBody,
     RequestParamsId,
-    RequestParamsAndInputQuery, RequestQuery
+   // RequestParamsAndInputQuery, RequestQuery
 } from "../req-res-types";
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
-import {blogsQueryRepository} from "../repositories/queryRepository/blogs-query-repository";
+//import {blogsQueryRepository} from "../repositories/queryRepository/blogs-query-repository";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
-import {QueryParams, QueryParamsAndNameTerm} from "../models/query-params";
-import {PaginatorType} from "../helpers/pagination-helpers";
+//import {QueryParams, QueryParamsAndNameTerm} from "../models/query-params";
+//import {PaginatorType} from "../helpers/pagination-helpers";
 
 
 
 export const blogsRouter = Router ()
 
 
-blogsRouter.get('/',
+/*blogsRouter.get('/',
     async (req: RequestQuery<QueryParamsAndNameTerm>,
                    res: Response) => {
     const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
@@ -65,7 +65,7 @@ blogsRouter.get('/:blogId/posts',
         return;
     }
     res.send(getByBlogIdPosts)
-})
+})*/
 blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {

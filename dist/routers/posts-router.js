@@ -14,20 +14,33 @@ const express_1 = require("express");
 const posts_service_1 = require("../domains/posts-service");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
 const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
-const posts_query_repository_1 = require("../repositories/queryRepository/posts-query-repository");
+//import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
+//import {PaginatorType} from "../helpers/pagination-helpers";
+//import {QueryParamsAndTitleTerm} from "../models/query-params";
 exports.postsRouter = (0, express_1.Router)();
-exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield posts_query_repository_1.postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
+/*postsRouter.get('/',
+    async (req: RequestQuery<QueryParamsAndTitleTerm>,
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]> | string>) => {
+
+    const getAllPosts: PaginatorType<PostViewModel[]> | null = await postQueryRepository.returnOfAllPosts(
+        req.query.searchTitleTerm,
+        req.query.pageNumber,
+        req.query.pageSize,
+        req.query.sortBy,
+        req.query.sortDirection)
+
     return getAllPosts === null
-        ? res.status(404).send("searchNameTerm not found")
-        : res.send(getAllPosts);
-}));
-exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield posts_query_repository_1.postQueryRepository.findPostById(req.params.id);
+           ? res.status(404).send("searchNameTerm not found")
+           : res.send(getAllPosts)
+})
+postsRouter.get('/:id',
+    async (req: RequestParamsId<{ id: string }>,
+                   res: ResponseViewBody<PostViewModel>) => {
+    const getByIdPost = await postQueryRepository.findPostById(req.params.id)
     return getByIdPost === null
         ? res.sendStatus(404)
-        : res.send(getByIdPost);
-}));
+        : res.send(getByIdPost)
+}) */
 exports.postsRouter.post('/', check_bodyPost_1.validatorInputPostBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdNewPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(createdNewPost);

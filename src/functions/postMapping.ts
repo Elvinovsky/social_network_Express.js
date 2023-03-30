@@ -1,3 +1,4 @@
+/*
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 
 export const postMapping = (array: Array<PostViewModel>) =>{
@@ -13,3 +14,5 @@ export const postMapping = (array: Array<PostViewModel>) =>{
       }
     })
 }
+
+ */
