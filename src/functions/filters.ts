@@ -1,12 +1,12 @@
 
-export const filterTitle = (searchTerm: string | null) => {
-    return  searchTerm
-            ? {title : {$regex: searchTerm, $options: 'i'}}
+export const filterTitle = (searchTitleTerm: string | null) => {
+    return  searchTitleTerm
+            ? {title : {$regex: searchTitleTerm, $options: 'i'}}
             : {}
 }
 
-export const filterName = (searchTerm: string | null) => {
-    return  searchTerm
-            ? {name : {$regex: searchTerm, $options: 'i'}}
+export const filterName = (searchNameTerm: string | null) => {
+    return  searchNameTerm
+            ? {name : {$regex: searchNameTerm, $options: 'i'}}
             : {}
 }
