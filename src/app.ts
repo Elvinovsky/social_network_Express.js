@@ -1,5 +1,5 @@
 import {runDb} from "./database/runDB";
-import { app } from './settings'
+import { app } from "./settings"
 
 const port = process.env.PORT || 3999
 

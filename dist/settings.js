@@ -9,11 +9,12 @@ const posts_router_1 = require("./routers/posts-router");
 const blogs_router_1 = require("./routers/blogs-router");
 const Testing_DB_Delete_router_1 = require("./routers/Testing-DB-Delete-router");
 const jsonBodyMiddleware = express_1.default.json();
-exports.app = (0, express_1.default)();
-exports.app.use(jsonBodyMiddleware);
-exports.app.get('/', (req, res) => {
+const app = (0, express_1.default)();
+exports.app = app;
+app.use(jsonBodyMiddleware);
+app.get('/', (req, res) => {
     res.send('Hello World!!');
 });
-exports.app.use('/posts', posts_router_1.postsRouter);
-exports.app.use('/blogs', blogs_router_1.blogsRouter);
-exports.app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
+app.use('/posts', posts_router_1.postsRouter);
+app.use('/blogs', blogs_router_1.blogsRouter);
+app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
