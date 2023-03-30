@@ -8,6 +8,4 @@ const startApp = async () => {
     startServer();
 };
 
-(async () => {
-    await startApp();
-})();
+startApp()

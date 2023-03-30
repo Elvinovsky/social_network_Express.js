@@ -6,5 +6,11 @@
   ],
   "routes": [
     { "src": "/(.*)", "dest": "src/app.ts" }
-  ]
+  ],
+  "functions": {
+  "api/**/*.js": {
+    "memory": 512,
+    "maxDuration": 30
+  }
+}
 }

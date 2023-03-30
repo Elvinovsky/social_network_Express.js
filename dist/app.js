@@ -15,6 +15,4 @@ const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, runDB_1.runDb)();
     (0, settings_1.startServer)();
 });
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield startApp();
-}))();
+startApp();
