@@ -6,18 +6,18 @@ import {
     RequestParamsAndInputBody,
     ResponseViewBody,
     RequestParamsId,
-    //RequestQuery
+    RequestQuery
 } from "../req-res-types";
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
-//import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
-//import {PaginatorType} from "../helpers/pagination-helpers";
-//import {QueryParamsAndTitleTerm} from "../models/query-params";
+import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
+import {PaginatorType} from "../helpers/pagination-helpers";
+import {QueryParamsAndTitleTerm} from "../models/query-params";
 
 export const postsRouter = Router()
 
-/*postsRouter.get('/',
+postsRouter.get('/',
     async (req: RequestQuery<QueryParamsAndTitleTerm>,
                    res: ResponseViewBody<PaginatorType<PostViewModel[]> | string>) => {
 
@@ -39,7 +39,7 @@ postsRouter.get('/:id',
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost)
-}) */
+})
 postsRouter.post('/', validatorInputPostBody,
     async (req: RequestInputBody<PostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {

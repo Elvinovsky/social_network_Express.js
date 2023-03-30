@@ -1,11 +1,2 @@
 "use strict";
-/*
-export type PaginatorType<T> = {
-    "pagesCount": number,
-    "page": number,
-    "pageSize": number,
-    "totalCount": number,
-    "items": T
-}
-
- */ 
+Object.defineProperty(exports, "__esModule", { value: true });

@@ -1,4 +1,4 @@
-/* import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {postsCollection} from "../../database/runDB";
 import {postMapping} from "../../functions/postMapping";
 import {PaginatorType} from "../../helpers/pagination-helpers";
@@ -42,4 +42,4 @@ export const postQueryRepository = {
         return  await postsCollection.findOne({id}, blockMongo_Id)
     },
 
-} */
+}

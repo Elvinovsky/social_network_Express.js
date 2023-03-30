@@ -10,9 +10,9 @@ app.use(jsonBodyMiddleware)
 app.get('/', (req:Request, res:Response) => {
     res.send('Hello World!!')
 })
-//app.use('/posts', postsRouter)
-//app.use('/blogs', blogsRouter)
-//app.use('/testing', deleteAllDataRouter)
+app.use('/posts', postsRouter)
+app.use('/blogs', blogsRouter)
+app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
     const port = process.env.PORT || 3999;

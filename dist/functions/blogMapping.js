@@ -1,10 +1,8 @@
 "use strict";
-/*
-import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
-
-
-export const blogMapping = (array: Array<BlogViewModel>) =>{
-    return array.map((el: BlogViewModel) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.blogMapping = void 0;
+const blogMapping = (array) => {
+    return array.map((el) => {
         return {
             id: el.id,
             name: el.name,
@@ -12,8 +10,7 @@ export const blogMapping = (array: Array<BlogViewModel>) =>{
             websiteUrl: el.websiteUrl,
             createdAt: el.createdAt,
             isMembership: el.isMembership
-        }
-    })
-}
-
- */ 
+        };
+    });
+};
+exports.blogMapping = blogMapping;

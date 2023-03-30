@@ -1,4 +1,3 @@
-/*
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 
 
@@ -14,5 +13,3 @@ export const blogMapping = (array: Array<BlogViewModel>) =>{
         }
     })
 }
-
- */

@@ -1,4 +1,3 @@
-/*
 export type PaginatorType<T> = {
     "pagesCount": number,
     "page": number,
@@ -6,5 +5,3 @@ export type PaginatorType<T> = {
     "totalCount": number,
     "items": T
 }
-
- */

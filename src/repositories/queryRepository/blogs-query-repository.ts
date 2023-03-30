@@ -1,4 +1,4 @@
-/* import {blogsCollection, postsCollection} from "../../database/runDB";
+import {blogsCollection, postsCollection} from "../../database/runDB";
 import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {blogMapping} from "../../functions/blogMapping";
@@ -73,4 +73,4 @@ export const blogsQueryRepository = {
             items: postMapping(foundBlogs)
         }
     },
-} */
+}
