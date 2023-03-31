@@ -1,9 +1,17 @@
 import { runDb } from "./database/runDB";
-import { startServer } from "./settings";
+import {app, startServer} from "./settings";
 
 const startApp = async () => {
-    await runDb();
-    await startServer();
+
+    try {
+        await runDb();
+        startServer();
+    }
+    catch {
+        console.log("error")
+    }
 };
 
 startApp()
+
+module.exports = app

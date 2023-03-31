@@ -12,7 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const runDB_1 = require("./database/runDB");
 const settings_1 = require("./settings");
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, runDB_1.runDb)();
-    yield (0, settings_1.startServer)();
+    try {
+        yield (0, runDB_1.runDb)();
+        (0, settings_1.startServer)();
+    }
+    catch (_a) {
+        console.log("error");
+    }
 });
 startApp();
+module.exports = settings_1.app;

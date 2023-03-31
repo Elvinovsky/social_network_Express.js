@@ -15,15 +15,10 @@ app.use('/blogs', blogsRouter)
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
-    const port = process.env.PORT || 3999;
-    try {
-        app.listen(port, () => {
+    const port = process.env.PORT || 3003;
+    app.listen(port, () => {
             console.log(`Example app listening on port ${port}`);
-        });
-    }
-    catch {
-        console.log(`not connect`);
-    }
+        })
 };
 
 export { app, startServer };
