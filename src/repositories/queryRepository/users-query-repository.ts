@@ -7,7 +7,7 @@ import {
     PaginatorType
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id, filterLoginOrEmail} from "../../functions/filters";
-import {UserViewModel} from "../../models/modelsUsers/usersInputModel";
+import {UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
 import {usersCollection} from "../../database/runDB";
 import {usersMapping} from "../../functions/usersMapping";
 
@@ -25,7 +25,7 @@ export const usersQueryRepository = {
         if (calculateOfFiles === 0) {
             return null
         }
-        const foundUsers: UserViewModel[] = await usersCollection
+        const foundUsers: UserCreateModel[] = await usersCollection
             .find(filterLoginOrEmail( searchEmailTerm, searchLoginTerm ), blockMongo_Id)
             .sort({
                 [getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection),

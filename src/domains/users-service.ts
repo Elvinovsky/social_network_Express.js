@@ -1,9 +1,9 @@
-import { UserViewModel } from "../models/modelsUsers/usersInputModel";
+import {UserCreateModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
 import { usersRepository } from "../repositories/db/users-db-repository";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string  ): Promise<UserViewModel> {
-        const newUser: UserViewModel = {
+        const newUser: UserCreateModel = {
             id: (+(new Date())).toString(),
             login: login,
             password: password,

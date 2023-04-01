@@ -16,8 +16,8 @@ exports.usersRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             yield runDB_1.usersCollection.insertOne(newUser);
             return {
+                id: newUser.id,
                 login: newUser.login,
-                password: newUser.password,
                 email: newUser.email,
                 createdAt: newUser.createdAt
             };

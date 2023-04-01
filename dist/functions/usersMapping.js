@@ -4,8 +4,8 @@ exports.usersMapping = void 0;
 const usersMapping = (array) => {
     return array.map((el) => {
         return {
+            id: el.id,
             login: el.login,
-            password: el.password,
             email: el.email,
             createdAt: el.createdAt
         };

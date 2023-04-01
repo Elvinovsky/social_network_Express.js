@@ -15,6 +15,7 @@ exports.usersService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const newUser = {
+                id: (+(new Date())).toString(),
                 login: login,
                 password: password,
                 email: email,

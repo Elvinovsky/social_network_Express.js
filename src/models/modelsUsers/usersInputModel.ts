@@ -15,7 +15,13 @@ export type UserInputModel = {
 export type UserViewModel = {
     id: string,
     login:	string,
-    password: string
-    email: string
+    email: string,
+    createdAt: string
+}
+export type UserCreateModel = {
+    id: string,
+    login:	string,
+    password: string,
+    email: string,
     createdAt: string
 }
