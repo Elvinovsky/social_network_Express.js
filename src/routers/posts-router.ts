@@ -13,12 +13,12 @@ import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
 import {PaginatorType} from "../helpers/pagination-helpers";
-import {QueryParamsAndTitleTerm} from "../models/query-params";
+import {QueryParams, SearchTitleTerm} from "../models/query-params";
 
 export const postsRouter = Router()
 
 postsRouter.get('/',
-    async (req: RequestQuery<QueryParamsAndTitleTerm>,
+    async (req: RequestQuery<QueryParams&SearchTitleTerm>,
                    res: ResponseViewBody<PaginatorType<PostViewModel[]> | string>) => {
 
     const getAllPosts: PaginatorType<PostViewModel[]> | null = await postQueryRepository.returnOfAllPosts(
@@ -35,7 +35,7 @@ postsRouter.get('/',
 postsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
                    res: ResponseViewBody<PostViewModel>) => {
-    const getByIdPost = await postQueryRepository.findPostById(req.params.id)
+    const getByIdPost = await postsService.findPostById(req.params.id)
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost)

@@ -1,21 +1,10 @@
-export type QueryParams = {
+export type QueryParams= {
     pageNumber: number | null,
     pageSize: number | null,
     sortBy: string | null,
-    sortDirection: string
+    sortDirection: string,
 }
-export type QueryParamsAndNameTerm = {
-    pageNumber: number | null,
-    pageSize: number | null,
-    sortBy: string | null,
-    sortDirection: string
-    searchNameTerm: string | null
-}
-
-export type QueryParamsAndTitleTerm = {
-    pageNumber: number | null,
-    pageSize: number | null,
-    sortBy: string | null,
-    sortDirection: string
-    searchTitleTerm: string | null
-}
+export type SearchNameTerm = {searchNameTerm: string | null }
+export type SearchTitleTerm = {searchTitleTerm: string | null}
+export type SearchEmailTerm = {searchEmailTerm: string | null}
+export type SearchLoginTerm = {searchLoginTerm: string | null}

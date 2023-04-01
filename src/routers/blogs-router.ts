@@ -16,7 +16,7 @@ import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bo
 import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsService} from "../domains/posts-service";
-import {QueryParams, QueryParamsAndNameTerm} from "../models/query-params";
+import {QueryParams, SearchNameTerm} from "../models/query-params";
 import {PaginatorType} from "../helpers/pagination-helpers";
 
 
@@ -25,7 +25,7 @@ export const blogsRouter = Router ()
 
 
 blogsRouter.get('/',
-    async (req: RequestQuery<QueryParamsAndNameTerm>,
+    async (req: RequestQuery<QueryParams&SearchNameTerm>,
                    res: Response) => {
     const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
@@ -42,7 +42,7 @@ blogsRouter.get('/',
 blogsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
                    res: ResponseViewBody<BlogViewModel>) => {
-    const getByIdBlog = await blogsQueryRepository.findBlogById(req.params.id)
+    const getByIdBlog = await blogsService.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
         return;

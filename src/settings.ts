@@ -2,6 +2,7 @@ import express, {Request, Response} from "express";
 import {postsRouter} from "./routers/posts-router";
 import {blogsRouter} from "./routers/blogs-router";
 import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
+import {usersRouter} from "./routers/users-router";
 
 const jsonBodyMiddleware = express.json()
 const app = express()
@@ -12,10 +13,11 @@ app.get('/', (req:Request, res:Response) => {
 })
 app.use('/posts', postsRouter)
 app.use('/blogs', blogsRouter)
+app.use('/users', usersRouter)
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
-    const port = process.env.PORT || 3003;
+    const port = process.env.PORT || 3005;
     app.listen(port, () => {
             console.log(`Example app listening on port ${port}`);
         })

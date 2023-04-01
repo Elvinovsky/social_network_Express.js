@@ -12,3 +12,9 @@ export type UserInputModel = {
      * pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
      */
 }
+export type UserViewModel = {
+    login:	string,
+    password: string
+    email: string
+    createdAt: string
+}

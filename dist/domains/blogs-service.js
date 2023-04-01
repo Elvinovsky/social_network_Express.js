@@ -19,7 +19,7 @@ exports.blogsService = {
     },
     createBlog(name, description, websiteUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createBlog = {
+            const createdBlog = {
                 id: (+(new Date())).toString(),
                 name: name,
                 description: description,
@@ -27,7 +27,7 @@ exports.blogsService = {
                 createdAt: new Date().toISOString(),
                 isMembership: false
             };
-            return yield blogs_db_repository_1.blogsRepository.addNewBlog(createBlog);
+            return yield blogs_db_repository_1.blogsRepository.addNewBlog(createdBlog);
         });
     },
     updateBlogById(id, name, description, websiteUrl) {

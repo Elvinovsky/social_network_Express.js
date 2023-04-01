@@ -25,7 +25,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
         : res.send(getAllBlogs);
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.id);
+    const getByIdBlog = yield blogs_service_1.blogsService.findBlogById(req.params.id);
     if (!getByIdBlog) {
         res.sendStatus(404);
         return;

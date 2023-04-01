@@ -2,13 +2,14 @@ import {blogsRepository} from "../repositories/db/blogs-db-repository";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 
 
+
 export const blogsService = {
     async findBlogById(id: string): Promise <BlogViewModel | null> {
         return blogsRepository.findBlogById(id)
     },
-    async createBlog(name: string, description: string, websiteUrl: string,): Promise <BlogViewModel> {
+    async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogViewModel> {
 
-        const createBlog: BlogViewModel = {
+        const createdBlog: BlogViewModel = {
             id: (+(new Date())).toString(),
             name: name,
             description: description,
@@ -16,7 +17,7 @@ export const blogsService = {
             createdAt: new Date().toISOString(),
             isMembership: false
         }
-        return await blogsRepository.addNewBlog(createBlog)
+        return await blogsRepository.addNewBlog(createdBlog)
     },
     async updateBlogById(id: string, name: string, description: string, websiteUrl: string): Promise <boolean> {
        return blogsRepository.updateBlogById(id, name, description, websiteUrl)

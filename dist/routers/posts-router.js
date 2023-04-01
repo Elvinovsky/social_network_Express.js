@@ -23,7 +23,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
         : res.send(getAllPosts);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByIdPost = yield posts_query_repository_1.postQueryRepository.findPostById(req.params.id);
+    const getByIdPost = yield posts_service_1.postsService.findPostById(req.params.id);
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost);

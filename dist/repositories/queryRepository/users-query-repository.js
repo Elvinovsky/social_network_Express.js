@@ -9,21 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postQueryRepository = void 0;
-const runDB_1 = require("../../database/runDB");
-const postMapping_1 = require("../../functions/postMapping");
+exports.usersQueryRepository = void 0;
 const pagination_helpers_1 = require("../../helpers/pagination-helpers");
 const filters_1 = require("../../functions/filters");
-exports.postQueryRepository = {
-    returnOfAllPosts(searchTitleTerm, pageNumber, pageSize, sortBy, sortDirection) {
+const runDB_1 = require("../../database/runDB");
+const usersMapping_1 = require("../../functions/usersMapping");
+exports.usersQueryRepository = {
+    returnOfAllUsers(searchEmailTerm, searchLoginTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            const calculateOfFiles = yield runDB_1.postsCollection.countDocuments((0, filters_1.filterTitle)(searchTitleTerm));
+            const calculateOfFiles = yield runDB_1.usersCollection.countDocuments((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm));
             if (calculateOfFiles === 0) {
                 return null;
             }
-            const foundPosts = yield runDB_1.postsCollection
-                .find((0, filters_1.filterTitle)(searchTitleTerm), filters_1.blockMongo_Id)
-                .sort({ [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection) })
+            const foundUsers = yield runDB_1.usersCollection
+                .find((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm), filters_1.blockMongo_Id)
+                .sort({
+                [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection),
+                createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection)
+            })
                 .skip((0, pagination_helpers_1.getMongoSkip)((0, pagination_helpers_1.getMongoPageNumber)(pageNumber), (0, pagination_helpers_1.getMongoPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getMongoPageSize)(pageSize)).toArray();
             return {
@@ -31,7 +34,7 @@ exports.postQueryRepository = {
                 page: (0, pagination_helpers_1.getMongoPageNumber)(pageNumber),
                 pageSize: (0, pagination_helpers_1.getMongoPageSize)(pageSize),
                 totalCount: calculateOfFiles,
-                items: (0, postMapping_1.postMapping)(foundPosts)
+                items: (0, usersMapping_1.usersMapping)(foundUsers)
             };
         });
     },

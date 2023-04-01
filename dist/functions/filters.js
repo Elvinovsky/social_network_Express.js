@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterName = exports.filterTitle = void 0;
+exports.blockMongo_Id = exports.filterLoginOrEmail = exports.filterName = exports.filterTitle = void 0;
 const filterTitle = (searchTitleTerm) => {
     return searchTitleTerm
         ? { title: { $regex: searchTitleTerm, $options: 'i' } }
@@ -13,3 +13,12 @@ const filterName = (searchNameTerm) => {
         : {};
 };
 exports.filterName = filterName;
+const filterLoginOrEmail = (searchEmailTerm, searchLoginTerm) => {
+    return searchLoginTerm
+        ? { login: { $regex: searchLoginTerm, $options: 'i' } }
+        : searchEmailTerm ?
+            { email: { $regex: searchEmailTerm, $options: 'i' } }
+            : {};
+};
+exports.filterLoginOrEmail = filterLoginOrEmail;
+exports.blockMongo_Id = { projection: { _id: 0 } };
