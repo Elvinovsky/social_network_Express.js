@@ -14,14 +14,15 @@ const users_db_repository_1 = require("../repositories/db/users-db-repository");
 exports.usersService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newUser = {
-                id: (+(new Date())).toString(),
-                login: login,
-                password: password,
-                email: email,
-                createdAt: new Date().toISOString()
-            };
-            return yield users_db_repository_1.usersRepository.addNewUser(newUser);
+            const passwordSalt = yield bcrypt.genSalt;
         });
     },
+    const: newUser, UserCreateModel: usersInputModel_1.UserCreateModel = {
+        id: (+(new Date())).toString(),
+        login: login,
+        password: password,
+        email: email,
+        createdAt: new Date().toISOString()
+    },
+    return: await users_db_repository_1.usersRepository.addNewUser(newUser)
 };
