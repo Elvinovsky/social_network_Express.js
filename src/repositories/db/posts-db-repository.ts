@@ -2,6 +2,7 @@ import {blogsCollection, postsCollection} from "../../database/runDB";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {DeleteResult} from "mongodb";
+import {blockMongo_Id} from "../../functions/filters";
 
 
 export const postsRepository = {
@@ -11,7 +12,7 @@ export const postsRepository = {
     },
     //поиск поста по ID.
     async findPostById(id: string): Promise <PostViewModel | null> {
-        return  await postsCollection.findOne({id}, {projection: {_id: 0}})
+        return  await postsCollection.findOne({id}, blockMongo_Id)
     },
     //создание и добавление нового поста в базу данных.
     async addNewPost(newPost: PostViewModel): Promise <PostViewModel> {

@@ -11,7 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const runDB_1 = require("../../database/runDB");
+const filters_1 = require("../../functions/filters");
 exports.usersRepository = {
+    testingDeleteAllUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield runDB_1.usersCollection.deleteMany({});
+        });
+    },
+    findUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield runDB_1.usersCollection.findOne({ id }, filters_1.blockMongo_Id);
+        });
+    },
     addNewUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
             yield runDB_1.usersCollection.insertOne(newUser);
@@ -23,4 +34,10 @@ exports.usersRepository = {
             };
         });
     },
+    userByIdDelete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deleteResult = yield runDB_1.usersCollection.deleteOne({ id });
+            return deleteResult.deletedCount === 1;
+        });
+    }
 };

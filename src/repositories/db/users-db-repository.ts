@@ -1,8 +1,16 @@
-import {usersCollection} from "../../database/runDB";
-import {UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
+import { usersCollection } from "../../database/runDB";
+import { UserCreateModel, UserViewModel } from "../../models/modelsUsers/usersInputModel";
+import { DeleteResult } from "mongodb";
+import { blockMongo_Id } from "../../functions/filters";
 
 export const usersRepository = {
-async addNewUser(newUser: UserCreateModel): Promise <UserViewModel> {
+    async testingDeleteAllUsers(): Promise<DeleteResult> {
+        return await usersCollection.deleteMany({})
+    },
+    async findUserById(id: string): Promise <UserViewModel | null> {
+        return  await usersCollection.findOne({id}, blockMongo_Id)
+    },
+    async addNewUser(newUser: UserCreateModel): Promise <UserViewModel> {
     await usersCollection.insertOne(newUser)
     return {
         id: newUser.id,
@@ -11,4 +19,8 @@ async addNewUser(newUser: UserCreateModel): Promise <UserViewModel> {
         createdAt: newUser.createdAt
     }
 },
+    async userByIdDelete(id: string):Promise <boolean> {
+        const deleteResult = await usersCollection.deleteOne({id})
+        return deleteResult.deletedCount === 1
+    }
 }

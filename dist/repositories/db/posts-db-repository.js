@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
+const filters_1 = require("../../functions/filters");
 exports.postsRepository = {
     // тестовое удаление базы данных Постов
     testingDeleteAllPosts() {
@@ -21,7 +22,7 @@ exports.postsRepository = {
     //поиск поста по ID.
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.findOne({ id }, { projection: { _id: 0 } });
+            return yield runDB_1.postsCollection.findOne({ id }, filters_1.blockMongo_Id);
         });
     },
     //создание и добавление нового поста в базу данных.

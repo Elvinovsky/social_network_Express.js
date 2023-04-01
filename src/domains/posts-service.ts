@@ -27,7 +27,7 @@ export const postsService = {
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {
         return postsRepository.updatePostById(id, title, shortDescription, content)
     },
-    async postByIdDelete(id: string):Promise <boolean> {
+    async postByIdDelete( id: string ):Promise <boolean> {
         return  await postsRepository.postByIdDelete(id)
     }
 }

@@ -8,21 +8,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersService = void 0;
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.usersService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield bcrypt.genSalt;
+            const passwordSalt = yield bcrypt_1.default.genSalt(7);
+            const passwordHash = yield this.generateHash(password, passwordSalt);
+            const newUser = {
+                id: (+(new Date())).toString(),
+                login: login,
+                password: passwordHash,
+                email: email,
+                createdAt: new Date().toISOString()
+            };
+            return yield users_db_repository_1.usersRepository.addNewUser(newUser);
         });
     },
-    const: newUser, UserCreateModel: usersInputModel_1.UserCreateModel = {
-        id: (+(new Date())).toString(),
-        login: login,
-        password: password,
-        email: email,
-        createdAt: new Date().toISOString()
+    findUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield users_db_repository_1.usersRepository.findUserById(id);
+        });
     },
-    return: await users_db_repository_1.usersRepository.addNewUser(newUser)
+    generateHash(password, passwordSalt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.hash(password, passwordSalt);
+        });
+    },
+    userByIdDelete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield users_db_repository_1.usersRepository.userByIdDelete(id);
+        });
+    }
 };
