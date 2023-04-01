@@ -4,6 +4,7 @@ import { usersRepository } from "../repositories/db/users-db-repository";
 export const usersService = {
     async createUser(login: string, password: string, email: string  ): Promise<UserViewModel> {
         const newUser: UserViewModel = {
+            id: (+(new Date())).toString(),
             login: login,
             password: password,
             email: email,

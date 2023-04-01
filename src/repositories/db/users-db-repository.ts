@@ -5,6 +5,7 @@ export const usersRepository = {
 async addNewUser(newUser: UserViewModel): Promise <UserViewModel> {
     await usersCollection.insertOne(newUser)
     return {
+        id: newUser.id,
         login: newUser.login,
         password: newUser.password,
         email: newUser.email,

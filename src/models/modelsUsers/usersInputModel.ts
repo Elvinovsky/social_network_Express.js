@@ -13,6 +13,7 @@ export type UserInputModel = {
      */
 }
 export type UserViewModel = {
+    id: string,
     login:	string,
     password: string
     email: string
