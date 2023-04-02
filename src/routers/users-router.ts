@@ -7,7 +7,7 @@ import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-params";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
 import {guardAuthentication} from "../middlewares/guard-authentication";
-import {postsRouter} from "./posts-router";
+
 
 export const usersRouter = Router()
 
@@ -43,7 +43,7 @@ usersRouter.get('/:id',
             ? res.sendStatus(404)
             : res.send(getByIdUser)
     })
-postsRouter.delete('/:id', guardAuthentication,
+usersRouter.delete('/:id', guardAuthentication,
     async (req: RequestParamsId<{ id: string }>,
            res: Response) => {
         const foundUserDelete = await usersService.userByIdDelete(req.params.id)

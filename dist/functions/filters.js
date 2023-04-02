@@ -14,7 +14,13 @@ const filterName = (searchNameTerm) => {
 };
 exports.filterName = filterName;
 const filterLoginOrEmail = (searchEmailTerm, searchLoginTerm) => {
-    return { $or: [{ login: { $regex: searchLoginTerm, $options: 'i' } }, { email: { $regex: searchEmailTerm, $options: 'i' } }] };
+    return searchLoginTerm && searchEmailTerm
+        ? { $or: [{ login: { $regex: searchLoginTerm, $options: 'i' } }, { email: { $regex: searchEmailTerm, $options: 'i' } }] }
+        : !searchEmailTerm && searchLoginTerm ?
+            { login: { $regex: searchLoginTerm, $options: 'i' } }
+            : searchEmailTerm ?
+                { email: { $regex: searchEmailTerm, $options: 'i' } }
+                : {};
 };
 exports.filterLoginOrEmail = filterLoginOrEmail;
 exports.blockMongo_Id = { projection: { _id: 0 } };

@@ -33,7 +33,15 @@ exports.usersService = {
     },
     findUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.findUserById(id);
+            const user = yield users_db_repository_1.usersRepository.findUserById(id);
+            if (!user)
+                return null;
+            return {
+                id: user.id,
+                login: user.login,
+                email: user.email,
+                createdAt: user.createdAt
+            };
         });
     },
     generateHash(password, passwordSalt) {

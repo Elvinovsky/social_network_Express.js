@@ -15,7 +15,6 @@ const users_service_1 = require("../domains/users-service");
 const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
 const guard_authentication_1 = require("../middlewares/guard-authentication");
-const posts_router_1 = require("./posts-router");
 exports.usersRouter = (0, express_1.Router)();
 exports.usersRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllUsers = yield users_query_repository_1.usersQueryRepository.returnOfAllUsers(req.query.searchEmailTerm, req.query.searchLoginTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
@@ -34,7 +33,7 @@ exports.usersRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
         ? res.sendStatus(404)
         : res.send(getByIdUser);
 }));
-posts_router_1.postsRouter.delete('/:id', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usersRouter.delete('/:id', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundUserDelete = yield users_service_1.usersService.userByIdDelete(req.params.id);
     if (!foundUserDelete) {
         res.sendStatus(404);

@@ -1,7 +1,7 @@
 import {UserCreateModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
 
-export const usersMapping = (array: Array<UserCreateModel>) =>{
-    return array.map((el: UserViewModel) => {
+export const usersMapping = (array: Array<UserCreateModel>): UserViewModel[] =>{
+    return array.map((el) => {
         return {
             id: el.id,
             login: el.login,
