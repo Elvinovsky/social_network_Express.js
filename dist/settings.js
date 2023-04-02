@@ -16,9 +16,9 @@ app.use(jsonBodyMiddleware);
 app.get('/', (req, res) => {
     res.send('Hello World!!');
 });
+app.use('/users', users_router_1.usersRouter);
 app.use('/posts', posts_router_1.postsRouter);
 app.use('/blogs', blogs_router_1.blogsRouter);
-app.use('/users', users_router_1.usersRouter);
 app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
 const startServer = () => {
     const port = process.env.PORT || 3005;

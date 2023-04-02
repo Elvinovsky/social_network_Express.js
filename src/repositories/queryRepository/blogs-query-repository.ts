@@ -11,23 +11,26 @@ import {
     getMongoSortDirection, pagesCountOfBlogs,
     PaginatorType
 } from "../../helpers/pagination-helpers";
-import {blockMongo_Id, filterName} from "../../functions/filters";
+import {blockMongo_Id} from "../../functions/filters";
+import {Filter} from "mongodb";
 
 export const blogsQueryRepository = {
 
     async returnOfAllBlogs
-    (searchNameTerm: string  | null,
-     pageNumber: number | null,
-     pageSize: number | null,
-     sortBy: string | null,
-     sortDirection: string | null
-): Promise<PaginatorType<BlogViewModel[]> | null> {
-        const calculateOfFiles = await blogsCollection.countDocuments(filterName(searchNameTerm))
-        if(calculateOfFiles === 0) {
-            return null
+    (searchNameTerm: string | undefined,
+     pageNumber?: number,
+     pageSize?: number,
+     sortBy?: string,
+     sortDirection?: string,
+    ): Promise<PaginatorType<BlogViewModel[]>> {
+        const filter: Filter<BlogViewModel> = {}
+        if(searchNameTerm) {
+            filter.name = {$regex: searchNameTerm, $options: 'i'}
         }
+        const calculateOfFiles = await blogsCollection.countDocuments(filter)
+
         const foundBlogs: BlogViewModel[] = await blogsCollection
-                .find(filterName(searchNameTerm), blockMongo_Id)
+                .find(filter, blockMongo_Id)
                 .sort({[getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection), createdAt: getMongoSortDirection(sortDirection)})
                 .skip(getMongoSkip(getMongoPageNumber(pageNumber), getMongoPageSize(pageSize)))
                 .limit(getMongoPageSize(pageSize)).toArray()
@@ -41,11 +44,11 @@ export const blogsQueryRepository = {
     },
     async searchPostByBlogId
     (blogId: string,
-     pageNumber: number | null,
-     pageSize: number | null,
-     sortBy: string | null,
-     sortDirection: string | null,
-):Promise<PaginatorType<PostViewModel[]> | null> {
+     pageNumber: number,
+     pageSize: number,
+     sortBy?: string,
+     sortDirection?: string,
+    ):Promise<PaginatorType<PostViewModel[]> | null> {
 
         const blogIdForPost = await postsCollection.findOne({blogId: blogId})
         if (!blogIdForPost){

@@ -29,14 +29,12 @@ blogsRouter.get('/',
                    res: Response) => {
     const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
-        req.query.pageNumber,
-        req.query.pageSize,
+        Number(req.query.pageNumber),
+        Number(req.query.pageSize),
         req.query.sortBy,
         req.query.sortDirection)
 
-    return getAllBlogs === null
-        ? res.status(404).send("searchNameTerm not found")
-        : res.send(getAllBlogs)
+        res.send(getAllBlogs)
 
 })
 blogsRouter.get('/:id',
@@ -55,8 +53,8 @@ blogsRouter.get('/:blogId/posts',
                    res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
     const getByBlogIdPosts = await blogsQueryRepository.searchPostByBlogId(
         req.params.blogId,
-        req.query.pageNumber,
-        req.query.pageSize,
+        Number(req.query.pageNumber),
+        Number(req.query.pageSize),
         req.query.sortBy,
         req.query.sortDirection,)
 

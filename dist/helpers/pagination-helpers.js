@@ -17,7 +17,7 @@ const getMongoSortDirection = (sortDirection) => {
     return sortDirection === 'asc' ? 1 : -1;
 };
 exports.getMongoSortDirection = getMongoSortDirection;
-const getMongoSkip = (pageNumber, pageSize) => {
+const getMongoSkip = (pageNumber = 1, pageSize = 10) => {
     return (+pageNumber - 1) * +pageSize;
 };
 exports.getMongoSkip = getMongoSkip;

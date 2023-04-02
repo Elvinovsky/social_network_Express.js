@@ -1,4 +1,4 @@
-import {Response,Request, Router} from "express";
+import {Response, Router} from "express";
 import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../req-res-types";
 import {UserInputModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
 import {usersService} from "../domains/users-service";
@@ -12,19 +12,17 @@ import {guardAuthentication} from "../middlewares/guard-authentication";
 export const usersRouter = Router()
 
 usersRouter.get('/', guardAuthentication,
-    async (req: Request,
-           res: Response) => {
+    async (req: RequestQuery<QueryParams&SearchEmailTerm&SearchLoginTerm>,
+           res: ResponseViewBody<PaginatorType<UserViewModel[]>>) => {
         const getAllUsers = await usersQueryRepository.returnOfAllUsers(
             req.query.searchEmailTerm,
             req.query.searchLoginTerm,
-            req.query.pageNumber,
-            req.query.pageSize,
+            Number(req.query.pageNumber),
+            Number(req.query.pageSize),
             req.query.sortBy,
             req.query.sortDirection)
 
-        return !getAllUsers
-            ? res.sendStatus(404)
-            : res.send(getAllUsers)
+            res.send(getAllUsers)
     })
 usersRouter.post('/', validatorInputUserBody,
     async (req: RequestInputBody<UserInputModel>,

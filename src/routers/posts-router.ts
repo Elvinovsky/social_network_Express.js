@@ -19,18 +19,17 @@ export const postsRouter = Router()
 
 postsRouter.get('/',
     async (req: RequestQuery<QueryParams&SearchTitleTerm>,
-                   res: ResponseViewBody<PaginatorType<PostViewModel[]> | string>) => {
+                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
 
-    const getAllPosts: PaginatorType<PostViewModel[]> | null = await postQueryRepository.returnOfAllPosts(
+    const getAllPosts: PaginatorType<PostViewModel[]> = await postQueryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
-        req.query.pageNumber,
-        req.query.pageSize,
+        Number(req.query.pageNumber),
+        Number(req.query.pageSize),
         req.query.sortBy,
         req.query.sortDirection)
-
-    return getAllPosts === null
-           ? res.status(404).send("searchNameTerm not found")
-           : res.send(getAllPosts)
+        console.log(getAllPosts)
+        console.log(typeof getAllPosts)
+        res.send(getAllPosts)
 })
 postsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,

@@ -14,23 +14,18 @@ import {usersMapping} from "../../functions/usersMapping";
 export const usersQueryRepository = {
 
     async returnOfAllUsers
-    (searchEmailTerm: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
-     searchLoginTerm: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
-     pageNumber: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
-     pageSize: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
-     sortBy: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
-     sortDirection: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined
-    ): Promise<PaginatorType<UserViewModel[]> | null> {
-        const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail( searchEmailTerm, searchLoginTerm ))
-        if (calculateOfFiles === 0) {
-            return null
-        }
+    (searchEmailTerm?: string,
+     searchLoginTerm?: string,
+     pageNumber?: number,
+     pageSize?: number,
+     sortBy?: string,
+     sortDirection?: string
+    ): Promise<PaginatorType<UserViewModel[]>> {
+
+        const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
         const foundUsers: UserCreateModel[] = await usersCollection
-            .find(filterLoginOrEmail( searchEmailTerm, searchLoginTerm ), blockMongo_Id)
-            .sort({
-                [getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection),
-                createdAt: getMongoSortDirection(sortDirection)
-            })
+            .find(filterLoginOrEmail(searchEmailTerm, searchLoginTerm), blockMongo_Id)
+            .sort({[getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection), createdAt: getMongoSortDirection(sortDirection)})
             .skip(getMongoSkip(getMongoPageNumber(pageNumber), getMongoPageSize(pageSize)))
             .limit(getMongoPageSize(pageSize)).toArray()
         return {

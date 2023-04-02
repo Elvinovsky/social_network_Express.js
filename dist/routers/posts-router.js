@@ -17,10 +17,10 @@ const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost")
 const posts_query_repository_1 = require("../repositories/queryRepository/posts-query-repository");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllPosts = yield posts_query_repository_1.postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
-    return getAllPosts === null
-        ? res.status(404).send("searchNameTerm not found")
-        : res.send(getAllPosts);
+    const getAllPosts = yield posts_query_repository_1.postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
+    console.log(getAllPosts);
+    console.log(typeof getAllPosts);
+    res.send(getAllPosts);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByIdPost = yield posts_service_1.postsService.findPostById(req.params.id);

@@ -18,12 +18,13 @@ const filters_1 = require("../../functions/filters");
 exports.blogsQueryRepository = {
     returnOfAllBlogs(searchNameTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            const calculateOfFiles = yield runDB_1.blogsCollection.countDocuments((0, filters_1.filterName)(searchNameTerm));
-            if (calculateOfFiles === 0) {
-                return null;
+            const filter = {};
+            if (searchNameTerm) {
+                filter.name = { $regex: searchNameTerm, $options: 'i' };
             }
+            const calculateOfFiles = yield runDB_1.blogsCollection.countDocuments(filter);
             const foundBlogs = yield runDB_1.blogsCollection
-                .find((0, filters_1.filterName)(searchNameTerm), filters_1.blockMongo_Id)
+                .find(filter, filters_1.blockMongo_Id)
                 .sort({ [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getMongoSkip)((0, pagination_helpers_1.getMongoPageNumber)(pageNumber), (0, pagination_helpers_1.getMongoPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getMongoPageSize)(pageSize)).toArray();

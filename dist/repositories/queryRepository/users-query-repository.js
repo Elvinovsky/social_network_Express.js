@@ -18,15 +18,9 @@ exports.usersQueryRepository = {
     returnOfAllUsers(searchEmailTerm, searchLoginTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
             const calculateOfFiles = yield runDB_1.usersCollection.countDocuments((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm));
-            if (calculateOfFiles === 0) {
-                return null;
-            }
             const foundUsers = yield runDB_1.usersCollection
                 .find((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm), filters_1.blockMongo_Id)
-                .sort({
-                [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection),
-                createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection)
-            })
+                .sort({ [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getMongoSkip)((0, pagination_helpers_1.getMongoPageNumber)(pageNumber), (0, pagination_helpers_1.getMongoPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getMongoPageSize)(pageSize)).toArray();
             return {

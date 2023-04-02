@@ -8,23 +8,27 @@ import {
     getMongoSortDirection, pagesCountOfBlogs,
     PaginatorType
 } from "../../helpers/pagination-helpers";
-import {blockMongo_Id, filterTitle} from "../../functions/filters";
+import {blockMongo_Id} from "../../functions/filters";
+import {Filter} from "mongodb";
+
 
 export const postQueryRepository = {
     async returnOfAllPosts
-    (searchTitleTerm: string | null,
-     pageNumber: number | null,
-     pageSize: number | null,
-     sortBy: string | null,
-     sortDirection: string | null,
-): Promise<PaginatorType<PostViewModel[]> | null> {
+    (searchTitleTerm: string | undefined,
+     pageNumber?: number,
+     pageSize?: number,
+     sortBy?: string,
+     sortDirection?: string,
+    ): Promise<PaginatorType<PostViewModel[]>> {
 
-        const calculateOfFiles = await postsCollection.countDocuments(filterTitle(searchTitleTerm))
-        if (calculateOfFiles === 0) {
-            return null
+        const filter: Filter<PostViewModel> = {}
+        if(searchTitleTerm) {
+            filter.title = {$regex: searchTitleTerm, $options: 'i'}
         }
+
+        const calculateOfFiles = await postsCollection.countDocuments(filter)
         const foundPosts: PostViewModel[] = await postsCollection
-            .find(filterTitle(searchTitleTerm), blockMongo_Id)
+            .find(filter, blockMongo_Id)
             .sort({[getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection), createdAt: getMongoSortDirection(sortDirection)})
             .skip(getMongoSkip(getMongoPageNumber(pageNumber), getMongoPageSize(pageSize)))
             .limit(getMongoPageSize(pageSize)).toArray()

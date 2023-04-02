@@ -19,10 +19,8 @@ const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost")
 const posts_service_1 = require("../domains/posts-service");
 exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getAllBlogs = yield blogs_query_repository_1.blogsQueryRepository.returnOfAllBlogs(req.query.searchNameTerm, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
-    return getAllBlogs === null
-        ? res.status(404).send("searchNameTerm not found")
-        : res.send(getAllBlogs);
+    const getAllBlogs = yield blogs_query_repository_1.blogsQueryRepository.returnOfAllBlogs(req.query.searchNameTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
+    res.send(getAllBlogs);
 }));
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByIdBlog = yield blogs_service_1.blogsService.findBlogById(req.params.id);
@@ -34,7 +32,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     return;
 }));
 exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getByBlogIdPosts = yield blogs_query_repository_1.blogsQueryRepository.searchPostByBlogId(req.params.blogId, req.query.pageNumber, req.query.pageSize, req.query.sortBy, req.query.sortDirection);
+    const getByBlogIdPosts = yield blogs_query_repository_1.blogsQueryRepository.searchPostByBlogId(req.params.blogId, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
     if (!getByBlogIdPosts) {
         res.sendStatus(404);
         return;
