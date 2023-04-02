@@ -22,6 +22,7 @@ export type UserCreateModel = {
     id: string,
     login:	string,
     password: string,
+    salt: string,
     email: string,
     createdAt: string
 }

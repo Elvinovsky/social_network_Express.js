@@ -24,6 +24,7 @@ exports.usersService = {
                 id: (+(new Date())).toString(),
                 login: login,
                 password: passwordHash,
+                salt: passwordSalt,
                 email: email,
                 createdAt: new Date().toISOString()
             };
