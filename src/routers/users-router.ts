@@ -13,7 +13,7 @@ export const usersRouter = Router()
 
 usersRouter.get('/',
     async (req: RequestQuery<QueryParams&SearchEmailTerm&SearchLoginTerm>,
-           res: ResponseViewBody<PaginatorType<UserViewModel[]> | null>) => {
+           res: ResponseViewBody<PaginatorType<UserViewModel[]> | string>) => {
         const getAllUsers = await usersQueryRepository.returnOfAllUsers(
             req.query.searchEmailTerm,
             req.query.searchLoginTerm,
@@ -22,7 +22,9 @@ usersRouter.get('/',
             req.query.sortBy,
             req.query.sortDirection)
 
-       res.send(getAllUsers)
+        return !getAllUsers
+            ? res.status(404).send("Users not found")
+            : res.send(getAllUsers)
     })
 usersRouter.post('/', validatorInputUserBody,
     async (req: RequestInputBody<UserInputModel>,
