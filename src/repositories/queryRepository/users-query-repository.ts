@@ -14,12 +14,12 @@ import {usersMapping} from "../../functions/usersMapping";
 export const usersQueryRepository = {
 
     async returnOfAllUsers
-    (searchEmailTerm: string | null,
-     searchLoginTerm: string | null,
-     pageNumber: number | null,
-     pageSize: number | null,
-     sortBy: string | null,
-     sortDirection: string | null
+    (searchEmailTerm: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
+     searchLoginTerm: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
+     pageNumber: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
+     pageSize: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
+     sortBy: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined,
+     sortDirection: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[] | undefined
     ): Promise<PaginatorType<UserViewModel[]> | null> {
         const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail( searchEmailTerm, searchLoginTerm ))
         if (calculateOfFiles === 0) {

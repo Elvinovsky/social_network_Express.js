@@ -11,9 +11,10 @@ app.use(jsonBodyMiddleware)
 app.get('/', (req:Request, res:Response) => {
     res.send('Hello World!!')
 })
+app.use('/users', usersRouter)
 app.use('/posts', postsRouter)
 app.use('/blogs', blogsRouter)
-app.use('/users', usersRouter)
+
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
