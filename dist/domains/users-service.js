@@ -18,13 +18,13 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.usersService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield bcrypt_1.default.genSalt(7);
-            const passwordHash = yield this.generateHash(password, passwordSalt);
+            const salt = yield bcrypt_1.default.genSalt(7);
+            const hash = yield this.generateHash(password, salt);
             const newUser = {
                 id: (+(new Date())).toString(),
                 login: login,
-                password: passwordHash,
-                salt: passwordSalt,
+                passwordHash: hash,
+                passwordSalt: salt,
                 email: email,
                 createdAt: new Date().toISOString()
             };
@@ -42,6 +42,16 @@ exports.usersService = {
                 email: user.email,
                 createdAt: user.createdAt
             };
+        });
+    },
+    checkCredentials(loginOrEmail, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
+            if (!user) {
+                return false;
+            }
+            const passwordHash = yield this.generateHash(password, user.passwordSalt);
+            return user.passwordHash === passwordHash;
         });
     },
     generateHash(password, passwordSalt) {

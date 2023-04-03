@@ -23,6 +23,11 @@ exports.usersRepository = {
             return yield runDB_1.usersCollection.findOne({ id }, filters_1.blockMongo_Id);
         });
     },
+    findByLoginOrEmail(loginOrEmail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield runDB_1.usersCollection.findOne({ loginOrEmail });
+        });
+    },
     addNewUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
             yield runDB_1.usersCollection.insertOne(newUser);

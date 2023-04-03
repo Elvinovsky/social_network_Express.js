@@ -4,13 +4,13 @@ import bcrypt from 'bcrypt';
 
 export const usersService = {
     async createUser(login: string, password: string, email: string  ): Promise<UserViewModel> {
-        const passwordSalt =  await bcrypt.genSalt( 7 )
-        const passwordHash = await this.generateHash(password, passwordSalt)
+        const salt =  await bcrypt.genSalt( 7 )
+        const hash = await this.generateHash(password, salt)
         const newUser: UserCreateModel = {
             id: (+(new Date())).toString(),
             login: login,
-            password: passwordHash,
-            salt: passwordSalt,
+            passwordHash: hash,
+            passwordSalt: salt,
             email: email,
             createdAt: new Date().toISOString()
         }
@@ -25,6 +25,15 @@ export const usersService = {
             email: user.email,
             createdAt: user.createdAt
             }
+    },
+    async checkCredentials(loginOrEmail: string, password: string): Promise <boolean> {
+        const user =  await usersRepository.findByLoginOrEmail(loginOrEmail)
+        if(!user) {
+            return false
+        }
+        const passwordHash = await this.generateHash(password, user.passwordSalt)
+        return user.passwordHash === passwordHash;
+
     },
     async generateHash(password: string, passwordSalt: string) {
        return await bcrypt.hash(password, passwordSalt)
