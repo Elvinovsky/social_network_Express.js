@@ -12,9 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
 const express_1 = require("express");
 const users_service_1 = require("../domains/users-service");
-const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
 exports.authRouter = (0, express_1.Router)();
-exports.authRouter.post('/login', check_bodyUser_1.validatorInputUserBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const checkResult = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!checkResult) {
         res.sendStatus(401);
