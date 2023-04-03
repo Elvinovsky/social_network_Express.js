@@ -12,7 +12,7 @@ export const usersRepository = {
         return  await usersCollection.findOne({id}, blockMongo_Id)
     },
     async findByLoginOrEmail(loginOrEmail: string): Promise <UserCreateModel | null> {
-        return  await usersCollection.findOne({loginOrEmail})
+        return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})
     },
     async addNewUser(newUser: UserCreateModel): Promise <UserViewModel> {
     await usersCollection.insertOne(newUser)

@@ -25,7 +25,7 @@ exports.usersRepository = {
     },
     findByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.usersCollection.findOne({ loginOrEmail });
+            return yield runDB_1.usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     },
     addNewUser(newUser) {
