@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pagesCountOfBlogs = exports.getMongoSkip = exports.getMongoSortDirection = exports.getMongoSortBy = exports.getMongoPageSize = exports.getMongoPageNumber = void 0;
-const getMongoPageNumber = (pageNumber) => {
+exports.pagesCountOfBlogs = exports.getSkip = exports.getDirection = exports.getSortBy = exports.getPageSize = exports.getPageNumber = void 0;
+const getPageNumber = (pageNumber) => {
     return pageNumber ? +pageNumber : 1;
 };
-exports.getMongoPageNumber = getMongoPageNumber;
-const getMongoPageSize = (pageSize) => {
+exports.getPageNumber = getPageNumber;
+const getPageSize = (pageSize) => {
     return pageSize ? +pageSize : 10;
 };
-exports.getMongoPageSize = getMongoPageSize;
-const getMongoSortBy = (sortBy) => {
+exports.getPageSize = getPageSize;
+const getSortBy = (sortBy) => {
     return sortBy ? sortBy : 'createdAt';
 };
-exports.getMongoSortBy = getMongoSortBy;
-const getMongoSortDirection = (sortDirection) => {
+exports.getSortBy = getSortBy;
+const getDirection = (sortDirection) => {
     return sortDirection === 'asc' ? 1 : -1;
 };
-exports.getMongoSortDirection = getMongoSortDirection;
-const getMongoSkip = (pageNumber = 1, pageSize = 10) => {
+exports.getDirection = getDirection;
+const getSkip = (pageNumber = 1, pageSize = 10) => {
     return (+pageNumber - 1) * +pageSize;
 };
-exports.getMongoSkip = getMongoSkip;
+exports.getSkip = getSkip;
 const pagesCountOfBlogs = (calculateOfFiles, pageSize) => {
-    return Math.ceil(calculateOfFiles / (0, exports.getMongoPageSize)(pageSize));
+    return Math.ceil(calculateOfFiles / (0, exports.getPageSize)(pageSize));
 };
 exports.pagesCountOfBlogs = pagesCountOfBlogs;

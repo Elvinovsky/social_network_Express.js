@@ -20,13 +20,13 @@ exports.usersQueryRepository = {
             const calculateOfFiles = yield runDB_1.usersCollection.countDocuments((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm));
             const foundUsers = yield runDB_1.usersCollection
                 .find((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm), filters_1.blockMongo_Id)
-                .sort({ [(0, pagination_helpers_1.getMongoSortBy)(sortBy)]: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getMongoSortDirection)(sortDirection) })
-                .skip((0, pagination_helpers_1.getMongoSkip)((0, pagination_helpers_1.getMongoPageNumber)(pageNumber), (0, pagination_helpers_1.getMongoPageSize)(pageSize)))
-                .limit((0, pagination_helpers_1.getMongoPageSize)(pageSize)).toArray();
+                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getDirection)(sortDirection) })
+                .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
+                .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();
             return {
                 pagesCount: (0, pagination_helpers_1.pagesCountOfBlogs)(calculateOfFiles, pageSize),
-                page: (0, pagination_helpers_1.getMongoPageNumber)(pageNumber),
-                pageSize: (0, pagination_helpers_1.getMongoPageSize)(pageSize),
+                page: (0, pagination_helpers_1.getPageNumber)(pageNumber),
+                pageSize: (0, pagination_helpers_1.getPageSize)(pageSize),
                 totalCount: calculateOfFiles,
                 items: (0, usersMapping_1.usersMapping)(foundUsers)
             };

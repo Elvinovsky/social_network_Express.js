@@ -2,10 +2,10 @@ import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {postsCollection} from "../../database/runDB";
 import {postMapping} from "../../functions/postMapping";
 import {
-    getMongoPageNumber, getMongoPageSize,
-    getMongoSkip,
-    getMongoSortBy,
-    getMongoSortDirection, pagesCountOfBlogs,
+    getPageNumber, getPageSize,
+    getSkip,
+    getSortBy,
+    getDirection, pagesCountOfBlogs,
     PaginatorType
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../functions/filters";
@@ -29,13 +29,13 @@ export const postQueryRepository = {
         const calculateOfFiles = await postsCollection.countDocuments(filter)
         const foundPosts: PostViewModel[] = await postsCollection
             .find(filter, blockMongo_Id)
-            .sort({[getMongoSortBy(sortBy)]: getMongoSortDirection(sortDirection), createdAt: getMongoSortDirection(sortDirection)})
-            .skip(getMongoSkip(getMongoPageNumber(pageNumber), getMongoPageSize(pageSize)))
-            .limit(getMongoPageSize(pageSize)).toArray()
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), createdAt: getDirection(sortDirection)})
+            .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
+            .limit(getPageSize(pageSize)).toArray()
         return {
             pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
-            page: getMongoPageNumber(pageNumber),
-            pageSize: getMongoPageSize(pageSize),
+            page: getPageNumber(pageNumber),
+            pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
             items: postMapping(foundPosts)
             }
