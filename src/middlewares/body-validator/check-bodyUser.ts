@@ -35,3 +35,10 @@ export const validatorInputUserBody = [
     checkInputEmail,
     checkForErrors
 ]
+
+export const validatorInputAuthRout = [
+    checksLogin,
+    checksPassword,
+    checkInputEmail,
+    checkForErrors
+]

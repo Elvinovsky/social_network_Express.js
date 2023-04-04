@@ -9,7 +9,7 @@ import {
     getSkip,
     getSortBy,
     getDirection, pagesCountOfBlogs,
-    PaginatorType
+    PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../functions/filters";
 import {Filter} from "mongodb";
@@ -17,21 +17,21 @@ import {Filter} from "mongodb";
 export const blogsQueryRepository = {
 
     async returnOfAllBlogs
-    (searchNameTerm: string | undefined,
+    (searchNameTerm?: string,
      pageNumber?: number,
      pageSize?: number,
      sortBy?: string,
      sortDirection?: string,
     ): Promise<PaginatorType<BlogViewModel[]>> {
+
         const filter: Filter<BlogViewModel> = {}
         if(searchNameTerm) {
             filter.name = {$regex: searchNameTerm, $options: 'i'}
         }
         const calculateOfFiles = await blogsCollection.countDocuments(filter)
-
         const foundBlogs: BlogViewModel[] = await blogsCollection
                 .find(filter, blockMongo_Id)
-                .sort({[getSortBy(sortBy)]: getDirection(sortDirection), createdAt: getDirection(sortDirection)})
+                .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
                 .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
                 .limit(getPageSize(pageSize)).toArray()
         return {
@@ -50,7 +50,7 @@ export const blogsQueryRepository = {
      sortDirection?: string,
     ):Promise<PaginatorType<PostViewModel[]> | null> {
 
-        const blogIdForPost = await postsCollection.findOne({blogId: blogId})
+        const blogIdForPost = await postsCollection.findOne({blogId: blogId}) //express validator .custom
         if (!blogIdForPost){
             return null
         }
@@ -58,7 +58,7 @@ export const blogsQueryRepository = {
 
         const foundBlogs: PostViewModel[] = await postsCollection
             .find({blogId}, blockMongo_Id)
-            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), createdAt: getDirection(sortDirection)})
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()
         return {

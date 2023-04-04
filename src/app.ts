@@ -8,7 +8,7 @@ const startApp = async () => {
         startServer();
     }
     catch {
-        console.log("error")
+        console.log("error connect")
     }
 };
 

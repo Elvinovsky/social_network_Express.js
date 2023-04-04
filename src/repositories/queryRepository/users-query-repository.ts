@@ -4,7 +4,7 @@ import {
     getSkip,
     getSortBy,
     getDirection, pagesCountOfBlogs,
-    PaginatorType
+    PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id, filterLoginOrEmail} from "../../functions/filters";
 import {UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
@@ -25,7 +25,7 @@ export const usersQueryRepository = {
         const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
         const foundUsers: UserCreateModel[] = await usersCollection
             .find(filterLoginOrEmail(searchEmailTerm, searchLoginTerm), blockMongo_Id)
-            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), createdAt: getDirection(sortDirection)})
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()
         return {
