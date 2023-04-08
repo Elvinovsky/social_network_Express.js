@@ -11,6 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
+const mongodb_1 = require("mongodb");
+function blogMapping(blog) {
+    const blogIdMongo = blog._id;
+    delete blog._id;
+    return Object.assign({ id: blogIdMongo.toString() }, blog);
+}
 exports.blogsRepository = {
     //тестовое удаление базы данных о блогах.
     testingDeleteAllBlogs() {
@@ -21,15 +27,19 @@ exports.blogsRepository = {
     //поиск блога по ID.
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.blogsCollection.findOne({ id }, { projection: { _id: 0 } });
+            const blog = yield runDB_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!blog) {
+                return null;
+            }
+            return blogMapping(blog);
         });
     },
     //создание и добавление нового блога.
     addNewBlog(createBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield runDB_1.blogsCollection.insertOne(createBlog);
+            const result = yield runDB_1.blogsCollection.insertOne(createBlog);
             return {
-                id: createBlog.id,
+                id: result.insertedId.toString(),
                 name: createBlog.name,
                 description: createBlog.description,
                 websiteUrl: createBlog.websiteUrl,
@@ -41,14 +51,14 @@ exports.blogsRepository = {
     //обновление блога по айди.
     updateBlogById(id, name, description, websiteUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield runDB_1.blogsCollection.updateOne({ id }, { $set: { name, description, websiteUrl } });
+            const result = yield runDB_1.blogsCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { name, description, websiteUrl } });
             return result.matchedCount === 1;
         });
     },
     //поиск блога по ID для удаления.
     searchBlogByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.blogsCollection.deleteOne({ id });
+            const deleteResult = yield runDB_1.blogsCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return deleteResult.deletedCount === 1;
         });
     }

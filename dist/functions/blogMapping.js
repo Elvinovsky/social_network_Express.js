@@ -4,7 +4,7 @@ exports.blogMapping = void 0;
 const blogMapping = (array) => {
     return array.map((el) => {
         return {
-            id: el.id,
+            id: el._id.toString(),
             name: el.name,
             description: el.description,
             websiteUrl: el.websiteUrl,

@@ -1,7 +1,7 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
-import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
-import {DeleteResult} from "mongodb";
+import {BlogDBModel,} from "../../models/modelsBlogs/blogViewModel";
+import {DeleteResult, ObjectId, WithId} from "mongodb";
 import {blockMongo_Id} from "../../functions/filters";
 
 
@@ -32,9 +32,9 @@ export const postsRepository = {
        const updateResult = await postsCollection.updateOne({id}, {$set: {title, shortDescription, content}})
        return updateResult.matchedCount === 1;
     },
-    //поиск ID блога для поста.
-    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | null > {
-        const blogIdForPost = await blogsCollection.findOne({id: blogId})
+    //поиск ID блога для поста.5
+    async searchBlogIdForPost(blogId: string):Promise  <WithId<BlogDBModel> | null > {
+        const blogIdForPost = await blogsCollection.findOne({_id: new ObjectId(blogId)})
         return blogIdForPost? blogIdForPost : null
     },
     // поиск и удаление поста по ID.

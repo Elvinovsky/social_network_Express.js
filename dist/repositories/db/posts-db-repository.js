@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
+const mongodb_1 = require("mongodb");
 const filters_1 = require("../../functions/filters");
 exports.postsRepository = {
     // тестовое удаление базы данных Постов
@@ -47,10 +48,10 @@ exports.postsRepository = {
             return updateResult.matchedCount === 1;
         });
     },
-    //поиск ID блога для поста.
+    //поиск ID блога для поста.5
     searchBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogIdForPost = yield runDB_1.blogsCollection.findOne({ id: blogId });
+            const blogIdForPost = yield runDB_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(blogId) });
             return blogIdForPost ? blogIdForPost : null;
         });
     },

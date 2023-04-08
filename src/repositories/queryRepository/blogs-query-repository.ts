@@ -1,5 +1,5 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
-import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {BlogDBModel, BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 import {blogMapping} from "../../functions/blogMapping";
 import {postMapping} from "../../functions/postMapping";
@@ -12,7 +12,7 @@ import {
     PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../functions/filters";
-import {Filter} from "mongodb";
+import {Filter, WithId} from "mongodb";
 
 export const blogsQueryRepository = {
 
@@ -24,13 +24,13 @@ export const blogsQueryRepository = {
      sortDirection?: string,
     ): Promise<PaginatorType<BlogViewModel[]>> {
 
-        const filter: Filter<BlogViewModel> = {}
+        const filter: Filter<BlogDBModel> = {}
         if(searchNameTerm) {
             filter.name = {$regex: searchNameTerm, $options: 'i'}
         }
         const calculateOfFiles = await blogsCollection.countDocuments(filter)
-        const foundBlogs: BlogViewModel[] = await blogsCollection
-                .find(filter, blockMongo_Id)
+        const foundBlogs: WithId<BlogDBModel>[] = await blogsCollection
+                .find(filter)
                 .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
                 .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
                 .limit(getPageSize(pageSize)).toArray()

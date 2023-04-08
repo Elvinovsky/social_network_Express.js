@@ -1,15 +1,16 @@
 {
   "name": "SwaggerH03",
   "version": "1.0.0",
-  "main": "src/app.ts",
+  "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn nodemon --inspect dist/app.js",
+    "dev": "yarn nodemon --inspect dist/index.js",
     "watch": "tsc -w"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^29.5.0",
+    "@types/jsonwebtoken": "^9.0.1",
     "@types/supertest": "^2.0.12",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
@@ -17,6 +18,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jest": "^29.5.0",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.1.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5"

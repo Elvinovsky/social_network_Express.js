@@ -21,7 +21,6 @@ exports.usersService = {
             const salt = yield bcrypt_1.default.genSalt(7);
             const hash = yield this.generateHash(password, salt);
             const newUser = {
-                id: (+(new Date())).toString(),
                 login: login,
                 passwordHash: hash,
                 passwordSalt: salt,
@@ -33,25 +32,22 @@ exports.usersService = {
     },
     findUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserById(id);
-            if (!user)
-                return null;
-            return {
-                id: user.id,
-                login: user.login,
-                email: user.email,
-                createdAt: user.createdAt
-            };
+            return yield users_db_repository_1.usersRepository.findUserById(id);
         });
     },
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
             if (!user) {
-                return false;
+                return null;
             }
             const passwordHash = yield this.generateHash(password, user.passwordSalt);
-            return user.passwordHash === passwordHash;
+            if (user.passwordHash === passwordHash) {
+                return user;
+            }
+            else {
+                return null;
+            }
         });
     },
     generateHash(password, passwordSalt) {

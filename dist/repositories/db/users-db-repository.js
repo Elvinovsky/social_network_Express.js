@@ -11,7 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const runDB_1 = require("../../database/runDB");
-const filters_1 = require("../../functions/filters");
+const mongodb_1 = require("mongodb");
+function userMapping(user) {
+    const mongoId = user._id;
+    return {
+        id: mongoId.toString(),
+        login: user.login,
+        email: user.email,
+        createdAt: user.createdAt
+    };
+}
 exports.usersRepository = {
     testingDeleteAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,7 +29,11 @@ exports.usersRepository = {
     },
     findUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.usersCollection.findOne({ id }, filters_1.blockMongo_Id);
+            const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!user) {
+                return null;
+            }
+            return userMapping(user);
         });
     },
     findByLoginOrEmail(loginOrEmail) {
@@ -30,9 +43,9 @@ exports.usersRepository = {
     },
     addNewUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield runDB_1.usersCollection.insertOne(newUser);
+            const result = yield runDB_1.usersCollection.insertOne(newUser);
             return {
-                id: newUser.id,
+                id: result.insertedId.toString(),
                 login: newUser.login,
                 email: newUser.email,
                 createdAt: newUser.createdAt
@@ -41,7 +54,7 @@ exports.usersRepository = {
     },
     userByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.usersCollection.deleteOne({ id });
+            const deleteResult = yield runDB_1.usersCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return deleteResult.deletedCount === 1;
         });
     }

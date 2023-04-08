@@ -27,9 +27,9 @@ usersRouter.get('/', guardAuthentication,
 usersRouter.post('/', validatorInputUserBody,
     async (req: RequestInputBody<UserInputModel>,
            res: ResponseViewBody<UserViewModel>) => {
-
         const newUser = await usersService.createUser
         (req.body.login, req.body.password, req.body.email)
+
         res.status(201).send(newUser)
         return;
     })

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatorInputUserBody = void 0;
+exports.validatorInputAuthRout = exports.validatorInputUserBody = void 0;
 const check_for_errors_1 = require("../check-for-errors");
 const express_validator_1 = require("express-validator");
 const guard_authentication_1 = require("../guard-authentication");
@@ -28,6 +28,12 @@ const checkInputEmail = (0, express_validator_1.body)('email')
     .withMessage("is not a string");
 exports.validatorInputUserBody = [
     guard_authentication_1.guardAuthentication,
+    checksLogin,
+    checksPassword,
+    checkInputEmail,
+    check_for_errors_1.checkForErrors
+];
+exports.validatorInputAuthRout = [
     checksLogin,
     checksPassword,
     checkInputEmail,

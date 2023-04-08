@@ -1,4 +1,3 @@
-/*
 
 import request from "supertest"
 import {app} from "../src/app"
@@ -92,6 +91,4 @@ describe('/posts',() => {
         await request(app).get('/posts').expect(200,[])
     })
 
-}
-
- */
+})

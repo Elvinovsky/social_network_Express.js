@@ -2,9 +2,9 @@
   "version": 2,
   "name": "SwaggerH03",
   "builds": [
-    { "src": "src/app.ts", "use": "@vercel/node" }
+    { "src": "src/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "src/app.ts" }
+    { "src": "/(.*)", "dest": "src/index.ts" }
   ]}
 

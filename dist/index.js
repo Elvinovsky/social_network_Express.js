@@ -9,20 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authRouter = void 0;
-const express_1 = require("express");
-const users_service_1 = require("../domains/users-service");
-const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
-const jwt_service_1 = require("../application/jwt-service");
-exports.authRouter = (0, express_1.Router)();
-exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
-    if (user) {
-        const token = jwt_service_1.jwtService.createJWT(user);
-        res.status(201).send(token);
+const runDB_1 = require("./database/runDB");
+const app_1 = require("./app");
+const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, runDB_1.runDb)();
+        (0, app_1.startServer)();
     }
-    else {
-        res.sendStatus(401);
-        return;
+    catch (_a) {
+        console.log("error connect");
     }
-}));
+});
+startApp();
+module.exports = app_1.app;

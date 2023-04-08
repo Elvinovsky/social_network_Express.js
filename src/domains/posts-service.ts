@@ -1,11 +1,13 @@
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {postsRepository} from "../repositories/db/posts-db-repository";
-import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {BlogDBModel} from "../models/modelsBlogs/blogViewModel";
+import {WithId} from "mongodb";
 
 
 export const postsService = {
-    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | null > {
+    async searchBlogIdForPost(blogId: string):Promise <WithId<BlogDBModel>  | null > {
         return await postsRepository.searchBlogIdForPost(blogId)
+
 
     },
     async findPostById(id: string): Promise <PostViewModel | null> {

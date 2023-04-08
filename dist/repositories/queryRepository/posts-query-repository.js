@@ -24,7 +24,7 @@ exports.postQueryRepository = {
             const calculateOfFiles = yield runDB_1.postsCollection.countDocuments(filter);
             const foundPosts = yield runDB_1.postsCollection
                 .find(filter, filters_1.blockMongo_Id)
-                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), createdAt: (0, pagination_helpers_1.getDirection)(sortDirection) })
+                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: pagination_helpers_1.SortDirection.Desc })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();
             return {

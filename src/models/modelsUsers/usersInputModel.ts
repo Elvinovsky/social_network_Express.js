@@ -19,7 +19,6 @@ export type UserViewModel = {
     createdAt: string
 }
 export type UserCreateModel = {
-    id: string,
     login:	string,
     passwordHash: string,
     passwordSalt: string,

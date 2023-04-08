@@ -1,10 +1,10 @@
-import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {BlogDBModel, BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {WithId} from 'mongodb'
 
-
-export const blogMapping = (array: Array<BlogViewModel>) =>{
-    return array.map((el: BlogViewModel) => {
+export const blogMapping = (array: Array<WithId<BlogDBModel>>): BlogViewModel[] =>{
+    return array.map((el) => {
         return {
-            id: el.id,
+            id: el._id.toString(),
             name: el.name,
             description: el.description,
             websiteUrl: el.websiteUrl,

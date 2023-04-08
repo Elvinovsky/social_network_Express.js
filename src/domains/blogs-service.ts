@@ -1,16 +1,17 @@
 import {blogsRepository} from "../repositories/db/blogs-db-repository";
-import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {BlogDBModel, BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+
 
 
 
 export const blogsService = {
     async findBlogById(id: string): Promise <BlogViewModel | null> {
+
         return blogsRepository.findBlogById(id)
     },
     async createBlog(name: string, description: string, websiteUrl: string): Promise<BlogViewModel> {
 
-        const createdBlog: BlogViewModel = {
-            id: (+(new Date())).toString(),
+        const createdBlog: BlogDBModel = {
             name: name,
             description: description,
             websiteUrl: websiteUrl,
