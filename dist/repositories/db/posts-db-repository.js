@@ -49,7 +49,7 @@ exports.postsRepository = {
         });
     },
     //поиск ID блога для поста.5
-    searchBlogIdForPost(blogId) {
+    findBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const blogIdForPost = yield runDB_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(blogId) });
             return blogIdForPost ? blogIdForPost : null;

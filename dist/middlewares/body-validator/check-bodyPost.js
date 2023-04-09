@@ -41,7 +41,7 @@ const checksBlogId = (0, express_validator_1.body)('blogId')
     .withMessage("is not a string")
     .bail()
     .custom((blogId) => __awaiter(void 0, void 0, void 0, function* () {
-    const validationBlogId = yield posts_db_repository_1.postsRepository.searchBlogIdForPost(blogId);
+    const validationBlogId = yield posts_db_repository_1.postsRepository.findBlogIdForPost(blogId);
     if (!validationBlogId) {
         throw new Error("blogId not found");
     }

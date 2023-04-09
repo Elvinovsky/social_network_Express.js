@@ -14,7 +14,7 @@ const posts_db_repository_1 = require("../repositories/db/posts-db-repository");
 exports.postsService = {
     searchBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.searchBlogIdForPost(blogId);
+            return yield posts_db_repository_1.postsRepository.findBlogIdForPost(blogId);
         });
     },
     findPostById(id) {
@@ -24,7 +24,7 @@ exports.postsService = {
     },
     createPost(title, shortDescription, content, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const outputBlogName = posts_db_repository_1.postsRepository.searchBlogIdForPost.name;
+            const outputBlogName = posts_db_repository_1.postsRepository.findBlogIdForPost.name;
             const newPost = {
                 id: (+(new Date())).toString(),
                 title: title,

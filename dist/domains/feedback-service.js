@@ -13,6 +13,16 @@ exports.feedbacksService = void 0;
 const feedbacks_repository_1 = require("../repositories/db/feedbacks_repository");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
 exports.feedbacksService = {
+    getComment(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield feedbacks_repository_1.feedBacksRepository.getCommentById(id);
+        });
+    },
+    searchUserForComment(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield users_db_repository_1.usersRepository.findUserForComment(userId);
+        });
+    },
     searchPostIdForComments(postId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield feedbacks_repository_1.feedBacksRepository.searchPostIdForComments(postId);
@@ -20,22 +30,27 @@ exports.feedbacksService = {
     },
     createComment(postId, userId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const outputUserLogin = yield users_db_repository_1.usersRepository.findUserLoginForComment(userId);
+            const outputUserLogin = yield this.searchUserForComment(userId);
             const newComment = {
                 postId: postId,
                 content: content,
                 commentatorInfo: {
                     userId: userId,
-                    userLogin: outputUserLogin
+                    userLogin: outputUserLogin.login
                 },
                 createdAt: new Date().toISOString()
             };
             return yield feedbacks_repository_1.feedBacksRepository.addNewComment(newComment);
         });
     },
-    getComment(id) {
+    updateCommentById(id, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield feedbacks_repository_1.feedBacksRepository.getCommentById(id);
+            return feedbacks_repository_1.feedBacksRepository.updateCommentById(id, content);
         });
     },
+    deletedCountComment(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield feedbacks_repository_1.feedBacksRepository.deleteComment(id);
+        });
+    }
 };

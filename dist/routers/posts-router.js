@@ -39,7 +39,7 @@ exports.postsRouter.get('/:postId/comments', (req, res) => __awaiter(void 0, voi
     res.send(getCommentsByPostId);
 }));
 exports.postsRouter.post('/:postId/comments', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const validatorPostIdForCreateComments = yield feedback_service_1.feedbacksService.searchPostIdForComments(req.params.postId);
+    const validatorPostIdForCreateComments = yield feedback_service_1.feedbacksService.searchPostIdForComments(req.params.postId); //todo custom validator
     if (!validatorPostIdForCreateComments) {
         res.sendStatus(404);
         return;

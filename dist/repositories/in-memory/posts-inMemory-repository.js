@@ -27,7 +27,7 @@ exports.postsRepository = {
     //создание и добавление нового поста в базу данных.
     addNewPost(title, shortDescription, content, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const outputBlogName = this.searchBlogIdForPost.name;
+            const outputBlogName = this.findBlogIdForPost.name;
             const createNewPost = {
                 id: (+(new Date())).toString(),
                 title: title,
@@ -62,7 +62,7 @@ exports.postsRepository = {
         });
     },
     //поиск ID блога для поста.
-    searchBlogIdForPost(blogId) {
+    findBlogIdForPost(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const blogIdForPost = yield in_memory_1.inMemory.allBlogs.find(el => el.id === blogId);
             if (blogIdForPost) {

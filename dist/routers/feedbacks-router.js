@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.feedBacksRouter = void 0;
 const express_1 = require("express");
 const feedback_service_1 = require("../domains/feedback-service");
+const check_bodyComment_1 = require("../middlewares/body-validator/check-bodyComment");
 exports.feedBacksRouter = (0, express_1.Router)();
 exports.feedBacksRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const comment = yield feedback_service_1.feedbacksService.getComment(req.params.id);
@@ -20,6 +21,40 @@ exports.feedBacksRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void
     }
     else {
         res.sendStatus(404);
+        return;
+    }
+}));
+exports.feedBacksRouter.put('/:id', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const validatorCommentById = yield feedback_service_1.feedbacksService.getComment(req.params.id);
+    if (!validatorCommentById) {
+        res.sendStatus(404);
+        return;
+    }
+    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.user.id);
+    if (validatorUserId.id !== validatorCommentById.commentatorInfo.userId) {
+        res.sendStatus(403);
+        return;
+    }
+    const foundCommentForUpdate = yield feedback_service_1.feedbacksService.updateCommentById(req.params.id, req.body.content);
+    if (foundCommentForUpdate) {
+        res.sendStatus(204);
+        return;
+    }
+}));
+exports.feedBacksRouter.delete('/:id', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const validatorCommentById = yield feedback_service_1.feedbacksService.getComment(req.params.id);
+    if (!validatorCommentById) {
+        res.sendStatus(404);
+        return;
+    }
+    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.user.id);
+    if (validatorUserId.id !== validatorCommentById.commentatorInfo.userId) {
+        res.sendStatus(403);
+        return;
+    }
+    const deleteComment = yield feedback_service_1.feedbacksService.deletedCountComment(req.params.id);
+    if (deleteComment) {
+        res.sendStatus(204);
         return;
     }
 }));

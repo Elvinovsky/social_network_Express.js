@@ -35,16 +35,13 @@ exports.usersRepository = {
             return userMapping(user);
         });
     },
-    findUserLoginForComment(userId) {
+    findUserForComment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });
-                const userLogin = user.login;
-                return userLogin;
-            }
-            catch (error) {
+            const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });
+            if (!user) {
                 return null;
             }
+            return userMapping(user);
         });
     },
     findByLoginOrEmail(loginOrEmail) {

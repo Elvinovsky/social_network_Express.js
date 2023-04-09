@@ -58,4 +58,16 @@ exports.feedBacksRepository = {
             };
         });
     },
+    updateCommentById(id, content) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield runDB_1.feedbacksCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { content } });
+            return result.matchedCount === 1;
+        });
+    },
+    deleteComment(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resultDeleted = yield runDB_1.feedbacksCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            return resultDeleted.deletedCount === 1;
+        });
+    },
 };
