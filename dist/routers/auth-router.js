@@ -14,6 +14,8 @@ const express_1 = require("express");
 const users_service_1 = require("../domains/users-service");
 const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
 const jwt_service_1 = require("../application/jwt-service");
+const user_authentication_1 = require("../middlewares/guard-authentication/user-authentication");
+const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
 exports.authRouter = (0, express_1.Router)();
 exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -23,6 +25,13 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
     }
     else {
         res.sendStatus(401);
+        return;
+    }
+}));
+exports.authRouter.get('/me', user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.user.id);
+    if (user) {
+        res.send(user);
         return;
     }
 }));

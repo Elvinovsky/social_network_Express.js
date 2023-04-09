@@ -14,6 +14,7 @@ const pagination_helpers_1 = require("../../helpers/pagination-helpers");
 const filters_1 = require("../../functions/filters");
 const runDB_1 = require("../../database/runDB");
 const usersMapping_1 = require("../../functions/usersMapping");
+const mongodb_1 = require("mongodb");
 exports.usersQueryRepository = {
     returnOfAllUsers(searchEmailTerm, searchLoginTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,4 +33,17 @@ exports.usersQueryRepository = {
             };
         });
     },
+    getUserInfo(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!user) {
+                return null;
+            }
+            return {
+                email: user.email,
+                login: user.login,
+                userId: user._id.toString()
+            };
+        });
+    }
 };
