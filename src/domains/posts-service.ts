@@ -7,8 +7,6 @@ import {WithId} from "mongodb";
 export const postsService = {
     async searchBlogIdForPost(blogId: string):Promise <WithId<BlogDBModel>  | null > {
         return await postsRepository.searchBlogIdForPost(blogId)
-
-
     },
     async findPostById(id: string): Promise <PostViewModel | null> {
         return await postsRepository.findPostById(id)

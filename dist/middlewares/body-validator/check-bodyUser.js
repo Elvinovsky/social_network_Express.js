@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorInputAuthRout = exports.validatorInputUserBody = void 0;
 const check_for_errors_1 = require("../check-for-errors");
 const express_validator_1 = require("express-validator");
-const guard_authentication_1 = require("../guard-authentication");
+const super_admin_authentication_1 = require("../guard-authentication/super-admin-authentication");
 const checksLogin = (0, express_validator_1.body)('login')
     .matches(/^[a-zA-Z0-9_-]*$/)
     .withMessage("matches incorrect")
@@ -26,16 +26,18 @@ const checkInputEmail = (0, express_validator_1.body)('email')
     .bail()
     .isString()
     .withMessage("is not a string");
+const checkInputLoginOrEmail = (0, express_validator_1.body)('loginOrEmail')
+    .isString()
+    .withMessage("is not a string");
 exports.validatorInputUserBody = [
-    guard_authentication_1.guardAuthentication,
+    super_admin_authentication_1.superAdminAuthentication,
     checksLogin,
     checksPassword,
     checkInputEmail,
     check_for_errors_1.checkForErrors
 ];
 exports.validatorInputAuthRout = [
-    checksLogin,
+    checkInputLoginOrEmail,
     checksPassword,
-    checkInputEmail,
     check_for_errors_1.checkForErrors
 ];

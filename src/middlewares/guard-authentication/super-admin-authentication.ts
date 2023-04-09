@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 
-export const guardAuthentication = ((req: Request, res: Response, next: NextFunction) => {
+export const superAdminAuthentication = ((req: Request, res: Response, next: NextFunction) => {
 
     // -----------------------------------------------------------------------
     // authentication middleware

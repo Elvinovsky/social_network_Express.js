@@ -1,6 +1,6 @@
 import { body} from 'express-validator'
 import {checkForErrors} from "../check-for-errors";
-import {guardAuthentication} from "../guard-authentication";
+import {superAdminAuthentication} from "../guard-authentication/super-admin-authentication";
 
 const checkInputName =  body('name', )
     .trim()
@@ -27,7 +27,7 @@ const checkInputDescription =  body ( 'description')
 
 
 export const validatorBlogInputBody = [
-        guardAuthentication,
+        superAdminAuthentication,
         checkInputName,
         checkInputWebsiteUrl,
         checkInputDescription,

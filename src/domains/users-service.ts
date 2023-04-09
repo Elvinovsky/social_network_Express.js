@@ -17,7 +17,7 @@ export const usersService = {
         return await usersRepository.addNewUser(newUser)
     },
     async findUserById(id: string): Promise <UserViewModel | null> {
-        return   await usersRepository.findUserById(id)
+        return await usersRepository.findUserById(id)
     }
     ,
     async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserCreateModel> | null> {

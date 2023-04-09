@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorInputBlogPostBody = exports.validatorInputPostBody = void 0;
 const express_validator_1 = require("express-validator");
 const posts_db_repository_1 = require("../../repositories/db/posts-db-repository");
-const guard_authentication_1 = require("../guard-authentication");
+const super_admin_authentication_1 = require("../guard-authentication/super-admin-authentication");
 const check_for_errors_1 = require("../check-for-errors");
 const checksTitle = (0, express_validator_1.body)('title')
     .exists()
@@ -47,7 +47,7 @@ const checksBlogId = (0, express_validator_1.body)('blogId')
     }
 }));
 exports.validatorInputPostBody = [
-    guard_authentication_1.guardAuthentication,
+    super_admin_authentication_1.superAdminAuthentication,
     checksTitle,
     checksShortDescription,
     checksContent,
@@ -55,7 +55,7 @@ exports.validatorInputPostBody = [
     check_for_errors_1.checkForErrors
 ];
 exports.validatorInputBlogPostBody = [
-    guard_authentication_1.guardAuthentication,
+    super_admin_authentication_1.superAdminAuthentication,
     checksTitle,
     checksShortDescription,
     checksContent,

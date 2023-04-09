@@ -14,9 +14,9 @@ const express_1 = require("express");
 const users_service_1 = require("../domains/users-service");
 const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
-const guard_authentication_1 = require("../middlewares/guard-authentication");
+const super_admin_authentication_1 = require("../middlewares/guard-authentication/super-admin-authentication");
 exports.usersRouter = (0, express_1.Router)();
-exports.usersRouter.get('/', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usersRouter.get('/', super_admin_authentication_1.superAdminAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllUsers = yield users_query_repository_1.usersQueryRepository.returnOfAllUsers(req.query.searchEmailTerm, req.query.searchLoginTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
     res.send(getAllUsers);
 }));
@@ -31,7 +31,7 @@ exports.usersRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
         ? res.sendStatus(404)
         : res.send(getByIdUser);
 }));
-exports.usersRouter.delete('/:id', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usersRouter.delete('/:id', super_admin_authentication_1.superAdminAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundUserDelete = yield users_service_1.usersService.userByIdDelete(req.params.id);
     if (!foundUserDelete) {
         res.sendStatus(404);

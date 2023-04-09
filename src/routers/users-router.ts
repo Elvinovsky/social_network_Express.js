@@ -1,17 +1,17 @@
 import {Response, Router} from "express";
-import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../req-res-types";
+import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../types/req-res-types";
 import {UserInputModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
 import {usersService} from "../domains/users-service";
 import {validatorInputUserBody} from "../middlewares/body-validator/check-bodyUser";
 import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-params";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
-import {guardAuthentication} from "../middlewares/guard-authentication";
+import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 
 
 export const usersRouter = Router()
 
-usersRouter.get('/', guardAuthentication,
+usersRouter.get('/', superAdminAuthentication,
     async (req: RequestQuery<QueryParams&SearchEmailTerm&SearchLoginTerm>,
            res: ResponseViewBody<PaginatorType<UserViewModel[]>>) => {
         const getAllUsers = await usersQueryRepository.returnOfAllUsers(
@@ -41,7 +41,7 @@ usersRouter.get('/:id',
             ? res.sendStatus(404)
             : res.send(getByIdUser)
     })
-usersRouter.delete('/:id', guardAuthentication,
+usersRouter.delete('/:id', superAdminAuthentication,
     async (req: RequestParamsId<{ id: string }>,
            res: Response) => {
         const foundUserDelete = await usersService.userByIdDelete(req.params.id)

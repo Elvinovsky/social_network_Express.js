@@ -1,8 +1,8 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
 import {BlogDBModel, BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
-import {blogMapping} from "../../functions/blogMapping";
-import {postMapping} from "../../functions/postMapping";
+import {blogsMapping} from "../../functions/blogsMapping";
+import {postsMapping} from "../../functions/postsMapping";
 import {
     getPageNumber,
     getPageSize,
@@ -39,7 +39,7 @@ export const blogsQueryRepository = {
                 page: getPageNumber(pageNumber),
                 pageSize: getPageSize(pageSize),
                 totalCount: calculateOfFiles,
-                items: blogMapping(foundBlogs)
+                items: blogsMapping(foundBlogs)
             }
     },
     async searchPostByBlogId
@@ -66,7 +66,7 @@ export const blogsQueryRepository = {
             page: getPageNumber(pageNumber),
             pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
-            items: postMapping(foundBlogs)
+            items: postsMapping(foundBlogs)
         }
     },
 }

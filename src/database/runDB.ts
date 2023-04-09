@@ -3,6 +3,7 @@ import {MongoClient} from "mongodb";
 import {BlogDBModel} from "../models/modelsBlogs/blogViewModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {UserCreateModel} from "../models/modelsUsers/usersInputModel";
+import {CommentDBModel} from "../models/modelsComment/commentInputModel";
 dotenv.config()
 
 const mongoURI = process.env.MONGO_URL;
@@ -17,6 +18,7 @@ const db = client.db('lesson');
 export const blogsCollection = db.collection<BlogDBModel>('blogs');
 export const postsCollection = db.collection<PostViewModel>('posts');
 export const usersCollection = db.collection<UserCreateModel>('users');
+export const feedbacksCollection = db.collection<CommentDBModel>('comments'); // todo  model
 export async function runDb() {
     try {
         await client.connect()

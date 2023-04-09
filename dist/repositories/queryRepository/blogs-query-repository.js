@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsQueryRepository = void 0;
 const runDB_1 = require("../../database/runDB");
-const blogMapping_1 = require("../../functions/blogMapping");
-const postMapping_1 = require("../../functions/postMapping");
+const blogsMapping_1 = require("../../functions/blogsMapping");
+const postsMapping_1 = require("../../functions/postsMapping");
 const pagination_helpers_1 = require("../../helpers/pagination-helpers");
 const filters_1 = require("../../functions/filters");
 exports.blogsQueryRepository = {
@@ -33,7 +33,7 @@ exports.blogsQueryRepository = {
                 page: (0, pagination_helpers_1.getPageNumber)(pageNumber),
                 pageSize: (0, pagination_helpers_1.getPageSize)(pageSize),
                 totalCount: calculateOfFiles,
-                items: (0, blogMapping_1.blogMapping)(foundBlogs)
+                items: (0, blogsMapping_1.blogsMapping)(foundBlogs)
             };
         });
     },
@@ -54,7 +54,7 @@ exports.blogsQueryRepository = {
                 page: (0, pagination_helpers_1.getPageNumber)(pageNumber),
                 pageSize: (0, pagination_helpers_1.getPageSize)(pageSize),
                 totalCount: calculateOfFiles,
-                items: (0, postMapping_1.postMapping)(foundBlogs)
+                items: (0, postsMapping_1.postsMapping)(foundBlogs)
             };
         });
     },

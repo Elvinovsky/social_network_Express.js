@@ -1,6 +1,6 @@
 import { body } from 'express-validator'
 import {postsRepository} from "../../repositories/db/posts-db-repository";
-import {guardAuthentication} from "../guard-authentication";
+import {superAdminAuthentication} from "../guard-authentication/super-admin-authentication";
 import {checkForErrors} from "../check-for-errors";
 
 
@@ -37,10 +37,8 @@ const checksBlogId =  body('blogId')
         }
     });
 
-
-
  export const validatorInputPostBody = [
-       guardAuthentication,
+       superAdminAuthentication,
        checksTitle,
        checksShortDescription,
        checksContent,
@@ -48,7 +46,7 @@ const checksBlogId =  body('blogId')
        checkForErrors
   ]
 export const validatorInputBlogPostBody = [
-        guardAuthentication,
+        superAdminAuthentication,
         checksTitle,
         checksShortDescription,
         checksContent,

@@ -33,7 +33,7 @@ export const postsRepository = {
        return updateResult.matchedCount === 1;
     },
     //поиск ID блога для поста.5
-    async searchBlogIdForPost(blogId: string):Promise  <WithId<BlogDBModel> | null > {
+    async searchBlogIdForPost(blogId: string):Promise <WithId<BlogDBModel> | null > {
         const blogIdForPost = await blogsCollection.findOne({_id: new ObjectId(blogId)})
         return blogIdForPost? blogIdForPost : null
     },

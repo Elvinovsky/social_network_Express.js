@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
 const blogs_service_1 = require("../domains/blogs-service");
-const guard_authentication_1 = require("../middlewares/guard-authentication");
+const super_admin_authentication_1 = require("../middlewares/guard-authentication/super-admin-authentication");
 const check_bodyBlog_1 = require("../middlewares/body-validator/check-bodyBlog");
 const blogs_query_repository_1 = require("../repositories/queryRepository/blogs-query-repository");
 const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost");
@@ -68,7 +68,7 @@ exports.blogsRouter.put('/:id', check_bodyBlog_1.validatorBlogInputBody, (req, r
         return;
     }
 }));
-exports.blogsRouter.delete('/:id', guard_authentication_1.guardAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.delete('/:id', super_admin_authentication_1.superAdminAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const foundBlogDelete = yield blogs_service_1.blogsService.BlogByIdDelete(req.params.id);
     if (!foundBlogDelete) {
         res.sendStatus(404);

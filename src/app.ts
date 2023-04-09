@@ -4,6 +4,7 @@ import {blogsRouter} from "./routers/blogs-router";
 import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
+import {feedBacksRouter} from "./routers/feedbacks-router";
 
 const jsonBodyMiddleware = express.json()
 const app = express()
@@ -16,7 +17,7 @@ app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/posts', postsRouter)
 app.use('/blogs', blogsRouter)
-
+app.use('/comments', feedBacksRouter)
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {

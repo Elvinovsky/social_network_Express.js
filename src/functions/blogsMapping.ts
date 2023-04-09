@@ -1,7 +1,7 @@
 import {BlogDBModel, BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {WithId} from 'mongodb'
 
-export const blogMapping = (array: Array<WithId<BlogDBModel>>): BlogViewModel[] =>{
+export const blogsMapping = (array: Array<WithId<BlogDBModel>>): BlogViewModel[] =>{
     return array.map((el) => {
         return {
             id: el._id.toString(),

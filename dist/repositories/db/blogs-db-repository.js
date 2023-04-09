@@ -13,9 +13,14 @@ exports.blogsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
 function blogMapping(blog) {
-    const blogIdMongo = blog._id;
-    delete blog._id;
-    return Object.assign({ id: blogIdMongo.toString() }, blog);
+    return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt,
+        isMembership: blog.isMembership
+    };
 }
 exports.blogsRepository = {
     //тестовое удаление базы данных о блогах.

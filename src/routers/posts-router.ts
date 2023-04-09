@@ -1,19 +1,22 @@
 import {Response, Router} from "express";
 import {postsService} from "../domains/posts-service";
-import {guardAuthentication} from "../middlewares/guard-authentication";
+import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 import {
     RequestInputBody,
     RequestParamsAndInputBody,
     ResponseViewBody,
     RequestParamsId,
-    RequestQuery
-} from "../req-res-types";
+    RequestQuery, RequestParamsAndInputQuery
+} from "../types/req-res-types";
 import {PostInputModel} from "../models/modelsPosts/postInputModel";
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
 import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryParams, SearchTitleTerm} from "../models/query-params";
+import {CommentInputModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
+import {feedbacksService} from "../domains/feedback-service";
+import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
 
 export const postsRouter = Router()
 
@@ -39,6 +42,34 @@ postsRouter.get('/:id',
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })
+postsRouter.get('/:postId/comments',
+    async (req: RequestParamsAndInputQuery<{ postId: string }, QueryParams>,
+           res: ResponseViewBody<PaginatorType<CommentViewModel[]>>) => {
+        const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(
+            req.params.postId,
+            Number(req.query.pageNumber),
+            Number(req.query.pageSize),
+            req.query.sortBy,
+            req.query.sortDirection,)
+
+        if (!getCommentsByPostId) {
+            res.sendStatus(404)
+            return;
+        }
+        res.send(getCommentsByPostId)
+    })
+postsRouter.post('/:postId/comments',validatorInputComment,
+    async (req: RequestParamsAndInputBody<{postId: string},CommentInputModel>,
+           res: ResponseViewBody<CommentViewModel>) => {
+
+    const validatorPostIdForCreateComments = await feedbacksService.searchPostIdForComments(req.params.postId)
+        if (!validatorPostIdForCreateComments) {
+            res.sendStatus(404)
+            return;
+        }
+    const comment = await feedbacksService.createComment(req.params.postId, req.user!.id, req.body.content)
+            res.status(201).send(comment)
+    })
 postsRouter.post('/', validatorInputPostBody,
     async (req: RequestInputBody<PostInputModel>,
            res: ResponseViewBody<PostViewModel>) => {
@@ -65,7 +96,7 @@ postsRouter.put('/:id', validatorInputPostBody,
             return;
         }
     })
-postsRouter.delete('/:id', guardAuthentication,
+postsRouter.delete('/:id', superAdminAuthentication,
     async (req: RequestParamsId<{ id: string }>,
            res: Response) => {
         const foundPostDelete = await postsService.postByIdDelete(req.params.id)

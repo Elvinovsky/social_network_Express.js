@@ -1,13 +1,13 @@
 import {Response, Router} from "express";
 import {blogsService} from "../domains/blogs-service";
-import {guardAuthentication} from "../middlewares/guard-authentication";
+import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 import {
     RequestInputBody,
     RequestParamsAndInputBody,
     ResponseViewBody,
     RequestParamsId,
     RequestParamsAndInputQuery, RequestQuery
-} from "../req-res-types";
+} from "../types/req-res-types";
 import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
 import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
@@ -102,7 +102,7 @@ blogsRouter.put('/:id', validatorBlogInputBody,
             return;
         }
     })
-blogsRouter.delete('/:id', guardAuthentication,
+blogsRouter.delete('/:id', superAdminAuthentication,
                                  async (req: RequestParamsId<{ id: string }>,
                                         res: Response) => {
     const foundBlogDelete = await blogsService.BlogByIdDelete(req.params.id)

@@ -3,9 +3,8 @@ import { UserCreateModel, UserViewModel } from "../../models/modelsUsers/usersIn
 import {DeleteResult, ObjectId, WithId} from "mongodb";
 
 function userMapping(user:  WithId<UserCreateModel> ): UserViewModel {
-    const mongoId = user._id
     return {
-        id: mongoId.toString(),
+        id: user._id.toString(),
         login: user.login,
         email: user.email,
         createdAt: user.createdAt
@@ -21,6 +20,17 @@ export const usersRepository = {
             return null
         }
         return userMapping(user)
+    },
+    async findUserLoginForComment(userId: string):  Promise< string | null > {
+        try {
+            const user = await usersCollection.findOne({_id: new ObjectId(userId)})
+            return user!.login
+
+        } catch (error){
+            return null
+        }
+
+
     },
     async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserCreateModel> | null> {
         return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorBlogInputBody = void 0;
 const express_validator_1 = require("express-validator");
 const check_for_errors_1 = require("../check-for-errors");
-const guard_authentication_1 = require("../guard-authentication");
+const super_admin_authentication_1 = require("../guard-authentication/super-admin-authentication");
 const checkInputName = (0, express_validator_1.body)('name')
     .trim()
     .isLength({ min: 3, max: 15 })
@@ -27,7 +27,7 @@ const checkInputDescription = (0, express_validator_1.body)('description')
     .isString()
     .withMessage("is not a string");
 exports.validatorBlogInputBody = [
-    guard_authentication_1.guardAuthentication,
+    super_admin_authentication_1.superAdminAuthentication,
     checkInputName,
     checkInputWebsiteUrl,
     checkInputDescription,

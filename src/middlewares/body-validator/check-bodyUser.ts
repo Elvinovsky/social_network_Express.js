@@ -1,6 +1,6 @@
 import {checkForErrors} from "../check-for-errors";
 import {body} from "express-validator";
-import {guardAuthentication} from "../guard-authentication";
+import {superAdminAuthentication} from "../guard-authentication/super-admin-authentication";
 
 
 const checksLogin =  body('login', )
@@ -12,8 +12,6 @@ const checksLogin =  body('login', )
     .bail()
     .isLength({min: 3, max: 10 })
     .withMessage("length should be no more than 10 characters")
-
-
 const checksPassword =  body('password')
     .trim()
     .isLength({min: 6, max: 20 })
@@ -28,8 +26,12 @@ const checkInputEmail =  body('email')
     .isString()
     .withMessage("is not a string")
 
+const checkInputLoginOrEmail =  body('loginOrEmail')
+    .isString()
+    .withMessage("is not a string")
+
 export const validatorInputUserBody = [
-    guardAuthentication,
+    superAdminAuthentication,
     checksLogin,
     checksPassword,
     checkInputEmail,
@@ -37,8 +39,7 @@ export const validatorInputUserBody = [
 ]
 
 export const validatorInputAuthRout = [
-    checksLogin,
+    checkInputLoginOrEmail,
     checksPassword,
-    checkInputEmail,
     checkForErrors
 ]

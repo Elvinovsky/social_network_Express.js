@@ -1,6 +1,6 @@
 import {PostViewModel} from "../models/modelsPosts/postViewModel";
 
-export const postMapping = (array: Array<PostViewModel>) =>{
+export const postsMapping = (array: Array<PostViewModel>) =>{
     return array.map((el: PostViewModel) => {
       return {
           id: el.id,

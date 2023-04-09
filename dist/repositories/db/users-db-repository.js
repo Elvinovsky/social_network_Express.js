@@ -13,9 +13,8 @@ exports.usersRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
 function userMapping(user) {
-    const mongoId = user._id;
     return {
-        id: mongoId.toString(),
+        id: user._id.toString(),
         login: user.login,
         email: user.email,
         createdAt: user.createdAt
@@ -34,6 +33,18 @@ exports.usersRepository = {
                 return null;
             }
             return userMapping(user);
+        });
+    },
+    findUserLoginForComment(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });
+                const userLogin = user.login;
+                return userLogin;
+            }
+            catch (error) {
+                return null;
+            }
         });
     },
     findByLoginOrEmail(loginOrEmail) {

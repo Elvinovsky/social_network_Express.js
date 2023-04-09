@@ -2,9 +2,9 @@ export type QueryParams= {
     pageNumber: string,
     pageSize: string,
     sortBy: string,
-    sortDirection: string,
+    sortDirection: string
 }
-export type SearchNameTerm = {searchNameTerm?: string  }
-export type SearchTitleTerm = {searchTitleTerm?: string }
-export type SearchEmailTerm = {searchEmailTerm?: string }
-export type SearchLoginTerm = {searchLoginTerm?: string }
+export type SearchNameTerm = { searchNameTerm?: string }
+export type SearchTitleTerm = { searchTitleTerm?: string }
+export type SearchEmailTerm = { searchEmailTerm?: string }
+export type SearchLoginTerm = { searchLoginTerm?: string }
