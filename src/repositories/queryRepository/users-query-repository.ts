@@ -7,10 +7,10 @@ import {
     PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
 } from "../../helpers/pagination-helpers";
 import {filterLoginOrEmail} from "../../functions/filters";
-import {UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
+import {MeViewModel, UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
 import {usersCollection} from "../../database/runDB";
 import {usersMapping} from "../../functions/usersMapping";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 
 export const usersQueryRepository = {
 
@@ -37,4 +37,15 @@ export const usersQueryRepository = {
             items: usersMapping(foundUsers)
         }
     },
+    async getUserInfo(id: string): Promise <MeViewModel | null> {
+        const user = await usersCollection.findOne({_id: new ObjectId(id)})
+        if(!user) {
+            return null
+        }
+        return {
+           email: user.email,
+            login: user.login,
+            userId: user._id.toString()
+        }
+    }
 }

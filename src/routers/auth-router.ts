@@ -4,6 +4,8 @@ import {usersService} from "../domains/users-service";
 import {LoginInputModel} from "../models/modelsUsers/loginInputModel";
 import {validatorInputAuthRout} from "../middlewares/body-validator/check-bodyUser";
 import {jwtService} from "../application/jwt-service";
+import {userAuthentication} from "../middlewares/guard-authentication/user-authentication";
+import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
 
 
 export const authRouter = Router()
@@ -18,5 +20,14 @@ authRouter.post('/login',validatorInputAuthRout,
         } else {
             res.sendStatus(401)
             return;
+        }
+    })
+authRouter.get('/me',userAuthentication,
+    async (req: RequestInputBody<LoginInputModel>,
+           res: Response) => {
+        const user = await usersQueryRepository.getUserInfo(req.user!.id)
+        if(user) {
+            res.send(user)
+            return
         }
     })

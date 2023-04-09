@@ -25,3 +25,9 @@ export type UserCreateModel = {
     email: string,
     createdAt: string
 }
+
+export type MeViewModel = {
+    email: string,
+    login: string,
+    userId: string
+}
