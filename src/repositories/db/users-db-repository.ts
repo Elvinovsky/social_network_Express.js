@@ -1,7 +1,6 @@
 import {usersCollection} from "../../database/runDB";
 import { UserCreateModel, UserViewModel } from "../../models/modelsUsers/usersInputModel";
 import {DeleteResult, ObjectId, WithId} from "mongodb";
-
 function userMapping(user:  WithId<UserCreateModel> ): UserViewModel {
     return {
         id: user._id.toString(),
@@ -21,16 +20,12 @@ export const usersRepository = {
         }
         return userMapping(user)
     },
-    async findUserLoginForComment(userId: string):  Promise< string | null > {
-        try {
-            const user = await usersCollection.findOne({_id: new ObjectId(userId)})
-            return user!.login
-
-        } catch (error){
+    async findUserForComment(userId: string):  Promise<UserViewModel | null > {
+        const user = await usersCollection.findOne({_id: new ObjectId(userId)})
+        if(!user) {
             return null
         }
-
-
+        return userMapping(user)
     },
     async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserCreateModel> | null> {
         return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})

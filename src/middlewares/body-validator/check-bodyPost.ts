@@ -31,7 +31,7 @@ const checksBlogId =  body('blogId')
     .withMessage("is not a string")
     .bail()
     .custom(async (blogId: string) => {
-        const validationBlogId = await postsRepository.searchBlogIdForPost(blogId)
+        const validationBlogId = await postsRepository.findBlogIdForPost(blogId)
         if (!validationBlogId) {
             throw new Error("blogId not found");
         }

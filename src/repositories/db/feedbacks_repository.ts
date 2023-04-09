@@ -1,5 +1,5 @@
 import {DeleteResult, ObjectId, WithId} from "mongodb";
-import { feedbacksCollection, postsCollection } from "../../database/runDB";
+import {feedbacksCollection, postsCollection} from "../../database/runDB";
 import {CommentDBModel, CommentViewModel} from "../../models/modelsComment/commentInputModel";
 import {PostViewModel} from "../../models/modelsPosts/postViewModel";
 
@@ -41,5 +41,13 @@ export const feedBacksRepository = {
             },
             createdAt: comment.createdAt
         }
+    },
+    async updateCommentById(id: string, content: string): Promise<boolean> {
+        const result = await feedbacksCollection.updateOne({_id: new ObjectId(id)}, {$set: {content}})
+        return result.matchedCount === 1
+    },
+    async deleteComment(id: string): Promise<boolean> {
+        const resultDeleted = await feedbacksCollection.deleteOne({_id: new ObjectId(id)})
+        return resultDeleted.deletedCount === 1
     },
 }

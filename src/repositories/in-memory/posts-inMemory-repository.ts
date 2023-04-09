@@ -12,7 +12,7 @@ export const postsRepository = {
     },
     //создание и добавление нового поста в базу данных.
     async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostViewModel> {
-        const outputBlogName: string = this.searchBlogIdForPost.name
+        const outputBlogName: string = this.findBlogIdForPost.name
         const createNewPost: PostViewModel = {
             id: (+(new Date())).toString(),
             title: title,
@@ -42,7 +42,7 @@ export const postsRepository = {
         return false;
     },
     //поиск ID блога для поста.
-    async searchBlogIdForPost(blogId: string):Promise <BlogViewModel | undefined> {
+    async findBlogIdForPost(blogId: string):Promise <BlogViewModel | undefined> {
         const blogIdForPost = await inMemory.allBlogs.find(el => el.id === blogId)
         if(blogIdForPost) {
             return blogIdForPost

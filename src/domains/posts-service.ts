@@ -5,14 +5,14 @@ import {WithId} from "mongodb";
 
 
 export const postsService = {
-    async searchBlogIdForPost(blogId: string):Promise <WithId<BlogDBModel>  | null > {
-        return await postsRepository.searchBlogIdForPost(blogId)
+    async searchBlogIdForPost(blogId: string):Promise <WithId<BlogDBModel>  | null > { // todo убрать
+        return await postsRepository.findBlogIdForPost(blogId)
     },
     async findPostById(id: string): Promise <PostViewModel | null> {
         return await postsRepository.findPostById(id)
     },
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostViewModel> {
-        const outputBlogName: string = postsRepository.searchBlogIdForPost.name
+        const outputBlogName: string = postsRepository.findBlogIdForPost.name
         const newPost: PostViewModel = {
             id: (+(new Date())).toString(),
             title: title,
