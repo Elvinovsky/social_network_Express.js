@@ -1,14 +1,10 @@
 import {usersCollection} from "../../database/runDB";
-import { UserCreateModel, UserViewModel } from "../../models/modelsUsers/usersInputModel";
+import { UserDBModel} from "../../models/modelsUsersLogin/user-input";
 import {DeleteResult, ObjectId, WithId} from "mongodb";
-function userMapping(user:  WithId<UserCreateModel> ): UserViewModel {
-    return {
-        id: user._id.toString(),
-        login: user.login,
-        email: user.email,
-        createdAt: user.createdAt
-    }
-}
+import {UserViewModel} from "../../models/modelsUsersLogin/user-view";
+import {userMapping} from "../../functions/usersMapping";
+
+
 export const usersRepository = {
     async testingDeleteAllUsers(): Promise<DeleteResult> {
         return await usersCollection.deleteMany({})
@@ -27,10 +23,10 @@ export const usersRepository = {
         }
         return userMapping(user)
     },
-    async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserCreateModel> | null> {
+    async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserDBModel> | null> {
         return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})
     },
-    async addNewUser(newUser: UserCreateModel): Promise <UserViewModel> {
+    async addNewUser(newUser: UserDBModel): Promise <UserViewModel> {
     const result = await usersCollection.insertOne(newUser)
     return {
         id: result.insertedId.toString(),

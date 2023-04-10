@@ -1,5 +1,6 @@
 import {WithId} from "mongodb";
-import {CommentDBModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
+import {CommentViewModel} from "../models/modelsComment/comment-view";
+import {CommentDBModel} from "../models/modelsComment/comment-input";
 
 export const commentsMapping = (array: Array<WithId<CommentDBModel>>): CommentViewModel[] =>{
     return array.map((el) => {
@@ -13,4 +14,15 @@ export const commentsMapping = (array: Array<WithId<CommentDBModel>>): CommentVi
             createdAt: el.createdAt
         }
     })
+}
+export const commentMapping = (comment: WithId<CommentDBModel> ): CommentViewModel => {
+    return {
+        id: comment._id.toString(),
+        content: comment.content,
+        commentatorInfo: {
+            userId: comment.commentatorInfo.userId,
+            userLogin: comment.commentatorInfo.userLogin
+        },
+        createdAt: comment.createdAt
+    }
 }

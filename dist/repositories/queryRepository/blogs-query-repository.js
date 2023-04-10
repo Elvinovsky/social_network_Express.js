@@ -14,7 +14,6 @@ const runDB_1 = require("../../database/runDB");
 const blogsMapping_1 = require("../../functions/blogsMapping");
 const postsMapping_1 = require("../../functions/postsMapping");
 const pagination_helpers_1 = require("../../helpers/pagination-helpers");
-const filters_1 = require("../../functions/filters");
 exports.blogsQueryRepository = {
     returnOfAllBlogs(searchNameTerm, pageNumber, pageSize, sortBy, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -45,7 +44,7 @@ exports.blogsQueryRepository = {
             }
             const calculateOfFiles = yield runDB_1.postsCollection.countDocuments({ blogId });
             const foundBlogs = yield runDB_1.postsCollection
-                .find({ blogId }, filters_1.blockMongo_Id)
+                .find({ blogId })
                 .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: (0, pagination_helpers_1.getDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();

@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.feedbacksService = void 0;
-const feedbacks_repository_1 = require("../repositories/db/feedbacks_repository");
+const feedbacks_db_repository_1 = require("../repositories/db/feedbacks-db-repository");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
 exports.feedbacksService = {
     getComment(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield feedbacks_repository_1.feedBacksRepository.getCommentById(id);
+            return yield feedbacks_db_repository_1.feedBacksRepository.getCommentById(id);
         });
     },
     searchUserForComment(userId) {
@@ -25,7 +25,7 @@ exports.feedbacksService = {
     },
     searchPostIdForComments(postId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield feedbacks_repository_1.feedBacksRepository.searchPostIdForComments(postId);
+            return yield feedbacks_db_repository_1.feedBacksRepository.searchPostIdForComments(postId);
         });
     },
     createComment(postId, userId, content) {
@@ -40,17 +40,17 @@ exports.feedbacksService = {
                 },
                 createdAt: new Date().toISOString()
             };
-            return yield feedbacks_repository_1.feedBacksRepository.addNewComment(newComment);
+            return yield feedbacks_db_repository_1.feedBacksRepository.addNewComment(newComment);
         });
     },
     updateCommentById(id, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return feedbacks_repository_1.feedBacksRepository.updateCommentById(id, content);
+            return feedbacks_db_repository_1.feedBacksRepository.updateCommentById(id, content);
         });
     },
     deletedCountComment(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield feedbacks_repository_1.feedBacksRepository.deleteComment(id);
+            return yield feedbacks_db_repository_1.feedBacksRepository.deleteComment(id);
         });
     }
 };

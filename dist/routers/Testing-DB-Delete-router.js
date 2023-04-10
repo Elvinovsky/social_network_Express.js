@@ -14,13 +14,13 @@ const express_1 = require("express");
 const blogs_db_repository_1 = require("../repositories/db/blogs-db-repository");
 const posts_db_repository_1 = require("../repositories/db/posts-db-repository");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
-const feedbacks_repository_1 = require("../repositories/db/feedbacks_repository");
+const feedbacks_db_repository_1 = require("../repositories/db/feedbacks-db-repository");
 exports.deleteAllDataRouter = (0, express_1.Router)();
 exports.deleteAllDataRouter.delete('/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield blogs_db_repository_1.blogsRepository.testingDeleteAllBlogs();
     yield posts_db_repository_1.postsRepository.testingDeleteAllPosts();
     yield users_db_repository_1.usersRepository.testingDeleteAllUsers();
-    yield feedbacks_repository_1.feedBacksRepository.testingDeleteAllComments();
+    yield feedbacks_db_repository_1.feedBacksRepository.testingDeleteAllComments();
     res.send(204);
     return;
 }));

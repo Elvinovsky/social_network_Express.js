@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {blogsRepository} from "../repositories/db/blogs-db-repository";
 import {postsRepository} from "../repositories/db/posts-db-repository";
 import {usersRepository} from "../repositories/db/users-db-repository";
-import {feedBacksRepository} from "../repositories/db/feedbacks_repository";
+import {feedBacksRepository} from "../repositories/db/feedbacks-db-repository";
 
 export const deleteAllDataRouter = Router();
 

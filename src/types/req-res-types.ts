@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
-import {UserViewModel} from "../models/modelsUsers/usersInputModel";
+import {UserViewModel} from "../models/modelsUsersLogin/user-view";
+
 
 export type RequestInputBody<T> = Request<{},{},T>;
 export type RequestParamsId<T> = Request<T>;

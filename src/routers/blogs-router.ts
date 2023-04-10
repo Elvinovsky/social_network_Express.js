@@ -8,15 +8,15 @@ import {
     RequestParamsId,
     RequestParamsAndInputQuery, RequestQuery
 } from "../types/req-res-types";
-import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
-import {BlogViewModel} from "../models/modelsBlogs/blogViewModel";
+import {BlogInput} from "../models/modelsBlogs/blog-input";
+import {BlogView} from "../models/modelsBlogs/blog-view";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
 import {blogsQueryRepository} from "../repositories/queryRepository/blogs-query-repository";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
-import {BlogPostInputModel} from "../models/modelsPosts/postInputModel";
-import {PostViewModel} from "../models/modelsPosts/postViewModel";
+import {BlogPostInputModel} from "../models/modelsPosts/post-input";
+import {PostView} from "../models/modelsPosts/post-view";
 import {postsService} from "../domains/posts-service";
-import {QueryParams, SearchNameTerm} from "../models/query-params";
+import {QueryInputParams, SearchNameTerm} from "../models/query-input-params";
 import {PaginatorType} from "../helpers/pagination-helpers";
 
 
@@ -25,7 +25,7 @@ export const blogsRouter = Router ()
 
 
 blogsRouter.get('/',
-    async (req: RequestQuery<QueryParams&SearchNameTerm>,
+    async (req: RequestQuery<QueryInputParams&SearchNameTerm>,
                    res: Response) => {
     const getAllBlogs = await blogsQueryRepository.returnOfAllBlogs(
         req.query.searchNameTerm,
@@ -39,7 +39,7 @@ blogsRouter.get('/',
 })
 blogsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
-                   res: ResponseViewBody<BlogViewModel>) => {
+                   res: ResponseViewBody<BlogView>) => {
     const getByIdBlog = await blogsService.findBlogById(req.params.id)
     if (!getByIdBlog) {
         res.sendStatus(404)
@@ -49,8 +49,8 @@ blogsRouter.get('/:id',
     return;
 })
 blogsRouter.get('/:blogId/posts',
-    async (req: RequestParamsAndInputQuery<{blogId: string }, QueryParams>,
-                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
+    async (req: RequestParamsAndInputQuery<{blogId: string }, QueryInputParams>,
+                   res: ResponseViewBody<PaginatorType<PostView[]>>) => {
     const getByBlogIdPosts = await blogsQueryRepository.searchPostByBlogId(
         req.params.blogId,
         Number(req.query.pageNumber),
@@ -66,7 +66,7 @@ blogsRouter.get('/:blogId/posts',
 })
 blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody,
     async (req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
-           res: ResponseViewBody<PostViewModel>) => {
+           res: ResponseViewBody<PostView>) => {
         const validatorBlogIdForCreatePost = await postsService.searchBlogIdForPost(req.params.blogId)
         if (!validatorBlogIdForCreatePost) {
             res.sendStatus(404)
@@ -78,8 +78,8 @@ blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody,
         return;
     })
 blogsRouter.post('/', validatorBlogInputBody,
-    async (req: RequestInputBody<BlogInputModel>,
-           res: ResponseViewBody<BlogViewModel>) => {
+    async (req: RequestInputBody<BlogInput>,
+           res: ResponseViewBody<BlogView>) => {
 
     const createdBlog = await blogsService
         .createBlog(req.body.name, req.body.description, req.body.websiteUrl)
@@ -88,7 +88,7 @@ blogsRouter.post('/', validatorBlogInputBody,
         return;
     })
 blogsRouter.put('/:id', validatorBlogInputBody,
-    async (req: RequestParamsAndInputBody<{ id: string }, BlogInputModel>,
+    async (req: RequestParamsAndInputBody<{ id: string }, BlogInput>,
            res: Response) => {
     const searchBlogByIdForUpdate = await blogsService.findBlogById(req.params.id)
         if (!searchBlogByIdForUpdate) {

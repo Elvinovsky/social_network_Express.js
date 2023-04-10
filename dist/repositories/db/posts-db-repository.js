@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
-const filters_1 = require("../../functions/filters");
+const postsMapping_1 = require("../../functions/postsMapping");
 exports.postsRepository = {
     // тестовое удаление базы данных Постов
     testingDeleteAllPosts() {
@@ -23,15 +23,19 @@ exports.postsRepository = {
     //поиск поста по ID.
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.postsCollection.findOne({ id }, filters_1.blockMongo_Id);
+            const post = yield runDB_1.postsCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!post) {
+                return null;
+            }
+            return (0, postsMapping_1.postMapping)(post);
         });
     },
     //создание и добавление нового поста в базу данных.
     addNewPost(newPost) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield runDB_1.postsCollection.insertOne(newPost);
+            const result = yield runDB_1.postsCollection.insertOne(newPost);
             return {
-                id: newPost.id,
+                id: result.insertedId.toString(),
                 title: newPost.title,
                 shortDescription: newPost.shortDescription,
                 content: newPost.content,
@@ -44,7 +48,7 @@ exports.postsRepository = {
     // обновление поста по ID.
     updatePostById(id, title, shortDescription, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateResult = yield runDB_1.postsCollection.updateOne({ id }, { $set: { title, shortDescription, content } });
+            const updateResult = yield runDB_1.postsCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { title, shortDescription, content } });
             return updateResult.matchedCount === 1;
         });
     },
@@ -58,7 +62,7 @@ exports.postsRepository = {
     // поиск и удаление поста по ID.
     postByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.postsCollection.deleteOne({ id });
+            const deleteResult = yield runDB_1.postsCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return deleteResult.deletedCount === 1;
         });
     }

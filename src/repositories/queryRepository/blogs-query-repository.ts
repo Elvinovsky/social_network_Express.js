@@ -1,6 +1,6 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
-import {BlogDBModel, BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
-import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {BlogView} from "../../models/modelsBlogs/blog-view";
+import {PostView} from "../../models/modelsPosts/post-view";
 import {blogsMapping} from "../../functions/blogsMapping";
 import {postsMapping} from "../../functions/postsMapping";
 import {
@@ -11,8 +11,9 @@ import {
     getDirection, pagesCountOfBlogs,
     PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
-import {blockMongo_Id} from "../../functions/filters";
 import {Filter, WithId} from "mongodb";
+import {BlogDBModel} from "../../models/modelsBlogs/blog-input";
+import {PostDBModel} from "../../models/modelsPosts/post-input";
 
 export const blogsQueryRepository = {
 
@@ -22,7 +23,7 @@ export const blogsQueryRepository = {
      pageSize?: number,
      sortBy?: string,
      sortDirection?: string,
-    ): Promise<PaginatorType<BlogViewModel[]>> {
+    ): Promise<PaginatorType<BlogView[]>> {
 
         const filter: Filter<BlogDBModel> = {}
         if(searchNameTerm) {
@@ -48,7 +49,7 @@ export const blogsQueryRepository = {
      pageSize: number,
      sortBy?: string,
      sortDirection?: string,
-    ):Promise<PaginatorType<PostViewModel[]> | null> {
+    ):Promise<PaginatorType<PostView[]> | null> {
 
         const blogIdForPost = await postsCollection.findOne({blogId: blogId}) //express validator .custom
         if (!blogIdForPost){
@@ -56,8 +57,8 @@ export const blogsQueryRepository = {
         }
         const calculateOfFiles = await postsCollection.countDocuments({blogId})
 
-        const foundBlogs: PostViewModel[] = await postsCollection
-            .find({blogId}, blockMongo_Id)
+        const foundBlogs: WithId<PostDBModel>[] = await postsCollection
+            .find({blogId})
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]:getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()

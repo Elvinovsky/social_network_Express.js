@@ -2,12 +2,13 @@ import {Response, Router} from "express";
 import {RequestParamsAndInputBody, RequestParamsId, ResponseViewBody} from "../types/req-res-types";
 import {feedbacksService} from "../domains/feedback-service";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
-import {BlogInputModel} from "../models/modelsBlogs/blogInputModel";
+import {BlogInput} from "../models/modelsBlogs/blog-input";
 import {blogsService} from "../domains/blogs-service";
 import {blogsRouter} from "./blogs-router";
 import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
-import {CommentInputModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
+import {CommentViewModel} from "../models/modelsComment/comment-view";
 import {userAuthentication} from "../middlewares/guard-authentication/user-authentication";
+import {CommentInputModel} from "../models/modelsComment/comment-input";
 
 
 export const feedBacksRouter = Router()

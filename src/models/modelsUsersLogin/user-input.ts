@@ -12,13 +12,8 @@ export type UserInputModel = {
      * pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
      */
 }
-export type UserViewModel = {
-    id: string,
-    login:	string,
-    email: string,
-    createdAt: string
-}
-export type UserCreateModel = {
+
+export type UserDBModel = {
     login:	string,
     passwordHash: string,
     passwordSalt: string,
@@ -26,8 +21,3 @@ export type UserCreateModel = {
     createdAt: string
 }
 
-export type MeViewModel = {
-    email: string,
-    login: string,
-    userId: string
-}

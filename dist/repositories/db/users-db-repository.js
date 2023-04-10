@@ -12,14 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
-function userMapping(user) {
-    return {
-        id: user._id.toString(),
-        login: user.login,
-        email: user.email,
-        createdAt: user.createdAt
-    };
-}
+const usersMapping_1 = require("../../functions/usersMapping");
 exports.usersRepository = {
     testingDeleteAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +25,7 @@ exports.usersRepository = {
             if (!user) {
                 return null;
             }
-            return userMapping(user);
+            return (0, usersMapping_1.userMapping)(user);
         });
     },
     findUserForComment(userId) {
@@ -41,7 +34,7 @@ exports.usersRepository = {
             if (!user) {
                 return null;
             }
-            return userMapping(user);
+            return (0, usersMapping_1.userMapping)(user);
         });
     },
     findByLoginOrEmail(loginOrEmail) {

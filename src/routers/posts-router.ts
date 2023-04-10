@@ -8,23 +8,24 @@ import {
     RequestParamsId,
     RequestQuery, RequestParamsAndInputQuery
 } from "../types/req-res-types";
-import {PostInputModel} from "../models/modelsPosts/postInputModel";
-import {PostViewModel} from "../models/modelsPosts/postViewModel";
+import {PostInput} from "../models/modelsPosts/post-input";
+import {PostView} from "../models/modelsPosts/post-view";
 import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
 import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
 import {PaginatorType} from "../helpers/pagination-helpers";
-import {QueryParams, SearchTitleTerm} from "../models/query-params";
-import {CommentInputModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
+import {QueryInputParams, SearchTitleTerm} from "../models/query-input-params";
+import {CommentViewModel} from "../models/modelsComment/comment-view";
 import {feedbacksService} from "../domains/feedback-service";
 import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
+import {CommentInputModel} from "../models/modelsComment/comment-input";
 
 export const postsRouter = Router()
 
 postsRouter.get('/',
-    async (req: RequestQuery<QueryParams&SearchTitleTerm>,
-                   res: ResponseViewBody<PaginatorType<PostViewModel[]>>) => {
+    async (req: RequestQuery<QueryInputParams&SearchTitleTerm>,
+                   res: ResponseViewBody<PaginatorType<PostView[]>>) => {
 
-    const getAllPosts: PaginatorType<PostViewModel[]> = await postQueryRepository.returnOfAllPosts(
+    const getAllPosts: PaginatorType<PostView[]> = await postQueryRepository.returnOfAllPosts(
         req.query.searchTitleTerm,
         Number(req.query.pageNumber),
         Number(req.query.pageSize),
@@ -36,14 +37,14 @@ postsRouter.get('/',
 })
 postsRouter.get('/:id',
     async (req: RequestParamsId<{ id: string }>,
-                   res: ResponseViewBody<PostViewModel>) => {
+                   res: ResponseViewBody<PostView>) => {
     const getByIdPost = await postsService.findPostById(req.params.id)
     return getByIdPost === null
         ? res.sendStatus(404)
         : res.send(getByIdPost)
 })
 postsRouter.get('/:postId/comments',
-    async (req: RequestParamsAndInputQuery<{ postId: string }, QueryParams>,
+    async (req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>,
            res: ResponseViewBody<PaginatorType<CommentViewModel[]>>) => {
         const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(
             req.params.postId,
@@ -71,8 +72,8 @@ postsRouter.post('/:postId/comments',validatorInputComment,
             res.status(201).send(comment)
     })
 postsRouter.post('/', validatorInputPostBody,
-    async (req: RequestInputBody<PostInputModel>,
-           res: ResponseViewBody<PostViewModel>) => {
+    async (req: RequestInputBody<PostInput>,
+           res: ResponseViewBody<PostView>) => {
 
         const createdNewPost = await postsService.createPost
         (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
@@ -80,7 +81,7 @@ postsRouter.post('/', validatorInputPostBody,
         return;
     })
 postsRouter.put('/:id', validatorInputPostBody,
-    async (req: RequestParamsAndInputBody<{ id: string }, PostInputModel>,
+    async (req: RequestParamsAndInputBody<{ id: string }, PostInput>,
            res: ResponseViewBody<{}>) => {
 
         const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)

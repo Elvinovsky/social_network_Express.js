@@ -1,4 +1,4 @@
-export type PostInputModel = {
+export type PostInput = {
     /**
      * title input  model {maxLength: 30 }
      */
@@ -30,4 +30,12 @@ export type BlogPostInputModel = {
      * content input model {maxLength: 1000}
      */
     content: string,
+}
+export type PostDBModel = {//todo
+    title:	string,
+    shortDescription: string,
+    content: string,
+    blogId:	string,
+    blogName: string,
+    createdAt: string
 }

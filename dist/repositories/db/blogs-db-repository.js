@@ -12,16 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
-function blogMapping(blog) {
-    return {
-        id: blog._id.toString(),
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-        createdAt: blog.createdAt,
-        isMembership: blog.isMembership
-    };
-}
+const blogsMapping_1 = require("../../functions/blogsMapping");
 exports.blogsRepository = {
     //тестовое удаление базы данных о блогах.
     testingDeleteAllBlogs() {
@@ -36,7 +27,7 @@ exports.blogsRepository = {
             if (!blog) {
                 return null;
             }
-            return blogMapping(blog);
+            return (0, blogsMapping_1.blogMapping)(blog);
         });
     },
     //создание и добавление нового блога.

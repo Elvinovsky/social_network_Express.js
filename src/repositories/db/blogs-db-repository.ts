@@ -1,17 +1,9 @@
 import {blogsCollection} from "../../database/runDB";
-import {BlogDBModel, BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
-import {ObjectId, DeleteResult, WithId} from "mongodb";
+import {BlogView} from "../../models/modelsBlogs/blog-view";
+import {ObjectId, DeleteResult} from "mongodb";
+import {BlogDBModel} from "../../models/modelsBlogs/blog-input";
+import {blogMapping} from "../../functions/blogsMapping";
 
-function blogMapping(blog: WithId<BlogDBModel>): BlogViewModel {
-    return {
-        id: blog._id.toString(),
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-        createdAt: blog.createdAt,
-        isMembership: blog.isMembership
-    }
-}
 
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
@@ -19,7 +11,7 @@ export const blogsRepository = {
         return await blogsCollection.deleteMany({})
     },
     //поиск блога по ID.
-    async findBlogById(id: string): Promise<BlogViewModel | null> {
+    async findBlogById(id: string): Promise<BlogView | null> {
 
         const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
         if (!blog) {
@@ -28,7 +20,7 @@ export const blogsRepository = {
         return blogMapping(blog)
     },
     //создание и добавление нового блога.
-    async addNewBlog(createBlog: BlogDBModel): Promise<BlogViewModel> {
+    async addNewBlog(createBlog: BlogDBModel): Promise<BlogView> {
         const result = await blogsCollection.insertOne(createBlog)
 
         return {

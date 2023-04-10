@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsMapping = void 0;
+exports.blogMapping = exports.blogsMapping = void 0;
 const blogsMapping = (array) => {
     return array.map((el) => {
         return {
@@ -14,3 +14,14 @@ const blogsMapping = (array) => {
     });
 };
 exports.blogsMapping = blogsMapping;
+const blogMapping = (blog) => {
+    return {
+        id: blog._id.toString(),
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt,
+        isMembership: blog.isMembership
+    };
+};
+exports.blogMapping = blogMapping;

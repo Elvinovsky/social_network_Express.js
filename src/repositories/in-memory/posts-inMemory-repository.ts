@@ -1,19 +1,19 @@
 import {inMemory} from "../../database/in-memory";
-import {PostViewModel} from "../../models/modelsPosts/postViewModel";
-import {BlogViewModel} from "../../models/modelsBlogs/blogViewModel";
+import {PostView} from "../../models/modelsPosts/post-view";
+import {BlogView} from "../../models/modelsBlogs/blog-view";
 export const postsRepository = {
     // тестовое удаление базы данных Постов
     async testingDeleteAllPosts() {
        return inMemory.allPosts = []
     },
     // все существующие посты.
-    async returnOfAllPosts(): Promise<PostViewModel[]> {
+    async returnOfAllPosts(): Promise<PostView[]> {
        return inMemory.allPosts;
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostViewModel> {
+    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostView> {
         const outputBlogName: string = this.findBlogIdForPost.name
-        const createNewPost: PostViewModel = {
+        const createNewPost: PostView = {
             id: (+(new Date())).toString(),
             title: title,
             shortDescription: shortDescription,
@@ -26,7 +26,7 @@ export const postsRepository = {
         return createNewPost;
     },
     //поиск поста по ID.
-    async findPostById(id: string): Promise <PostViewModel | undefined> {
+    async findPostById(id: string): Promise <PostView | undefined> {
         return  inMemory.allPosts.find(el => el.id === id)
     },
     // обновление поста по ID.
@@ -42,7 +42,7 @@ export const postsRepository = {
         return false;
     },
     //поиск ID блога для поста.
-    async findBlogIdForPost(blogId: string):Promise <BlogViewModel | undefined> {
+    async findBlogIdForPost(blogId: string):Promise <BlogView | undefined> {
         const blogIdForPost = await inMemory.allBlogs.find(el => el.id === blogId)
         if(blogIdForPost) {
             return blogIdForPost

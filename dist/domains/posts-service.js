@@ -26,7 +26,6 @@ exports.postsService = {
         return __awaiter(this, void 0, void 0, function* () {
             const outputBlogName = posts_db_repository_1.postsRepository.findBlogIdForPost.name;
             const newPost = {
-                id: (+(new Date())).toString(),
                 title: title,
                 shortDescription: shortDescription,
                 content: content,

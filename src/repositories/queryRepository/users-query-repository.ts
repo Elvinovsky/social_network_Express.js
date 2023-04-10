@@ -7,10 +7,11 @@ import {
     PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
 import {filterLoginOrEmail} from "../../functions/filters";
-import {MeViewModel, UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
+import {UserDBModel} from "../../models/modelsUsersLogin/user-input";
 import {usersCollection} from "../../database/runDB";
 import {usersMapping} from "../../functions/usersMapping";
 import {ObjectId, WithId} from "mongodb";
+import {MeViewModel, UserViewModel} from "../../models/modelsUsersLogin/user-view";
 
 export const usersQueryRepository = {
 
@@ -24,7 +25,7 @@ export const usersQueryRepository = {
     ): Promise<PaginatorType<UserViewModel[]>> {
 
         const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
-        const foundUsers: WithId<UserCreateModel>[] = await usersCollection
+        const foundUsers: WithId<UserDBModel>[] = await usersCollection
             .find(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))

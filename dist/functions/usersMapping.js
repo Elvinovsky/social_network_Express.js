@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersMapping = void 0;
+exports.userMapping = exports.usersMapping = void 0;
 const usersMapping = (array) => {
     return array.map((el) => {
         return {
@@ -12,3 +12,12 @@ const usersMapping = (array) => {
     });
 };
 exports.usersMapping = usersMapping;
+const userMapping = (user) => {
+    return {
+        id: user._id.toString(),
+        login: user.login,
+        email: user.email,
+        createdAt: user.createdAt
+    };
+};
+exports.userMapping = userMapping;

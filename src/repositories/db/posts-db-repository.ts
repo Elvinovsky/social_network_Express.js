@@ -1,8 +1,9 @@
 import {blogsCollection, postsCollection} from "../../database/runDB";
-import {PostViewModel} from "../../models/modelsPosts/postViewModel";
-import {BlogDBModel,} from "../../models/modelsBlogs/blogViewModel";
+import {PostView} from "../../models/modelsPosts/post-view";
 import {DeleteResult, ObjectId, WithId} from "mongodb";
-import {blockMongo_Id} from "../../functions/filters";
+import {BlogDBModel} from "../../models/modelsBlogs/blog-input";
+import {PostDBModel} from "../../models/modelsPosts/post-input";
+import {postMapping} from "../../functions/postsMapping";
 
 
 export const postsRepository = {
@@ -11,14 +12,18 @@ export const postsRepository = {
         return await postsCollection.deleteMany({})
     },
     //поиск поста по ID.
-    async findPostById(id: string): Promise <PostViewModel | null> {
-        return  await postsCollection.findOne({id}, blockMongo_Id)
+    async findPostById(id: string): Promise <PostView | null> {
+        const post = await postsCollection.findOne({_id: new ObjectId(id)})
+        if (!post){
+            return null
+        }
+        return postMapping(post)
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(newPost: PostViewModel): Promise <PostViewModel> {
-        await postsCollection.insertOne(newPost)
+    async addNewPost(newPost: PostDBModel): Promise <PostView> {
+       const result = await postsCollection.insertOne(newPost)
         return {
-            id: newPost.id,
+            id: result.insertedId.toString(),
             title: newPost.title,
             shortDescription: newPost.shortDescription,
             content: newPost.content,
@@ -29,7 +34,7 @@ export const postsRepository = {
     },
     // обновление поста по ID.
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {
-       const updateResult = await postsCollection.updateOne({id}, {$set: {title, shortDescription, content}})
+       const updateResult = await postsCollection.updateOne({_id: new ObjectId(id)}, {$set: {title, shortDescription, content}})
        return updateResult.matchedCount === 1;
     },
     //поиск ID блога для поста.5
@@ -39,7 +44,7 @@ export const postsRepository = {
     },
     // поиск и удаление поста по ID.
     async postByIdDelete(id: string):Promise <boolean> {
-        const deleteResult = await postsCollection.deleteOne({id})
+        const deleteResult = await postsCollection.deleteOne({_id: new ObjectId(id)})
         return deleteResult.deletedCount === 1
     }
 }

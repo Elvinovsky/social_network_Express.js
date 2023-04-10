@@ -13,7 +13,6 @@ exports.postQueryRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const postsMapping_1 = require("../../functions/postsMapping");
 const pagination_helpers_1 = require("../../helpers/pagination-helpers");
-const filters_1 = require("../../functions/filters");
 const commentsMapping_1 = require("../../functions/commentsMapping");
 exports.postQueryRepository = {
     returnOfAllPosts(searchTitleTerm, pageNumber, pageSize, sortBy, sortDirection) {
@@ -24,7 +23,7 @@ exports.postQueryRepository = {
             }
             const calculateOfFiles = yield runDB_1.postsCollection.countDocuments(filter);
             const foundPosts = yield runDB_1.postsCollection
-                .find(filter, filters_1.blockMongo_Id)
+                .find(filter)
                 .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: (0, pagination_helpers_1.getDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();

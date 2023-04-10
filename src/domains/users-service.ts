@@ -1,13 +1,14 @@
-import {UserCreateModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
+import {UserDBModel} from "../models/modelsUsersLogin/user-input";
 import { usersRepository } from "../repositories/db/users-db-repository";
 import bcrypt from 'bcrypt';
 import {WithId} from "mongodb";
+import {UserViewModel} from "../models/modelsUsersLogin/user-view";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string  ): Promise<UserViewModel> {
         const salt =  await bcrypt.genSalt( 7 )
         const hash = await this.generateHash(password, salt)
-        const newUser: UserCreateModel = {
+        const newUser: UserDBModel = {
             login: login,
             passwordHash: hash,
             passwordSalt: salt,
@@ -18,9 +19,8 @@ export const usersService = {
     },
     async findUserById(id: string): Promise <UserViewModel | null> {
         return await usersRepository.findUserById(id)
-    }
-    ,
-    async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserCreateModel> | null> {
+    },
+    async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserDBModel> | null> {
         const user =  await usersRepository.findByLoginOrEmail(loginOrEmail)
         if(!user) {
             return null

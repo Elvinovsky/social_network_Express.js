@@ -1,4 +1,4 @@
-export type QueryParams= {
+export type QueryInputParams = {
     pageNumber: string,
     pageSize: string,
     sortBy: string,

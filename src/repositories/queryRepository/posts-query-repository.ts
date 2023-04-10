@@ -1,4 +1,4 @@
-import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {PostView} from "../../models/modelsPosts/post-view";
 import {feedbacksCollection, postsCollection} from "../../database/runDB";
 import {postsMapping} from "../../functions/postsMapping";
 import {
@@ -8,10 +8,11 @@ import {
     getDirection, pagesCountOfBlogs,
     PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
-import {blockMongo_Id} from "../../functions/filters";
 import {Filter, WithId} from "mongodb";
-import {CommentDBModel, CommentViewModel} from "../../models/modelsComment/commentInputModel";
+import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {commentsMapping} from "../../functions/commentsMapping";
+import {CommentDBModel} from "../../models/modelsComment/comment-input";
+import {PostDBModel} from "../../models/modelsPosts/post-input";
 
 
 export const postQueryRepository = {
@@ -21,16 +22,16 @@ export const postQueryRepository = {
      pageSize?: number,
      sortBy?: string,
      sortDirection?: string,
-    ): Promise<PaginatorType<PostViewModel[]>> {
+    ): Promise<PaginatorType<PostView[]>> {
 
-        const filter: Filter<PostViewModel> = {}
+        const filter: Filter<PostDBModel> = {}
         if(searchTitleTerm) {
             filter.title = {$regex: searchTitleTerm, $options: 'i'}
         }
 
         const calculateOfFiles = await postsCollection.countDocuments(filter)
-        const foundPosts: PostViewModel[] = await postsCollection
-            .find(filter, blockMongo_Id)
+        const foundPosts: WithId<PostDBModel>[] = await postsCollection
+            .find(filter)
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()

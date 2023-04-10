@@ -1,18 +1,19 @@
 import {Response, Router} from "express";
 import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../types/req-res-types";
-import {UserInputModel, UserViewModel} from "../models/modelsUsers/usersInputModel";
+import {UserInputModel} from "../models/modelsUsersLogin/user-input";
 import {usersService} from "../domains/users-service";
 import {validatorInputUserBody} from "../middlewares/body-validator/check-bodyUser";
 import {PaginatorType} from "../helpers/pagination-helpers";
-import {QueryParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-params";
+import {QueryInputParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-input-params";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
 import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
+import {UserViewModel} from "../models/modelsUsersLogin/user-view";
 
 
 export const usersRouter = Router()
 
 usersRouter.get('/', superAdminAuthentication,
-    async (req: RequestQuery<QueryParams&SearchEmailTerm&SearchLoginTerm>,
+    async (req: RequestQuery<QueryInputParams&SearchEmailTerm&SearchLoginTerm>,
            res: ResponseViewBody<PaginatorType<UserViewModel[]>>) => {
         const getAllUsers = await usersQueryRepository.returnOfAllUsers(
             req.query.searchEmailTerm,

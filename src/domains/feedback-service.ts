@@ -1,8 +1,9 @@
-import {CommentDBModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
-import {feedBacksRepository} from "../repositories/db/feedbacks_repository";
-import {PostViewModel} from "../models/modelsPosts/postViewModel";
+import {CommentViewModel} from "../models/modelsComment/comment-view";
+import {feedBacksRepository} from "../repositories/db/feedbacks-db-repository";
 import {usersRepository} from "../repositories/db/users-db-repository";
-import {UserViewModel} from "../models/modelsUsers/usersInputModel";
+import {UserViewModel} from "../models/modelsUsersLogin/user-view";
+import {CommentDBModel} from "../models/modelsComment/comment-input";
+import {PostDBModel} from "../models/modelsPosts/post-input";
 
 export const feedbacksService = {
     async getComment(id: string): Promise<CommentViewModel | null> {
@@ -11,7 +12,7 @@ export const feedbacksService = {
     async searchUserForComment(userId: string): Promise<UserViewModel | null> {
         return await usersRepository.findUserForComment(userId)
     },
-    async searchPostIdForComments(postId: string):Promise <PostViewModel | null > {
+    async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
         return await feedBacksRepository.searchPostIdForComments(postId)
     },
     async createComment(postId: string, userId: string, content: string,): Promise<CommentViewModel> {

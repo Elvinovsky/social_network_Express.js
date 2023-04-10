@@ -1,4 +1,4 @@
-export type PostViewModel = {
+export type PostView = {
         id:	string,
         title:	string,
         shortDescription: string,

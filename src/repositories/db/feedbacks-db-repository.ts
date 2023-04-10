@@ -1,25 +1,16 @@
-import {DeleteResult, ObjectId, WithId} from "mongodb";
+import {DeleteResult, ObjectId} from "mongodb";
 import {feedbacksCollection, postsCollection} from "../../database/runDB";
-import {CommentDBModel, CommentViewModel} from "../../models/modelsComment/commentInputModel";
-import {PostViewModel} from "../../models/modelsPosts/postViewModel";
+import {CommentViewModel} from "../../models/modelsComment/comment-view";
+import {CommentDBModel} from "../../models/modelsComment/comment-input";
+import {commentMapping} from "../../functions/commentsMapping";
+import {PostDBModel} from "../../models/modelsPosts/post-input";
 
-function commentMapping(comment: WithId<CommentDBModel> ): CommentViewModel {
-    return {
-        id: comment._id.toString(),
-        content: comment.content,
-        commentatorInfo: {
-            userId: comment.commentatorInfo.userId,
-            userLogin: comment.commentatorInfo.userLogin
-        },
-        createdAt: comment.createdAt
-    }
-}
 export const feedBacksRepository = {
     async testingDeleteAllComments(): Promise<DeleteResult> {
         return await feedbacksCollection.deleteMany({})
     },
-    async searchPostIdForComments(postId: string):Promise <PostViewModel | null > {
-        const postIdForComments = await postsCollection.findOne({id: postId})
+    async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
+        const postIdForComments = await postsCollection.findOne({_id: new ObjectId(postId)})
         return postIdForComments? postIdForComments : null
     },
     async getCommentById(id: string): Promise<CommentViewModel | null> {
