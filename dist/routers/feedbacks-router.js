@@ -13,6 +13,7 @@ exports.feedBacksRouter = void 0;
 const express_1 = require("express");
 const feedback_service_1 = require("../domains/feedback-service");
 const check_bodyComment_1 = require("../middlewares/body-validator/check-bodyComment");
+const user_authentication_1 = require("../middlewares/guard-authentication/user-authentication");
 exports.feedBacksRouter = (0, express_1.Router)();
 exports.feedBacksRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const comment = yield feedback_service_1.feedbacksService.getComment(req.params.id);
@@ -41,7 +42,7 @@ exports.feedBacksRouter.put('/:id', check_bodyComment_1.validatorInputComment, (
         return;
     }
 }));
-exports.feedBacksRouter.delete('/:id', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.feedBacksRouter.delete('/:id', user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorCommentById = yield feedback_service_1.feedbacksService.getComment(req.params.id);
     if (!validatorCommentById) {
         res.sendStatus(404);

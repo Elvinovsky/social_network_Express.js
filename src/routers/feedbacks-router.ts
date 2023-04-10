@@ -7,6 +7,7 @@ import {blogsService} from "../domains/blogs-service";
 import {blogsRouter} from "./blogs-router";
 import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
 import {CommentInputModel, CommentViewModel} from "../models/modelsComment/commentInputModel";
+import {userAuthentication} from "../middlewares/guard-authentication/user-authentication";
 
 
 export const feedBacksRouter = Router()
@@ -41,7 +42,7 @@ feedBacksRouter.put('/:id',validatorInputComment,
             return;
         }
     })
-feedBacksRouter.delete('/:id',validatorInputComment,
+feedBacksRouter.delete('/:id',userAuthentication,
     async (req: RequestParamsAndInputBody<{id: string},CommentInputModel>,
            res: Response) => {
         const validatorCommentById = await feedbacksService.getComment(req.params.id)

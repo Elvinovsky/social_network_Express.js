@@ -21,7 +21,7 @@ exports.usersQueryRepository = {
             const calculateOfFiles = yield runDB_1.usersCollection.countDocuments((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm));
             const foundUsers = yield runDB_1.usersCollection
                 .find((0, filters_1.filterLoginOrEmail)(searchEmailTerm, searchLoginTerm))
-                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: pagination_helpers_1.SortDirection.Desc })
+                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: (0, pagination_helpers_1.getDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();
             return {

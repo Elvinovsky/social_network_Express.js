@@ -20,7 +20,9 @@ exports.jwtService = {
     createJWT(user) {
         return __awaiter(this, void 0, void 0, function* () {
             const token = jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.JWT_SECRET, { expiresIn: '24h' });
-            return token;
+            return {
+                accessToken: token
+            };
         });
     },
     getUserIdByToken(token) {

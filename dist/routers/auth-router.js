@@ -21,7 +21,7 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (user) {
         const token = yield jwt_service_1.jwtService.createJWT(user);
-        res.status(201).send(token);
+        res.status(200).send(token);
     }
     else {
         res.sendStatus(401);

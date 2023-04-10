@@ -25,7 +25,7 @@ exports.blogsQueryRepository = {
             const calculateOfFiles = yield runDB_1.blogsCollection.countDocuments(filter);
             const foundBlogs = yield runDB_1.blogsCollection
                 .find(filter)
-                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: pagination_helpers_1.SortDirection.Desc })
+                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: (0, pagination_helpers_1.getDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();
             return {
@@ -46,7 +46,7 @@ exports.blogsQueryRepository = {
             const calculateOfFiles = yield runDB_1.postsCollection.countDocuments({ blogId });
             const foundBlogs = yield runDB_1.postsCollection
                 .find({ blogId }, filters_1.blockMongo_Id)
-                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: pagination_helpers_1.SortDirection.Desc })
+                .sort({ [(0, pagination_helpers_1.getSortBy)(sortBy)]: (0, pagination_helpers_1.getDirection)(sortDirection), [pagination_helpers_1.DEFAULT_PAGE_SortBy]: (0, pagination_helpers_1.getDirection)(sortDirection) })
                 .skip((0, pagination_helpers_1.getSkip)((0, pagination_helpers_1.getPageNumber)(pageNumber), (0, pagination_helpers_1.getPageSize)(pageSize)))
                 .limit((0, pagination_helpers_1.getPageSize)(pageSize)).toArray();
             return {

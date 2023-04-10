@@ -25,7 +25,7 @@ exports.usersRouter.post('/', check_bodyUser_1.validatorInputUserBody, (req, res
     res.status(201).send(newUser);
     return;
 }));
-exports.usersRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usersRouter.get('/:id', super_admin_authentication_1.superAdminAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getByIdUser = yield users_service_1.usersService.findUserById(req.params.id);
     return getByIdUser === null
         ? res.sendStatus(404)
