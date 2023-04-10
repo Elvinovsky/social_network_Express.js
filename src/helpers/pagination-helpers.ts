@@ -6,8 +6,8 @@ export type PaginatorType<T> = {
     "items": T
 }
 export enum SortDirection {
-    Asc = -1,
-    Desc = 1
+    Asc = 1,
+    Desc = -1
 }
 export const DEFAULT_PAGE_SortBy = 'createdAt'
 const DEFAULT_PAGE_NUMBER = 1
