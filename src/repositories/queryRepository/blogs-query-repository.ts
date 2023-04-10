@@ -9,7 +9,7 @@ import {
     getSkip,
     getSortBy,
     getDirection, pagesCountOfBlogs,
-    PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
+    PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
 import {blockMongo_Id} from "../../functions/filters";
 import {Filter, WithId} from "mongodb";
@@ -31,7 +31,7 @@ export const blogsQueryRepository = {
         const calculateOfFiles = await blogsCollection.countDocuments(filter)
         const foundBlogs: WithId<BlogDBModel>[] = await blogsCollection
                 .find(filter)
-                .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
+                .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
                 .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
                 .limit(getPageSize(pageSize)).toArray()
         return {
@@ -58,7 +58,7 @@ export const blogsQueryRepository = {
 
         const foundBlogs: PostViewModel[] = await postsCollection
             .find({blogId}, blockMongo_Id)
-            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]:getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()
         return {

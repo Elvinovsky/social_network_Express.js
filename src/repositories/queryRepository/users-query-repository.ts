@@ -4,7 +4,7 @@ import {
     getSkip,
     getSortBy,
     getDirection, pagesCountOfBlogs,
-    PaginatorType, DEFAULT_PAGE_SortBy, SortDirection
+    PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
 import {filterLoginOrEmail} from "../../functions/filters";
 import {MeViewModel, UserCreateModel, UserViewModel} from "../../models/modelsUsers/usersInputModel";
@@ -26,7 +26,7 @@ export const usersQueryRepository = {
         const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
         const foundUsers: WithId<UserCreateModel>[] = await usersCollection
             .find(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
-            .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: SortDirection.Desc})
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize)).toArray()
         return {

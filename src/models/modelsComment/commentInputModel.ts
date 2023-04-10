@@ -25,7 +25,7 @@ export type CommentInputModel = {
      *minLength: 20
      */
 }
-export type LoginSuccessViewModel = {
+export type LoginSuccessViewModel = {// todo ошибка связана с использованием этой модели?  expect(accessToken).not.toBeUndefined();
     accessToken: string
 }
 
