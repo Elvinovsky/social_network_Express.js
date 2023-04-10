@@ -33,7 +33,7 @@ usersRouter.post('/', validatorInputUserBody,
         res.status(201).send(newUser)
         return;
     })
-usersRouter.get('/:id',
+usersRouter.get('/:id', superAdminAuthentication,
     async (req: RequestParamsId<{ id: string }>,
            res: ResponseViewBody<UserViewModel>) => {
         const getByIdUser = await usersService.findUserById(req.params.id)
