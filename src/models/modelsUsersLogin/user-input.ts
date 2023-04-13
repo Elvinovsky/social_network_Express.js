@@ -13,11 +13,17 @@ export type UserInputModel = {
      */
 }
 
-export type UserDBModel = {
+export type UserAccountDBModel = {
     login:	string,
     passwordHash: string,
-    passwordSalt: string,
     email: string,
     createdAt: string
+    emailConfirmation: {
+        confirmationCode: string,
+        expirationDate: Date | string,
+        isConfirmed: boolean
+    }
 }
+
+
 

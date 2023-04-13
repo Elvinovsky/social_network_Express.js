@@ -28,6 +28,12 @@ exports.usersRepository = {
             return (0, usersMapping_1.userMapping)(user);
         });
     },
+    confirmedCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield runDB_1.usersCollection.updateOne({ confirmationCode: code }, { $set: { "emailConfirmation.isConfirmed": true } });
+            return updateResult.matchedCount === 1;
+        });
+    },
     findUserForComment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });

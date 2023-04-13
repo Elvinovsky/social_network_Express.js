@@ -20,8 +20,8 @@ exports.usersRouter.get('/', super_admin_authentication_1.superAdminAuthenticati
     const getAllUsers = yield users_query_repository_1.usersQueryRepository.returnOfAllUsers(req.query.searchEmailTerm, req.query.searchLoginTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
     res.send(getAllUsers);
 }));
-exports.usersRouter.post('/', check_bodyUser_1.validatorInputUserBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newUser = yield users_service_1.usersService.createUser(req.body.login, req.body.password, req.body.email);
+exports.usersRouter.post('/', check_bodyUser_1.validatorUserBodyRegistrationForSuperAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newUser = yield users_service_1.usersService.userByAnAdminRegistration(req.body.login, req.body.password, req.body.email);
     res.status(201).send(newUser);
     return;
 }));

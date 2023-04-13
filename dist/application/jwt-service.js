@@ -28,7 +28,7 @@ exports.jwtService = {
     getUserIdByToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET); // todo any?
+                const result = jsonwebtoken_1.default.verify(token, settings_1.settings.JWT_SECRET);
                 return new mongodb_1.ObjectId(result.userId).toString();
             }
             catch (error) {

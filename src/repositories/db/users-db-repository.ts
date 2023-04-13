@@ -1,5 +1,5 @@
 import {usersCollection} from "../../database/runDB";
-import { UserDBModel} from "../../models/modelsUsersLogin/user-input";
+import { UserAccountDBModel} from "../../models/modelsUsersLogin/user-input";
 import {DeleteResult, ObjectId, WithId} from "mongodb";
 import {UserViewModel} from "../../models/modelsUsersLogin/user-view";
 import {userMapping} from "../../functions/usersMapping";
@@ -16,6 +16,11 @@ export const usersRepository = {
         }
         return userMapping(user)
     },
+    async confirmedCode(code: string):  Promise<boolean> {
+        const updateResult = await usersCollection.updateOne({confirmationCode: code}, {$set: {"emailConfirmation.isConfirmed": true }})
+        return updateResult.matchedCount === 1
+
+    },
     async findUserForComment(userId: string):  Promise<UserViewModel | null > {
         const user = await usersCollection.findOne({_id: new ObjectId(userId)})
         if(!user) {
@@ -23,10 +28,10 @@ export const usersRepository = {
         }
         return userMapping(user)
     },
-    async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserDBModel> | null> {
+    async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserAccountDBModel> | null> {
         return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})
     },
-    async addNewUser(newUser: UserDBModel): Promise <UserViewModel> {
+    async addNewUser(newUser: UserAccountDBModel): Promise <UserViewModel> {
     const result = await usersCollection.insertOne(newUser)
     return {
         id: result.insertedId.toString(),

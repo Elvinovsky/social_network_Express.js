@@ -19,7 +19,7 @@ const checksPassword =  body('password')
     .bail()
     .isString()
     .withMessage("is not a string")
-const checkInputEmail =  body('email')
+const checksEmail =  body('email')
     .matches( /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage("is not a link to the email")
     .bail()
@@ -30,16 +30,22 @@ const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()
     .withMessage("is not a string")
 
-export const validatorInputUserBody = [
+export const validatorUserBodyRegistrationForSuperAdmin = [
     superAdminAuthentication,
     checksLogin,
     checksPassword,
-    checkInputEmail,
+    checksEmail,
     checkForErrors
 ]
 
 export const validatorInputAuthRout = [
     checkInputLoginOrEmail,
     checksPassword,
+    checkForErrors
+]
+export const validatorBodyUserRegistration = [
+    checksLogin,
+    checksPassword,
+    checksEmail,
     checkForErrors
 ]

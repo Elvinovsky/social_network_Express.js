@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatorInputAuthRout = exports.validatorInputUserBody = void 0;
+exports.validatorBodyUserRegistration = exports.validatorInputAuthRout = exports.validatorUserBodyRegistrationForSuperAdmin = void 0;
 const check_for_errors_1 = require("../check-for-errors");
 const express_validator_1 = require("express-validator");
 const super_admin_authentication_1 = require("../guard-authentication/super-admin-authentication");
@@ -20,7 +20,7 @@ const checksPassword = (0, express_validator_1.body)('password')
     .bail()
     .isString()
     .withMessage("is not a string");
-const checkInputEmail = (0, express_validator_1.body)('email')
+const checksEmail = (0, express_validator_1.body)('email')
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage("is not a link to the email")
     .bail()
@@ -29,15 +29,21 @@ const checkInputEmail = (0, express_validator_1.body)('email')
 const checkInputLoginOrEmail = (0, express_validator_1.body)('loginOrEmail')
     .isString()
     .withMessage("is not a string");
-exports.validatorInputUserBody = [
+exports.validatorUserBodyRegistrationForSuperAdmin = [
     super_admin_authentication_1.superAdminAuthentication,
     checksLogin,
     checksPassword,
-    checkInputEmail,
+    checksEmail,
     check_for_errors_1.checkForErrors
 ];
 exports.validatorInputAuthRout = [
     checkInputLoginOrEmail,
     checksPassword,
+    check_for_errors_1.checkForErrors
+];
+exports.validatorBodyUserRegistration = [
+    checksLogin,
+    checksPassword,
+    checksEmail,
     check_for_errors_1.checkForErrors
 ];

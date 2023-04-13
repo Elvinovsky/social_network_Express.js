@@ -1,8 +1,8 @@
-import {UserDBModel} from "../models/modelsUsersLogin/user-input";
+import {UserAccountDBModel} from "../models/modelsUsersLogin/user-input";
 import {WithId} from "mongodb";
 import {UserViewModel} from "../models/modelsUsersLogin/user-view";
 
-export const usersMapping = (array: Array<WithId<UserDBModel>>): UserViewModel[] =>{
+export const usersMapping = (array: Array<WithId<UserAccountDBModel>>): UserViewModel[] =>{
     return array.map((el) => {
         return {
             id: el._id.toString(),
@@ -12,7 +12,7 @@ export const usersMapping = (array: Array<WithId<UserDBModel>>): UserViewModel[]
         }
     })
 }
-export const userMapping = (user:  WithId<UserDBModel> ): UserViewModel => {
+export const userMapping = (user:  WithId<UserAccountDBModel> ): UserViewModel => {
     return {
         id: user._id.toString(),
         login: user.login,

@@ -28,6 +28,29 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
         return;
     }
 }));
+exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegistration, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_service_1.usersService.independentUserRegistration(req.body.login, req.body.password, req.body.email);
+    if (user) {
+        res.sendStatus(204);
+        return;
+    }
+    res.sendStatus(500); //todo in particular if the user with the given email or password already exists
+}));
+exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_service_1.usersService.confirmCode(req.body.code);
+    if (user) {
+        res.sendStatus(204);
+        return;
+    }
+    res.sendStatus(400);
+}));
+exports.authRouter.post('/registration-email-resending', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.body.email);
+    if (user) {
+        res.send(user);
+        return;
+    }
+}));
 exports.authRouter.get('/me', user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.user.id);
     if (user) {

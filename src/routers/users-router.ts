@@ -2,7 +2,7 @@ import {Response, Router} from "express";
 import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../types/req-res-types";
 import {UserInputModel} from "../models/modelsUsersLogin/user-input";
 import {usersService} from "../domains/users-service";
-import {validatorInputUserBody} from "../middlewares/body-validator/check-bodyUser";
+import {validatorUserBodyRegistrationForSuperAdmin} from "../middlewares/body-validator/check-bodyUser";
 import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryInputParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-input-params";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
@@ -25,10 +25,10 @@ usersRouter.get('/', superAdminAuthentication,
 
             res.send(getAllUsers)
     })
-usersRouter.post('/', validatorInputUserBody,
+usersRouter.post('/', validatorUserBodyRegistrationForSuperAdmin,
     async (req: RequestInputBody<UserInputModel>,
            res: ResponseViewBody<UserViewModel>) => {
-        const newUser = await usersService.createUser
+        const newUser = await usersService.userByAnAdminRegistration
         (req.body.login, req.body.password, req.body.email)
 
         res.status(201).send(newUser)
