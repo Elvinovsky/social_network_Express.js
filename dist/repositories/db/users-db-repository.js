@@ -28,9 +28,24 @@ exports.usersRepository = {
             return (0, usersMapping_1.userMapping)(user);
         });
     },
-    confirmedCode(code) {
+    findUserConfirmCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield runDB_1.usersCollection.findOne({ "emailConfirmation.confirmationCode": code });
+            if (!user) {
+                return null;
+            }
+            return user;
+        });
+    },
+    updateConfirmedCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield runDB_1.usersCollection.updateOne({ confirmationCode: code }, { $set: { "emailConfirmation.isConfirmed": true } });
+            return updateResult.matchedCount === 1;
+        });
+    },
+    updateConfirmationCodeByEmail(email, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield runDB_1.usersCollection.updateOne({ email }, { $set: { "emailConfirmation.confirmationCode": code } });
             return updateResult.matchedCount === 1;
         });
     },
@@ -62,6 +77,12 @@ exports.usersRepository = {
     userByIdDelete(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const deleteResult = yield runDB_1.usersCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            return deleteResult.deletedCount === 1;
+        });
+    },
+    exCommunicado(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deleteResult = yield runDB_1.usersCollection.deleteOne();
             return deleteResult.deletedCount === 1;
         });
     }

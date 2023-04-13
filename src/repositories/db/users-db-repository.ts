@@ -6,27 +6,36 @@ import {userMapping} from "../../functions/usersMapping";
 
 
 export const usersRepository = {
-    async testingDeleteAllUsers(): Promise<DeleteResult> {
+    async testingDeleteAllUsers(): Promise< DeleteResult > {
         return await usersCollection.deleteMany({})
     },
-    async findUserById(id: string):  Promise<UserViewModel | null> {
+    async findUserById(id: string):  Promise< UserViewModel | null > {
         const user = await usersCollection.findOne({_id: new ObjectId(id)})
+            if(!user) {
+                return null
+            }
+            return userMapping(user)
+    },
+    async findUserConfirmCode(code: string):  Promise< WithId< UserAccountDBModel > | null> {
+        const user =  await usersCollection.findOne({"emailConfirmation.confirmationCode": code})
         if(!user) {
             return null
         }
-        return userMapping(user)
+        return user
     },
-    async confirmedCode(code: string):  Promise<boolean> {
+    async updateConfirmedCode(code: string):  Promise<boolean> {
         const updateResult = await usersCollection.updateOne({confirmationCode: code}, {$set: {"emailConfirmation.isConfirmed": true }})
+            return updateResult.matchedCount === 1
+    },
+    async updateConfirmationCodeByEmail(email: string, code: string):  Promise<boolean> {
+        const updateResult = await usersCollection.updateOne({email}, {$set: {"emailConfirmation.confirmationCode": code }})
         return updateResult.matchedCount === 1
-
     },
     async findUserForComment(userId: string):  Promise<UserViewModel | null > {
         const user = await usersCollection.findOne({_id: new ObjectId(userId)})
-        if(!user) {
-            return null
-        }
-        return userMapping(user)
+            if(!user) { return null }
+
+            return userMapping(user)
     },
     async findByLoginOrEmail(loginOrEmail: string): Promise <WithId<UserAccountDBModel> | null> {
         return  await usersCollection.findOne({$or: [{login: loginOrEmail},{email: loginOrEmail}]})
@@ -39,9 +48,13 @@ export const usersRepository = {
         email: newUser.email,
         createdAt: newUser.createdAt
     }
-},
+    },
     async userByIdDelete(id: string):Promise <boolean> {
         const deleteResult = await usersCollection.deleteOne({_id: new ObjectId(id)})
+        return deleteResult.deletedCount === 1
+    },
+    async exCommunicado(code: string):Promise <boolean> { // todo?
+        const deleteResult = await usersCollection.deleteOne()
         return deleteResult.deletedCount === 1
     }
 }

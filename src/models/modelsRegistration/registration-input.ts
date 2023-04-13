@@ -13,3 +13,7 @@ export type RegistrationEmailResending = {
 
 
 }
+
+type RegistrationDetectedModel = { // todo реализовать
+    ip: string
+}

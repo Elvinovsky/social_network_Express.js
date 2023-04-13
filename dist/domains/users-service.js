@@ -21,8 +21,7 @@ const emails_manager_1 = require("../adapter/emails-manager");
 exports.usersService = {
     userByAnAdminRegistration(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const salt = yield bcrypt_1.default.genSalt(7);
-            const hash = yield this.generateHash(password, salt);
+            const hash = yield this._generateHash(password);
             const newUser = {
                 login: login,
                 passwordHash: hash,
@@ -39,8 +38,7 @@ exports.usersService = {
     },
     independentUserRegistration(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const salt = yield bcrypt_1.default.genSalt(7);
-            const hash = yield this.generateHash(password, salt);
+            const hash = yield this._generateHash(password);
             const newUser = {
                 login: login,
                 passwordHash: hash,
@@ -50,7 +48,7 @@ exports.usersService = {
                     confirmationCode: (0, uuid_1.v4)(),
                     expirationDate: (0, add_1.default)(new Date(), {
                         hours: 1,
-                        // minutes:10
+                        minutes: 10
                     }),
                     isConfirmed: false
                 }
@@ -61,7 +59,7 @@ exports.usersService = {
             }
             catch (error) {
                 console.error(error);
-                //await usersRepository.deleteUsers
+                yield users_db_repository_1.usersRepository.userByIdDelete(result.id); // todo как все это обернуть
                 return null;
             }
             return result;
@@ -74,18 +72,45 @@ exports.usersService = {
     },
     confirmCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.confirmedCode(code);
+            const isValidConfirmed = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
+            if (!isValidConfirmed
+                || isValidConfirmed.emailConfirmation.expirationDate < new Date()
+                || isValidConfirmed.emailConfirmation.isConfirmed) {
+                return false;
+            }
+            return yield users_db_repository_1.usersRepository.updateConfirmedCode(code);
+        });
+    },
+    emailConfirmation(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newCode = (0, uuid_1.v4)();
+            const codeReplacement = yield users_db_repository_1.usersRepository.updateConfirmationCodeByEmail(email, newCode);
+            if (!codeReplacement)
+                return false;
+            const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+            if (!user || user.emailConfirmation.isConfirmed) {
+                return false;
+            }
+            try { // todo все это обернуть
+                yield emails_manager_1.emailsManager.sendEmailConformationMessage(user);
+            }
+            catch (error) {
+                yield users_db_repository_1.usersRepository.userByIdDelete(user._id.toString());
+                console.error(error);
+                return false;
+            }
+            return true;
         });
     },
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(loginOrEmail);
-            if (!user) {
+            if (!user
+                || !user.emailConfirmation.isConfirmed) {
                 return null;
             }
-            const salt = yield bcrypt_1.default.genSalt(7);
-            const passwordHash = yield this.generateHash(password, salt);
-            if (user.passwordHash === passwordHash) {
+            const isHashesEquals = yield this._isPasswordCorrect(password, user.passwordHash);
+            if (isHashesEquals) {
                 return user;
             }
             else {
@@ -93,9 +118,14 @@ exports.usersService = {
             }
         });
     },
-    generateHash(password, passwordSalt) {
+    _generateHash(password) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield bcrypt_1.default.hash(password, passwordSalt);
+            return yield bcrypt_1.default.hash(password, 7);
+        });
+    },
+    _isPasswordCorrect(password, hash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.compare(password, hash);
         });
     },
     userByIdDelete(id) {

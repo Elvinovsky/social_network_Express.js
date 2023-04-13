@@ -16,6 +16,7 @@ const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser")
 const jwt_service_1 = require("../application/jwt-service");
 const user_authentication_1 = require("../middlewares/guard-authentication/user-authentication");
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
+const check_for_errors_1 = require("../middlewares/check-for-errors");
 exports.authRouter = (0, express_1.Router)();
 exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -34,7 +35,7 @@ exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegis
         res.sendStatus(204);
         return;
     }
-    res.sendStatus(500); //todo in particular if the user with the given email or password already exists
+    res.sendStatus(400); //todo in particular if the user with the given email or password already exists
 }));
 exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.confirmCode(req.body.code);
@@ -44,12 +45,14 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
     }
     res.sendStatus(400);
 }));
-exports.authRouter.post('/registration-email-resending', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.body.email);
+exports.authRouter.post('/registration-email-resending', check_bodyUser_1.checksEmail, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield users_service_1.usersService.emailConfirmation(req.body.email);
     if (user) {
-        res.send(user);
+        res.sendStatus(204);
         return;
     }
+    res.sendStatus(400);
+    return;
 }));
 exports.authRouter.get('/me', user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.user.id);

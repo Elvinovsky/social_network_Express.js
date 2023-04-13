@@ -2,7 +2,11 @@ import {Response, Router} from "express";
 import {RequestInputBody} from "../types/req-res-types";
 import {usersService} from "../domains/users-service";
 import {LoginInput} from "../models/modelsUsersLogin/login-input";
-import {validatorBodyUserRegistration, validatorInputAuthRout} from "../middlewares/body-validator/check-bodyUser";
+import {
+    checksEmail,
+    validatorBodyUserRegistration,
+    validatorInputAuthRout
+} from "../middlewares/body-validator/check-bodyUser";
 import {jwtService} from "../application/jwt-service";
 import {userAuthentication} from "../middlewares/guard-authentication/user-authentication";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
@@ -11,6 +15,7 @@ import {
     RegistrationEmailResending
 } from "../models/modelsRegistration/registration-input";
 import {UserInputModel} from "../models/modelsUsersLogin/user-input";
+import {checkForErrors} from "../middlewares/check-for-errors";
 
 
 export const authRouter = Router()
@@ -36,7 +41,7 @@ authRouter.post('/registration',validatorBodyUserRegistration,
             res.sendStatus(204)
             return
         }
-        res.sendStatus(500) //todo in particular if the user with the given email or password already exists
+        res.sendStatus(400) //todo in particular if the user with the given email or password already exists
     })
 authRouter.post('/registration-confirmation',
     async (req: RequestInputBody<RegistrationConfirmationCodeModel>,
@@ -48,16 +53,20 @@ authRouter.post('/registration-confirmation',
         }
         res.sendStatus(400)
     })
-authRouter.post('/registration-email-resending',
+authRouter.post('/registration-email-resending', checksEmail, checkForErrors,
     async (req: RequestInputBody<RegistrationEmailResending>,
            res: Response) => {
-        const user = await usersQueryRepository.getUserInfo(req.body.email)
-        if(user) {
-            res.send(user)
-            return
-        }
+
+        const user = await usersService.emailConfirmation(req.body.email)
+            if(user) {
+                res.sendStatus(204)
+                return
+            }
+
+        res.sendStatus(400)
+        return
     })
-authRouter.get('/me',userAuthentication,
+authRouter.get('/me', userAuthentication,
     async (req: RequestInputBody<LoginInput>,
            res: Response) => {
         const user = await usersQueryRepository.getUserInfo(req.user!.id)

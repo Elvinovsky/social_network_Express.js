@@ -9,8 +9,7 @@ import {emailsManager} from "../adapter/emails-manager";
 
 export const usersService = {
     async userByAnAdminRegistration(login: string, password: string, email: string  ): Promise<UserViewModel> {
-        const salt =  await bcrypt.genSalt( 7 )
-        const hash = await this.generateHash(password, salt)
+        const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
             passwordHash: hash,
@@ -25,9 +24,7 @@ export const usersService = {
         return await usersRepository.addNewUser(newUser)
     },
     async independentUserRegistration(login: string, password: string, email: string  ): Promise<UserViewModel | null> {
-        const salt =  await bcrypt.genSalt( 7 )
-        const hash = await this.generateHash(password, salt)
-
+        const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
             passwordHash: hash,
@@ -37,7 +34,7 @@ export const usersService = {
                 confirmationCode: uuidv4(),
                 expirationDate: add(new Date(), {
                     hours: 1,
-                   // minutes:10
+                    minutes:10
                 }),
                 isConfirmed: false
             }
@@ -47,7 +44,7 @@ export const usersService = {
             await emailsManager.sendEmailConformationMessage(newUser)
         }catch(error) {
             console.error(error)
-            //await usersRepository.deleteUsers
+            await usersRepository.userByIdDelete(result.id) // todo как все это обернуть
             return null
         }
         return result
@@ -56,24 +53,54 @@ export const usersService = {
         return await usersRepository.findUserById(id)
     },
     async confirmCode(code: string): Promise <boolean> {
-        return await usersRepository.confirmedCode(code)
-    },
-    async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserAccountDBModel> | null> {
-        const user =  await usersRepository.findByLoginOrEmail(loginOrEmail)
-        if(!user) {
-            return null
+       const  isValidConfirmed = await usersRepository.findUserConfirmCode(code)
+        if(!isValidConfirmed
+            || isValidConfirmed.emailConfirmation.expirationDate < new Date()
+            || isValidConfirmed.emailConfirmation.isConfirmed ) {
+            return false
         }
-        const salt = await bcrypt.genSalt( 7 )
-        const passwordHash = await this.generateHash(password, salt)
-        if (user.passwordHash === passwordHash) {
-            return user
-        } else {
-            return null
-        }
+        return  await usersRepository.updateConfirmedCode(code)
 
     },
-    async generateHash(password: string, passwordSalt: string) {
-       return await bcrypt.hash(password, passwordSalt)
+    async emailConfirmation(email: string  ): Promise<boolean> {
+
+
+
+
+        const newCode = uuidv4()
+        const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email, newCode)
+            if(!codeReplacement) return false
+        const user = await usersRepository.findByLoginOrEmail(email)
+            if(!user || user.emailConfirmation.isConfirmed) {return false}
+        try {// todo все это обернуть
+            await emailsManager.sendEmailConformationMessage(user)
+        }catch(error) {
+            await usersRepository.userByIdDelete(user._id.toString())
+            console.error(error)
+            return false
+        }
+        return true
+    },
+    async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserAccountDBModel> | null> {
+
+        const user =  await usersRepository.findByLoginOrEmail(loginOrEmail)
+            if(!user
+            || !user.emailConfirmation.isConfirmed) {
+                return null
+            }
+
+        const isHashesEquals = await this._isPasswordCorrect(password, user.passwordHash)
+            if (isHashesEquals) {
+                return user
+            } else {
+               return null
+            }
+    },
+    async _generateHash(password: string): Promise<string> {
+       return await bcrypt.hash(password, 7)
+    },
+    async _isPasswordCorrect(password: string, hash: string): Promise<boolean> {
+        return await bcrypt.compare(password, hash)
     },
     async userByIdDelete(id: string):Promise <boolean> {
         return await usersRepository.userByIdDelete(id)
