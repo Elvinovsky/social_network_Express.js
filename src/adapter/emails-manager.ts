@@ -19,7 +19,10 @@ export const emailsManager = {
             from: 'ELVIN <elov2024@mail.ru>', // sender address
             to: newUser.email, // list of receivers
             subject: 'email confirmation', // Subject line
-            html: `<h1>${newUser.emailConfirmation.confirmationCode}</h1>`// plain text body
+            html: `<h1>Thank for your registration</h1>
+        <p>To finish registration please follow the link below:
+            <a href='https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}'>complete registration</a>
+        </p>`// plain text body
         }
 
        transporter.sendMail(mailOptions, function (err, info) {
