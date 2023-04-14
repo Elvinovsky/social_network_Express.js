@@ -8,18 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailsManager = void 0;
 const nodemailer_1 = require("nodemailer");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 exports.emailsManager = {
     sendEmailConformationMessage(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            const transporter = (0, nodemailer_1.createTransport)({
+            const transporter = yield (0, nodemailer_1.createTransport)({
                 host: "smtp.mail.ru",
                 port: 465,
                 secure: true,
                 auth: {
-                    user: process.env.AUTH_EMAIl,
+                    user: process.env.AUTH_EMAIL,
                     pass: process.env.AUTH_PASS
                 }
             });
@@ -32,7 +37,7 @@ exports.emailsManager = {
             <a href='https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}'>complete registration</a>
         </p>` // plain text body
             };
-            transporter.sendMail(mailOptions, function (err, info) {
+            yield transporter.sendMail(mailOptions, function (err, info) {
                 if (err)
                     console.log(err);
                 else

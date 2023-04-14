@@ -1,5 +1,7 @@
 import {UserAccountDBModel} from "../models/modelsUsersLogin/user-input";
 import {createTransport} from 'nodemailer'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export const emailsManager = {
     async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {//todo output type ?
@@ -10,7 +12,7 @@ export const emailsManager = {
             port:  465,
             secure: true, // true for 465, false for other ports
             auth: {
-                user: process.env.AUTH_EMAIl,
+                user: process.env.AUTH_EMAIL,
                 pass: process.env.AUTH_PASS
             }
         })
