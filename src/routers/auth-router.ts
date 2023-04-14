@@ -3,7 +3,8 @@ import {RequestInputBody} from "../types/req-res-types";
 import {usersService} from "../domains/users-service";
 import {LoginInput} from "../models/modelsUsersLogin/login-input";
 import {
-     checksEmailResending,
+    checksConfirmationCode,
+    checksEmailResending,
     validatorBodyUserRegistration,
     validatorInputAuthRout
 } from "../middlewares/body-validator/check-bodyUser";
@@ -43,7 +44,7 @@ authRouter.post('/registration',validatorBodyUserRegistration,
         }
         res.sendStatus(400) //todo in particular if the user with the given email or password already exists
     })
-authRouter.post('/registration-confirmation',
+authRouter.post('/registration-confirmation', checksConfirmationCode, checkForErrors,
     async (req: RequestInputBody<RegistrationConfirmationCodeModel>,
            res: Response) => {
         const user = await usersService.confirmCode(req.body.code)

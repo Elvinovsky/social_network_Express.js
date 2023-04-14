@@ -43,10 +43,26 @@ export const checksEmailResending =  body('email')
     .withMessage("is not a link to the email")
     .bail()
     .isString()
-    .withMessage("is not a string")
+    .withMessage("is not a string").custom(async (email: string) => {
+        const validationEmail = await usersRepository.findByLoginOrEmail(email)
+        if (!validationEmail ||  validationEmail.emailConfirmation.isConfirmed ) {
+            throw new Error("your mailing address is already registered");
+        }
+    });
 const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()
     .withMessage("is not a string")
+export const checksConfirmationCode =  body('code', )
+    .isString()
+    .withMessage("is not a string")
+    .custom(async (code: string) => {
+        const isValidConfirmed = await usersRepository.findUserConfirmCode(code)
+        if(!isValidConfirmed // todo какой слой отвечает за это?
+            || isValidConfirmed.emailConfirmation.expirationDate < new Date()
+            || isValidConfirmed.emailConfirmation.isConfirmed ) {
+            throw new Error("confirmation code is incorrect, expired or already been applied");
+        }
+    });
 
 export const validatorUserBodyRegistrationForSuperAdmin = [
     superAdminAuthentication,
