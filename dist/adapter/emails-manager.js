@@ -19,7 +19,7 @@ dotenv_1.default.config();
 exports.emailsManager = {
     sendEmailConformationMessage(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            const transporter = yield (0, nodemailer_1.createTransport)({
+            const transporter = (0, nodemailer_1.createTransport)({
                 host: "smtp.mail.ru",
                 port: 465,
                 secure: true,
@@ -27,6 +27,19 @@ exports.emailsManager = {
                     user: process.env.AUTH_EMAIL,
                     pass: process.env.AUTH_PASS
                 }
+            });
+            yield new Promise((resolve, reject) => {
+                // verify connection configuration
+                transporter.verify(function (error, success) {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                    }
+                    else {
+                        console.log("Server is ready to take our messages");
+                        resolve(success);
+                    }
+                });
             });
             const mailOptions = {
                 from: 'ELVIN <elov2024@mail.ru>',
@@ -37,11 +50,18 @@ exports.emailsManager = {
             <a href='https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}'>complete registration</a>
         </p>` // plain text body
             };
-            yield transporter.sendMail(mailOptions, function (err, info) {
-                if (err)
-                    console.log(err);
-                else
-                    console.log(info);
+            yield new Promise((resolve, reject) => {
+                // send mail
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    }
+                    else {
+                        console.log(info);
+                        resolve(info);
+                    }
+                });
             });
         });
     }
