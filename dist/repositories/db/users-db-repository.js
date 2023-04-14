@@ -80,10 +80,4 @@ exports.usersRepository = {
             return deleteResult.deletedCount === 1;
         });
     },
-    exCommunicado(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const deleteResult = yield runDB_1.usersCollection.deleteOne();
-            return deleteResult.deletedCount === 1;
-        });
-    }
 };
