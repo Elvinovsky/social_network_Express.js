@@ -60,7 +60,6 @@ export const usersService = {
             return false
         }
         return  await usersRepository.updateConfirmedCode(code)
-
     },
     async emailConfirmation(email: string  ): Promise<boolean> {
         const newCode = uuidv4()

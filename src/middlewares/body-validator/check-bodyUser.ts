@@ -26,7 +26,7 @@ const checksPassword =  body('password')
     .bail()
     .isString()
     .withMessage("is not a string")
-export const checksEmail =  body('email')
+const checksEmail =  body('email')
     .matches( /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage("is not a link to the email")
     .bail()
@@ -38,7 +38,12 @@ export const checksEmail =  body('email')
             throw new Error("your mailing address is already registered");
         }
     });
-
+export const checksEmailResending =  body('email')
+    .matches( /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage("is not a link to the email")
+    .bail()
+    .isString()
+    .withMessage("is not a string")
 const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()
     .withMessage("is not a string")

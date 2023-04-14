@@ -3,7 +3,7 @@ import {RequestInputBody} from "../types/req-res-types";
 import {usersService} from "../domains/users-service";
 import {LoginInput} from "../models/modelsUsersLogin/login-input";
 import {
-    checksEmail,
+     checksEmailResending,
     validatorBodyUserRegistration,
     validatorInputAuthRout
 } from "../middlewares/body-validator/check-bodyUser";
@@ -53,7 +53,7 @@ authRouter.post('/registration-confirmation',
         }
         res.sendStatus(400)
     })
-authRouter.post('/registration-email-resending', checksEmail, checkForErrors,
+authRouter.post('/registration-email-resending', checksEmailResending, checkForErrors,
     async (req: RequestInputBody<RegistrationEmailResending>,
            res: Response) => {
 
