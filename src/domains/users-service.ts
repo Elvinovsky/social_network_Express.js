@@ -63,10 +63,6 @@ export const usersService = {
 
     },
     async emailConfirmation(email: string  ): Promise<boolean> {
-
-
-
-
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email, newCode)
             if(!codeReplacement) return false

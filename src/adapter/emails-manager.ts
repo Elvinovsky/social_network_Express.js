@@ -5,7 +5,7 @@ export const emailsManager = {
     async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {//todo output type ?
 
 
-        const transporter = createTransport({
+        const transporter = await createTransport({
             host: "smtp.mail.ru",
             port:  465,
             secure: true, // true for 465, false for other ports
@@ -25,7 +25,7 @@ export const emailsManager = {
         </p>`// plain text body
         }
 
-       transporter.sendMail(mailOptions, function (err, info) {
+       await transporter.sendMail(mailOptions, function (err, info) {
             if(err)
                 console.log(err)
             else
