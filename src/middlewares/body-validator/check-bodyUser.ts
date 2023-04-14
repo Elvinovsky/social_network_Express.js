@@ -1,6 +1,7 @@
 import {checkForErrors} from "../check-for-errors";
 import {body} from "express-validator";
 import {superAdminAuthentication} from "../guard-authentication/super-admin-authentication";
+import {usersRepository} from "../../repositories/db/users-db-repository";
 
 
 const checksLogin =  body('login', )
@@ -12,6 +13,12 @@ const checksLogin =  body('login', )
     .bail()
     .isLength({min: 3, max: 10 })
     .withMessage("length should be no more than 10 characters")
+    .custom(async (login: string) => {
+        const validationLogin = await usersRepository.findByLoginOrEmail(login)
+        if (validationLogin) {
+            throw new Error("a user with this username already exists");
+        }
+    });
 const checksPassword =  body('password')
     .trim()
     .isLength({min: 6, max: 20 })
@@ -25,6 +32,12 @@ export const checksEmail =  body('email')
     .bail()
     .isString()
     .withMessage("is not a string")
+    .custom(async (email: string) => {
+        const validationEmail = await usersRepository.findByLoginOrEmail(email)
+        if (validationEmail) {
+            throw new Error("your mailing address is already registered");
+        }
+    });
 
 const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()

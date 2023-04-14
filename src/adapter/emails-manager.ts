@@ -5,8 +5,6 @@ dotenv.config()
 
 export const emailsManager = {
     async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {//todo output type ?
-
-
         const transporter = createTransport({
             host: "smtp.mail.ru",
             port:  465,
@@ -16,7 +14,6 @@ export const emailsManager = {
                 pass: process.env.AUTH_PASS
             }
         })
-
         await new Promise((resolve, reject) => {
             // verify connection configuration
             transporter.verify(function (error, success) {
@@ -50,6 +47,5 @@ export const emailsManager = {
                 }
             });
         });
-
     }
 }
