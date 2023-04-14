@@ -53,8 +53,4 @@ export const usersRepository = {
         const deleteResult = await usersCollection.deleteOne({_id: new ObjectId(id)})
         return deleteResult.deletedCount === 1
     },
-    async exCommunicado(code: string):Promise <boolean> { // todo?
-        const deleteResult = await usersCollection.deleteOne()
-        return deleteResult.deletedCount === 1
-    }
 }

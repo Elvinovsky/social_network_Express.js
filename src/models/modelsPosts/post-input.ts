@@ -31,7 +31,7 @@ export type BlogPostInputModel = {
      */
     content: string,
 }
-export type PostDBModel = {//todo
+export type PostDBModel = {
     title:	string,
     shortDescription: string,
     content: string,
