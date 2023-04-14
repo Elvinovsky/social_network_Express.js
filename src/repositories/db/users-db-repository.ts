@@ -24,7 +24,7 @@ export const usersRepository = {
         return user
     },
     async updateConfirmedCode(code: string):  Promise<boolean> {
-        const updateResult = await usersCollection.updateOne({confirmationCode: code}, {$set: {"emailConfirmation.isConfirmed": true }})
+        const updateResult = await usersCollection.updateOne({"emailConfirmation.confirmationCode": code}, {$set: {"emailConfirmation.isConfirmed": true }})
             return updateResult.matchedCount === 1
     },
     async updateConfirmationCodeByEmail(email: string, code: string):  Promise<boolean> {
