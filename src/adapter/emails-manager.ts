@@ -14,7 +14,6 @@ export const emailsManager = {
                 pass: process.env.AUTH_PASS
             }
         })
-
         const mailOptions = {
             from: 'ELVIN <elov2024@mail.ru>', // sender address
             to: newUser.email, // list of receivers
