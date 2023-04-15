@@ -53,12 +53,6 @@ export const usersService = {
         return await usersRepository.findUserById(id)
     },
     async confirmCode(code: string): Promise <boolean> {
-       const  isValidConfirmed = await usersRepository.findUserConfirmCode(code)
-        if(!isValidConfirmed
-            || isValidConfirmed.emailConfirmation.expirationDate < new Date()
-            || isValidConfirmed.emailConfirmation.isConfirmed ) {
-            return false
-        }
         return  await usersRepository.updateConfirmedCode(code)
     },
     async emailConfirmation(email: string  ): Promise<boolean> {
@@ -66,8 +60,8 @@ export const usersService = {
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email, newCode)
             if(!codeReplacement) return false
         const user = await usersRepository.findByLoginOrEmail(email)
-            if(!user || user.emailConfirmation.isConfirmed) {return false}
-        try {// todo все это обернуть
+            if(!user || user.emailConfirmation.isConfirmed) {return false} // todo слой мидлваре?
+        try {
             await emailsManager.sendEmailConformationMessage(user)
         }catch(error) {
             await usersRepository.userByIdDelete(user._id.toString())

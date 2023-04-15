@@ -11,12 +11,14 @@ const Testing_DB_Delete_router_1 = require("./routers/Testing-DB-Delete-router")
 const users_router_1 = require("./routers/users-router");
 const auth_router_1 = require("./routers/auth-router");
 const feedbacks_router_1 = require("./routers/feedbacks-router");
+const ip_1 = __importDefault(require("ip"));
 const jsonBodyMiddleware = express_1.default.json();
 const app = (0, express_1.default)();
 exports.app = app;
 app.use(jsonBodyMiddleware);
 app.get('/', (req, res) => {
-    res.send('Hello World!!');
+    const ipAddress = ip_1.default.address();
+    res.send({ ipAddress });
 });
 app.use('/users', users_router_1.usersRouter);
 app.use('/auth', auth_router_1.authRouter);
@@ -25,7 +27,7 @@ app.use('/blogs', blogs_router_1.blogsRouter);
 app.use('/comments', feedbacks_router_1.feedBacksRouter);
 app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
 const startServer = () => {
-    const port = process.env.PORT || 3005;
+    const port = process.env.PORT || 3007;
     app.listen(port, () => {
         console.log(`Example app listening on port ${port}`);
     });

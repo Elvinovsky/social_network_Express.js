@@ -42,7 +42,7 @@ authRouter.post('/registration',validatorBodyUserRegistration,
             res.sendStatus(204)
             return
         }
-        res.sendStatus(400) //todo in particular if the user with the given email or password already exists
+        res.sendStatus(400)
     })
 authRouter.post('/registration-confirmation', checksConfirmationCode, checkForErrors,
     async (req: RequestInputBody<RegistrationConfirmationCodeModel>,
@@ -63,7 +63,6 @@ authRouter.post('/registration-email-resending', checksEmailResending, checkForE
                 res.sendStatus(204)
                 return
             }
-
         res.sendStatus(400)
         return
     })

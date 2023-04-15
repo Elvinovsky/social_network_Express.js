@@ -35,9 +35,9 @@ exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegis
         res.sendStatus(204);
         return;
     }
-    res.sendStatus(400); //todo in particular if the user with the given email or password already exists
+    res.sendStatus(400);
 }));
-exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-confirmation', check_bodyUser_1.checksConfirmationCode, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.confirmCode(req.body.code);
     if (user) {
         res.sendStatus(204);
@@ -45,7 +45,7 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
     }
     res.sendStatus(400);
 }));
-exports.authRouter.post('/registration-email-resending', check_bodyUser_1.checksEmail, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-email-resending', check_bodyUser_1.checksEmailResending, check_for_errors_1.checkForErrors, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.emailConfirmation(req.body.email);
     if (user) {
         res.sendStatus(204);

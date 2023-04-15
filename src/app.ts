@@ -5,13 +5,15 @@ import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
 import {feedBacksRouter} from "./routers/feedbacks-router";
-
+import ip from 'ip'
 const jsonBodyMiddleware = express.json()
 const app = express()
 
 app.use(jsonBodyMiddleware)
+
 app.get('/', (req:Request, res:Response) => {
-    res.send('Hello World!!')
+    const ipAddress = ip.address()
+    res.send({ipAddress})
 })
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
@@ -21,10 +23,10 @@ app.use('/comments', feedBacksRouter)
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
-    const port = process.env.PORT || 3005;
+    const port = process.env.PORT || 3007;
     app.listen(port, () => {
             console.log(`Example app listening on port ${port}`);
-        })
+    })
 };
 
 export { app, startServer };

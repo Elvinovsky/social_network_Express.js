@@ -2,9 +2,6 @@ import {blogsRepository} from "../repositories/db/blogs-db-repository";
 import {BlogView} from "../models/modelsBlogs/blog-view";
 import {BlogDBModel} from "../models/modelsBlogs/blog-input";
 
-
-
-
 export const blogsService = {
     async findBlogById(id: string): Promise <BlogView | null> {
 

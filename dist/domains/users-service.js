@@ -72,12 +72,6 @@ exports.usersService = {
     },
     confirmCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isValidConfirmed = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
-            if (!isValidConfirmed
-                || isValidConfirmed.emailConfirmation.expirationDate < new Date()
-                || isValidConfirmed.emailConfirmation.isConfirmed) {
-                return false;
-            }
             return yield users_db_repository_1.usersRepository.updateConfirmedCode(code);
         });
     },
@@ -90,8 +84,8 @@ exports.usersService = {
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
             if (!user || user.emailConfirmation.isConfirmed) {
                 return false;
-            }
-            try { // todo все это обернуть
+            } // todo слой мидлваре?
+            try {
                 yield emails_manager_1.emailsManager.sendEmailConformationMessage(user);
             }
             catch (error) {

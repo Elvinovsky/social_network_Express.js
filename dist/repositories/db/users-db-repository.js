@@ -39,7 +39,7 @@ exports.usersRepository = {
     },
     updateConfirmedCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateResult = yield runDB_1.usersCollection.updateOne({ confirmationCode: code }, { $set: { "emailConfirmation.isConfirmed": true } });
+            const updateResult = yield runDB_1.usersCollection.updateOne({ "emailConfirmation.confirmationCode": code }, { $set: { "emailConfirmation.isConfirmed": true } });
             return updateResult.matchedCount === 1;
         });
     },

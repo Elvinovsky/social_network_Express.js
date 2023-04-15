@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatorBodyUserRegistration = exports.validatorInputAuthRout = exports.validatorUserBodyRegistrationForSuperAdmin = exports.checksEmail = void 0;
+exports.validatorBodyUserRegistration = exports.validatorInputAuthRout = exports.validatorUserBodyRegistrationForSuperAdmin = exports.checksConfirmationCode = exports.checksEmailResending = void 0;
 const check_for_errors_1 = require("../check-for-errors");
 const express_validator_1 = require("express-validator");
 const super_admin_authentication_1 = require("../guard-authentication/super-admin-authentication");
@@ -36,7 +36,7 @@ const checksPassword = (0, express_validator_1.body)('password')
     .bail()
     .isString()
     .withMessage("is not a string");
-exports.checksEmail = (0, express_validator_1.body)('email')
+const checksEmail = (0, express_validator_1.body)('email')
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage("is not a link to the email")
     .bail()
@@ -48,14 +48,36 @@ exports.checksEmail = (0, express_validator_1.body)('email')
         throw new Error("your mailing address is already registered");
     }
 }));
+exports.checksEmailResending = (0, express_validator_1.body)('email')
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage("is not a link to the email")
+    .bail()
+    .isString()
+    .withMessage("is not a string").custom((email) => __awaiter(void 0, void 0, void 0, function* () {
+    const validationEmail = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
+    if (!validationEmail || validationEmail.emailConfirmation.isConfirmed) {
+        throw new Error("your mailing address is already registered");
+    }
+}));
 const checkInputLoginOrEmail = (0, express_validator_1.body)('loginOrEmail')
     .isString()
     .withMessage("is not a string");
+exports.checksConfirmationCode = (0, express_validator_1.body)('code')
+    .isString()
+    .withMessage("is not a string")
+    .custom((code) => __awaiter(void 0, void 0, void 0, function* () {
+    const isValidConfirmed = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
+    if (!isValidConfirmed // todo какой слой отвечает за это?
+        || isValidConfirmed.emailConfirmation.expirationDate < new Date()
+        || isValidConfirmed.emailConfirmation.isConfirmed) {
+        throw new Error("confirmation code is incorrect, expired or already been applied");
+    }
+}));
 exports.validatorUserBodyRegistrationForSuperAdmin = [
     super_admin_authentication_1.superAdminAuthentication,
     checksLogin,
     checksPassword,
-    exports.checksEmail,
+    checksEmail,
     check_for_errors_1.checkForErrors
 ];
 exports.validatorInputAuthRout = [
@@ -66,6 +88,6 @@ exports.validatorInputAuthRout = [
 exports.validatorBodyUserRegistration = [
     checksLogin,
     checksPassword,
-    exports.checksEmail,
+    checksEmail,
     check_for_errors_1.checkForErrors
 ];
