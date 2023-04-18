@@ -8,6 +8,7 @@ import {QueryInputParams, SearchEmailTerm, SearchLoginTerm} from "../models/quer
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
 import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 import {UserViewModel} from "../models/modelsUsersLogin/user-view";
+import ip from "ip";
 
 
 
@@ -29,8 +30,9 @@ usersRouter.get('/', superAdminAuthentication,
 usersRouter.post('/', validatorUserBodyRegistrationForSuperAdmin,
     async (req: RequestInputBody<UserInputModel>,
            res: ResponseViewBody<UserViewModel>) => {
+        const ipAddress = ip.address()
         const newUser = await usersService.userByAnAdminRegistration
-        (req.body.login, req.body.password, req.body.email)
+        (req.body.login, req.body.password, req.body.email, ipAddress)
 
         res.status(201).send(newUser)
         return;

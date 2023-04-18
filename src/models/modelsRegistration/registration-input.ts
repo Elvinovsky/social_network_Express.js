@@ -14,6 +14,6 @@ export type RegistrationEmailResending = {
 
 }
 
-type RegistrationDetectedModel = { // todo реализовать
+export type RegistrationDetectedModel = {
     ip: string
 }

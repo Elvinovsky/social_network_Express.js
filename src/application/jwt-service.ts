@@ -3,23 +3,39 @@ import jwt from 'jsonwebtoken'
 import {settings} from "../settings";
 import {ObjectId, WithId} from "mongodb";
 import {LoginSuccessViewModel} from "../models/modelsUsersLogin/login-view";
+import {usersRepository} from "../repositories/db/users-db-repository";
 
 
 
 export const jwtService = {
-    async createJWT(user: WithId<UserAccountDBModel>): Promise<LoginSuccessViewModel> {
-        const token = jwt.sign({userId: new ObjectId(user._id)}, settings.JWT_SECRET, {expiresIn: '24h'})
+    async createJWTAccessToken(user: WithId<UserAccountDBModel>): Promise<LoginSuccessViewModel> {
+        const accessToken = jwt.sign({userId: new ObjectId(user._id)}, settings.ACCESS_JWT_SECRET, {expiresIn: '10s'})
         return {
-            accessToken: token
+            accessToken: accessToken
         }
     },
-    async getUserIdByToken (token: string) {
+    async createJWTRefreshToken(user: WithId<UserAccountDBModel>) {
+        const refreshToken = jwt.sign({userId: new ObjectId(user._id)}, settings.REFRESH_TOKEN_SECRET, {expiresIn: '20s'})
+        return refreshToken
+    },
+    async getUserIdByAccessToken (token: string) {
        try {
-           const result = jwt.verify(token, settings.JWT_SECRET) as {userId: string}
+           const result = jwt.verify(token, settings.ACCESS_JWT_SECRET) as {userId: string}
            return new ObjectId(result.userId).toString()
        }
        catch (error) {
            return null;
        }
+    },
+    async getUserIdByRefreshToken (token: string) {
+        try {
+            const checkToken = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as {userId: string}
+            const userId = new ObjectId(checkToken.userId).toString()
+            const user = await usersRepository.findUserById(userId)
+            return user
+        }
+        catch (error) {
+            return null;
+        }
     }
 }

@@ -4,13 +4,16 @@ import {usersRepository} from "../repositories/db/users-db-repository";
 import {UserViewModel} from "../models/modelsUsersLogin/user-view";
 import {CommentDBModel} from "../models/modelsComment/comment-input";
 import {PostDBModel} from "../models/modelsPosts/post-input";
+import {userMapping} from "../functions/usersMapping";
 
 export const feedbacksService = {
     async getComment(id: string): Promise<CommentViewModel | null> {
         return await feedBacksRepository.getCommentById(id)
     },
     async searchUserForComment(userId: string): Promise<UserViewModel | null> {
-        return await usersRepository.findUserForComment(userId)
+        const user =  await usersRepository.findUserForComment(userId)
+            if(!user) return null
+        return userMapping(user)
     },
     async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
         return await feedBacksRepository.searchPostIdForComments(postId)

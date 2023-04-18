@@ -10,8 +10,7 @@ export const feedBacksRepository = {
         return await feedbacksCollection.deleteMany({})
     },
     async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
-        const postIdForComments = await postsCollection.findOne({_id: new ObjectId(postId)})
-        return postIdForComments? postIdForComments : null
+        return await postsCollection.findOne({_id: new ObjectId(postId)})
     },
     async getCommentById(id: string): Promise<CommentViewModel | null> {
         const comment = await feedbacksCollection.findOne({_id: new ObjectId(id)})

@@ -6,9 +6,10 @@ import {UserViewModel} from "../models/modelsUsersLogin/user-view";
 import add from 'date-fns/add'
 import {v4 as uuidv4} from 'uuid'
 import {emailsManager} from "../adapter/emails-manager";
+import {userMapping} from "../functions/usersMapping";
 
 export const usersService = {
-    async userByAnAdminRegistration(login: string, password: string, email: string  ): Promise<UserViewModel> {
+    async userByAnAdminRegistration(login: string, password: string, email: string, ip: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
@@ -19,11 +20,14 @@ export const usersService = {
                 confirmationCode: "not required",
                 expirationDate: "not required",
                 isConfirmed: true
+            },
+            geolocationData: {
+                ip: ip
             }
         }
         return await usersRepository.addNewUser(newUser)
     },
-    async independentUserRegistration(login: string, password: string, email: string  ): Promise<UserViewModel | null> {
+    async independentUserRegistration(login: string, password: string, email: string, ip: string ): Promise<UserViewModel | null> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
@@ -37,6 +41,9 @@ export const usersService = {
                     minutes:10
                 }),
                 isConfirmed: false
+            },
+            geolocationData: {
+                ip: ip
             }
         }
         const result = await usersRepository.addNewUser(newUser)
@@ -44,23 +51,32 @@ export const usersService = {
             await emailsManager.sendEmailConformationMessage(newUser)
         }catch(error) {
             console.error(error)
-            await usersRepository.userByIdDelete(result.id) // todo как все это обернуть
+            await usersRepository.userByIdDelete(result.id)
             return null
         }
         return result
     },
     async findUserById(id: string): Promise <UserViewModel | null> {
-        return await usersRepository.findUserById(id)
+        const user = await usersRepository.findUserById(id)
+        if(!user) {
+            return null
+        }
+        return userMapping(user)
+
     },
-    async confirmCode(code: string): Promise <boolean> {
+    async confirmCode(code: string, ip: string): Promise <boolean> {
+        const isComparisonIP = await usersRepository.findUserConfirmCode(code)
+            if (isComparisonIP!.geolocationData.ip !== ip) return false // todo доработать. убрать в отдельный модуль?
         return  await usersRepository.updateConfirmedCode(code)
     },
     async emailConfirmation(email: string  ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email, newCode)
             if(!codeReplacement) return false
+
         const user = await usersRepository.findByLoginOrEmail(email)
-            if(!user || user.emailConfirmation.isConfirmed) {return false} // todo слой мидлваре?
+            if(!user || user.emailConfirmation.isConfirmed) return false // todo слой мидлваре?
+
         try {
             await emailsManager.sendEmailConformationMessage(user)
         }catch(error) {
@@ -71,7 +87,6 @@ export const usersService = {
         return true
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise <WithId<UserAccountDBModel> | null> {
-
         const user =  await usersRepository.findByLoginOrEmail(loginOrEmail)
             if(!user
             || !user.emailConfirmation.isConfirmed) {

@@ -22,8 +22,10 @@ export type UserAccountDBModel = {
         confirmationCode: string,
         expirationDate: Date | string,
         isConfirmed: boolean
+    },
+    geolocationData: { // todo renaming! логика реализации? только токен и код подтверждения ?
+        ip: string
     }
 }
-
 
 

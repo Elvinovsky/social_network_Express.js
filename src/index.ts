@@ -10,7 +10,7 @@ const startApp = async () => {
     catch {
         console.log("error connect")
     }
-};
+}
 
 startApp()
 

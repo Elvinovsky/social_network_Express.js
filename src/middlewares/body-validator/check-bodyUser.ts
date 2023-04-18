@@ -52,6 +52,7 @@ export const checksEmailResending =  body('email')
 const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()
     .withMessage("is not a string")
+
 export const checksConfirmationCode =  body('code', )
     .isString()
     .withMessage("is not a string")

@@ -5,11 +5,14 @@ import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
 import {feedBacksRouter} from "./routers/feedbacks-router";
-import ip from 'ip'
+import ip from 'ip';
+import cookieParser from "cookie-parser";
+
 const jsonBodyMiddleware = express.json()
 const app = express()
 
 app.use(jsonBodyMiddleware)
+app.use(cookieParser()) // todo подключать на всю app?
 
 app.get('/', (req:Request, res:Response) => {
     const ipAddress = ip.address()
@@ -23,13 +26,13 @@ app.use('/comments', feedBacksRouter)
 app.use('/testing', deleteAllDataRouter)
 
 const startServer = () => {
-    const port = process.env.PORT || 3007;
+    const port = process.env.PORT || 3007
     app.listen(port, () => {
-            console.log(`Example app listening on port ${port}`);
+            console.log(`Example app listening on port ${port}`)
     })
-};
+}
 
-export { app, startServer };
+export { app, startServer }
 
 
 
