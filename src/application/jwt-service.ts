@@ -8,7 +8,6 @@ import {
 import { LoginSuccessViewModel } from "../models/modelsUsersLogin/login-view";
 import { usersRepository } from "../repositories/db/users-db-repository";
 
-
 export const jwtService = {
     async createJWTAccessToken ( user: WithId<UserAccountDBModel> ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: new ObjectId(user._id) },
