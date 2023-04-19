@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const runDB_1 = require("../../database/runDB");
 const mongodb_1 = require("mongodb");
-const usersMapping_1 = require("../../functions/usersMapping");
 exports.usersRepository = {
     testingDeleteAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21,20 +20,12 @@ exports.usersRepository = {
     },
     findUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
-            if (!user) {
-                return null;
-            }
-            return (0, usersMapping_1.userMapping)(user);
+            return yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
         });
     },
     findUserConfirmCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield runDB_1.usersCollection.findOne({ "emailConfirmation.confirmationCode": code });
-            if (!user) {
-                return null;
-            }
-            return user;
+            return yield runDB_1.usersCollection.findOne({ "emailConfirmation.confirmationCode": code });
         });
     },
     updateConfirmedCode(code) {
@@ -51,11 +42,7 @@ exports.usersRepository = {
     },
     findUserForComment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });
-            if (!user) {
-                return null;
-            }
-            return (0, usersMapping_1.userMapping)(user);
+            return yield runDB_1.usersCollection.findOne({ _id: new mongodb_1.ObjectId(userId) });
         });
     },
     findByLoginOrEmail(loginOrEmail) {

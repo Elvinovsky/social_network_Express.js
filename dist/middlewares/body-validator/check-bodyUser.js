@@ -67,7 +67,7 @@ exports.checksConfirmationCode = (0, express_validator_1.body)('code')
     .withMessage("is not a string")
     .custom((code) => __awaiter(void 0, void 0, void 0, function* () {
     const isValidConfirmed = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
-    if (!isValidConfirmed // todo какой слой отвечает за это?
+    if (!isValidConfirmed
         || isValidConfirmed.emailConfirmation.expirationDate < new Date()
         || isValidConfirmed.emailConfirmation.isConfirmed) {
         throw new Error("confirmation code is incorrect, expired or already been applied");

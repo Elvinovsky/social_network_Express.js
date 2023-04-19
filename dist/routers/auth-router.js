@@ -25,8 +25,29 @@ exports.authRouter = (0, express_1.Router)();
 exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (user) {
-        const token = yield jwt_service_1.jwtService.createJWTAccessToken(user);
-        res.status(200).send(token);
+        const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(user);
+        const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(user);
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+        });
+        return res.status(200)
+            .send(accessToken);
+    }
+    else {
+        res.sendStatus(401);
+        return;
+    }
+}));
+exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(req.cookies.jwt);
+    if (checkRefreshToken) {
+        const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(checkRefreshToken);
+        const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+        });
+        return res.status(200)
+            .send(accessToken);
     }
     else {
         res.sendStatus(401);
@@ -37,7 +58,7 @@ exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegis
     const ipAddresses = ip_1.default.address(); // todo убрать в отдельный модуль реализовать четкую логику.
     const user = yield users_service_1.usersService.independentUserRegistration(req.body.login, req.body.password, req.body.email, ipAddresses);
     if (user) {
-        res.status(204);
+        res.sendStatus(204);
         return;
     }
     res.sendStatus(400);

@@ -18,6 +18,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const add_1 = __importDefault(require("date-fns/add"));
 const uuid_1 = require("uuid");
 const emails_manager_1 = require("../adapter/emails-manager");
+const usersMapping_1 = require("../functions/usersMapping");
 exports.usersService = {
     userByAnAdminRegistration(login, password, email, ip) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,7 +66,7 @@ exports.usersService = {
             }
             catch (error) {
                 console.error(error);
-                yield users_db_repository_1.usersRepository.userByIdDelete(result.id); // todo как все это обернуть
+                yield users_db_repository_1.usersRepository.userByIdDelete(result.id);
                 return null;
             }
             return result;
@@ -73,14 +74,18 @@ exports.usersService = {
     },
     findUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.findUserById(id);
+            const user = yield users_db_repository_1.usersRepository.findUserById(id);
+            if (!user) {
+                return null;
+            }
+            return (0, usersMapping_1.userMapping)(user);
         });
     },
     confirmCode(code, ip) {
         return __awaiter(this, void 0, void 0, function* () {
             const isComparisonIP = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
             if (isComparisonIP.geolocationData.ip !== ip)
-                return false; // todo доработатьб убрать в отдельный мидлвара?
+                return false; // todo доработать. убрать в отдельный модуль?
             return yield users_db_repository_1.usersRepository.updateConfirmedCode(code);
         });
     },
@@ -91,9 +96,8 @@ exports.usersService = {
             if (!codeReplacement)
                 return false;
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
-            if (!user || user.emailConfirmation.isConfirmed) {
-                return false;
-            } // todo слой мидлваре?
+            if (!user || user.emailConfirmation.isConfirmed)
+                return false; // todo слой мидлваре?
             try {
                 yield emails_manager_1.emailsManager.sendEmailConformationMessage(user);
             }

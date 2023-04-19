@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.feedbacksService = void 0;
 const feedbacks_db_repository_1 = require("../repositories/db/feedbacks-db-repository");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
+const usersMapping_1 = require("../functions/usersMapping");
 exports.feedbacksService = {
     getComment(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,7 +21,10 @@ exports.feedbacksService = {
     },
     searchUserForComment(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield users_db_repository_1.usersRepository.findUserForComment(userId);
+            const user = yield users_db_repository_1.usersRepository.findUserForComment(userId);
+            if (!user)
+                return null;
+            return (0, usersMapping_1.userMapping)(user);
         });
     },
     searchPostIdForComments(postId) {

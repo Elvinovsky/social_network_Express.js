@@ -53,17 +53,17 @@ const checkInputLoginOrEmail =  body('loginOrEmail')
     .isString()
     .withMessage("is not a string")
 
-export const checksConfirmationCode =  body('code', )
+export const checksConfirmationCode =  body('code',)
     .isString()
     .withMessage("is not a string")
     .custom(async (code: string) => {
         const isValidConfirmed = await usersRepository.findUserConfirmCode(code)
-        if(!isValidConfirmed // todo какой слой отвечает за это?
+        if(!isValidConfirmed
             || isValidConfirmed.emailConfirmation.expirationDate < new Date()
             || isValidConfirmed.emailConfirmation.isConfirmed ) {
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
-    });
+    })
 
 export const validatorUserBodyRegistrationForSuperAdmin = [
     superAdminAuthentication,

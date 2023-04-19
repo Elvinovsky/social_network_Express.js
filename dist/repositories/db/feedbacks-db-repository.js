@@ -21,8 +21,7 @@ exports.feedBacksRepository = {
     },
     searchPostIdForComments(postId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const postIdForComments = yield runDB_1.postsCollection.findOne({ _id: new mongodb_1.ObjectId(postId) });
-            return postIdForComments ? postIdForComments : null;
+            return yield runDB_1.postsCollection.findOne({ _id: new mongodb_1.ObjectId(postId) });
         });
     },
     getCommentById(id) {

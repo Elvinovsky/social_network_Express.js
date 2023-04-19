@@ -18,7 +18,7 @@ exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void
         return;
     }
     const token = (req.headers.authorization).split(' ')[1];
-    const userId = yield jwt_service_1.jwtService.getUserIdByToken(token);
+    const userId = yield jwt_service_1.jwtService.getUserIdByAccessToken(token);
     if (userId) {
         req.user = yield users_service_1.usersService.findUserById(userId);
         next();
