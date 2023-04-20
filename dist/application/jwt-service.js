@@ -20,7 +20,7 @@ const users_db_repository_1 = require("../repositories/db/users-db-repository");
 exports.jwtService = {
     createJWTAccessToken(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const accessToken = jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.ACCESS_JWT_SECRET, { expiresIn: '10m' });
+            const accessToken = jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.ACCESS_JWT_SECRET, { expiresIn: '10s' });
             return {
                 accessToken: accessToken
             };
@@ -28,7 +28,7 @@ exports.jwtService = {
     },
     createJWTRefreshToken(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20m' });
+            return jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
         });
     },
     getUserIdByAccessToken(token) {

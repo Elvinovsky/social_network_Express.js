@@ -49,7 +49,7 @@ authRouter.post('/refresh-token',
         if (checkRefreshToken) {
             const accessToken = await jwtService.createJWTAccessToken(checkRefreshToken)
             const refreshToken = await jwtService.createJWTRefreshToken(checkRefreshToken)
-            res.cookie('jwt',
+            res.cookie('refreshToken',
                 refreshToken,
                 {
                     httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
@@ -60,6 +60,11 @@ authRouter.post('/refresh-token',
             res.sendStatus(401)
             return;
         }
+    })
+authRouter.post('/logout',
+    async( req: Request, res: Response ) => {
+            res.clearCookie('refreshToken')
+            return res.sendStatus(204)
     })
 authRouter.post('/registration',
     validatorBodyUserRegistration,
