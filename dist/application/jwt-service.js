@@ -44,6 +44,7 @@ exports.jwtService = {
     },
     getUserIdByRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
+            debugger;
             try {
                 const checkToken = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
                 const userId = new mongodb_1.ObjectId(checkToken.userId).toString();

@@ -32,6 +32,7 @@ export const jwtService = {
         }
     },
     async getUserIdByRefreshToken ( token: string ) {
+        debugger;
         try {
             const checkToken = jwt.verify(token,
                 settings.REFRESH_TOKEN_SECRET) as { userId: string }

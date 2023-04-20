@@ -15,6 +15,7 @@ import { UserInputModel } from "../models/modelsUsersLogin/user-input";
 import { checkForErrors } from "../middlewares/check-for-errors";
 import ip from "ip";
 
+
 export const authRouter = Router()
 
 authRouter.post('/login',
@@ -25,7 +26,7 @@ authRouter.post('/login',
         if (user) {
             const accessToken = await jwtService.createJWTAccessToken(user)
             const refreshToken = await jwtService.createJWTRefreshToken(user)
-            res.cookie('jwt',
+            res.cookie('refreshToken',
                 refreshToken,
                 {
                     httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
@@ -39,7 +40,12 @@ authRouter.post('/login',
     })
 authRouter.post('/refresh-token',
     async( req: Request, res: Response ) => {
-        const checkRefreshToken = await jwtService.getUserIdByRefreshToken(req.cookies.jwt)
+        const refreshToken = req.cookies['refreshToken'];
+        if (!refreshToken) {
+            return res.sendStatus(401)
+        }
+        const checkRefreshToken = await jwtService.getUserIdByRefreshToken(refreshToken)
+        debugger;
         if (checkRefreshToken) {
             const accessToken = await jwtService.createJWTAccessToken(checkRefreshToken)
             const refreshToken = await jwtService.createJWTRefreshToken(checkRefreshToken)
