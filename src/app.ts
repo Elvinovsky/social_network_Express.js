@@ -12,7 +12,7 @@ const jsonBodyMiddleware = express.json()
 const app = express()
 
 app.use(jsonBodyMiddleware)
-app.use(cookieParser()) // todo подключать на всю app?
+app.use(cookieParser())
 
 app.get('/', (req:Request, res:Response) => {
     const ipAddress = ip.address()

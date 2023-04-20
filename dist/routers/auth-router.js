@@ -27,7 +27,7 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
     if (user) {
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(user);
         const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(user);
-        res.cookie('jwt', refreshToken, {
+        res.cookie(refreshToken, {
             httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
         });
         return res.status(200)
@@ -39,7 +39,7 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
     }
 }));
 exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(req.cookies.jwt);
+    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(req.cookies);
     if (checkRefreshToken) {
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(checkRefreshToken);
         const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);

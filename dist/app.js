@@ -17,7 +17,7 @@ const jsonBodyMiddleware = express_1.default.json();
 const app = (0, express_1.default)();
 exports.app = app;
 app.use(jsonBodyMiddleware);
-app.use((0, cookie_parser_1.default)()); // todo подключать на всю app?
+app.use((0, cookie_parser_1.default)());
 app.get('/', (req, res) => {
     const ipAddress = ip_1.default.address();
     res.send({ ipAddress });

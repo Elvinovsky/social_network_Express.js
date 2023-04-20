@@ -12,7 +12,7 @@ export const jwtService = {
     async createJWTAccessToken ( user: WithId<UserAccountDBModel> ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: new ObjectId(user._id) },
             settings.ACCESS_JWT_SECRET,
-            { expiresIn: '10s' })
+            { expiresIn: '10m' })
         return {
             accessToken: accessToken
         }
@@ -20,7 +20,7 @@ export const jwtService = {
     async createJWTRefreshToken ( user: WithId<UserAccountDBModel> ) {
         return jwt.sign({ userId: new ObjectId(user._id) },
             settings.REFRESH_TOKEN_SECRET,
-            { expiresIn: '20s' })
+            { expiresIn: '20m' })
     },
     async getUserIdByAccessToken ( token: string ) {
         try {
