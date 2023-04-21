@@ -16,7 +16,7 @@ export const jwtDbRepository = {
     async addTokenRepo ( usedToken:UsedTokenByUser ):  Promise<InsertOneResult<UsedTokenByUser>>{
         return await tokenCollection.insertOne(usedToken)
     },
-    async rootedToken ( token:string ):  Promise<boolean>{
+    async rootedToken ( token: string ):  Promise<boolean>{
         const result = await tokenCollection.updateOne({refreshToken: token}, {$set: {isValid: false}})
         return result.matchedCount === 1
     }

@@ -46,7 +46,7 @@ export const jwtService = {
             const checkToken = jwt.verify(token,
                 settings.REFRESH_TOKEN_SECRET) as { userId: string }
 
-            const searchTokenInRepo = await jwtDbRepository.findTokenByUserId(checkToken.userId)
+            const searchTokenInRepo = await jwtDbRepository.findTokenByUserId(new ObjectId(checkToken.userId).toString())
             if(!searchTokenInRepo?.isValid) return null
 
             const userId = new ObjectId(checkToken.userId).toString()
