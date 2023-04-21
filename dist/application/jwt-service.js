@@ -17,6 +17,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const mongodb_1 = require("mongodb");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
+const jwt_db_repository_1 = require("../repositories/db/jwt-db-repository");
 exports.jwtService = {
     createJWTAccessToken(user) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,7 +29,14 @@ exports.jwtService = {
     },
     createJWTRefreshToken(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+            const refreshToken = jsonwebtoken_1.default.sign({ userId: new mongodb_1.ObjectId(user._id) }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+            const usingToken = {
+                userId: user._id.toString(),
+                refreshToken: refreshToken,
+                isValid: true
+            };
+            yield jwt_db_repository_1.jwtDbRepository.addTokenRepo(usingToken);
+            return refreshToken;
         });
     },
     getUserIdByAccessToken(token) {
@@ -44,9 +52,11 @@ exports.jwtService = {
     },
     getUserIdByRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            debugger;
             try {
                 const checkToken = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
+                const searchTokenInRepo = yield jwt_db_repository_1.jwtDbRepository.findTokenByUserId(checkToken.userId);
+                if (!(searchTokenInRepo === null || searchTokenInRepo === void 0 ? void 0 : searchTokenInRepo.isValid))
+                    return null;
                 const userId = new mongodb_1.ObjectId(checkToken.userId).toString();
                 const user = yield users_db_repository_1.usersRepository.findUserById(userId);
                 return user;
@@ -54,6 +64,11 @@ exports.jwtService = {
             catch (error) {
                 return null;
             }
+        });
+    },
+    rootingToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield jwt_db_repository_1.jwtDbRepository.rootedToken(token);
         });
     }
 };

@@ -4,6 +4,8 @@ import {UserAccountDBModel} from "../models/modelsUsersLogin/user-input";
 import {BlogDBModel} from "../models/modelsBlogs/blog-input";
 import {CommentDBModel} from "../models/modelsComment/comment-input";
 import {PostDBModel} from "../models/modelsPosts/post-input";
+import { UsedTokenByUser } from "../models/modelsUsersLogin/login-input";
+
 dotenv.config()
 
 const mongoURI = process.env.MONGO_URL;
@@ -18,6 +20,8 @@ const db = client.db('lesson');
 export const blogsCollection = db.collection<BlogDBModel>('blogs');
 export const postsCollection = db.collection<PostDBModel>('posts');
 export const usersCollection = db.collection<UserAccountDBModel>('users');
+export const tokenCollection = db.collection<UsedTokenByUser>('tokenlist');
+
 export const feedbacksCollection = db.collection<CommentDBModel>('comments');
 export async function runDb() {
     try {

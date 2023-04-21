@@ -5,8 +5,10 @@ import {
     ObjectId,
     WithId
 } from "mongodb";
-import { LoginSuccessViewModel } from "../models/modelsUsersLogin/login-view";
+import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
 import { usersRepository } from "../repositories/db/users-db-repository";
+import { jwtDbRepository } from "../repositories/db/jwt-db-repository";
+import { UsedTokenByUser } from "../models/modelsUsersLogin/login-input";
 
 export const jwtService = {
     async createJWTAccessToken ( user: WithId<UserAccountDBModel> ): Promise<LoginSuccessViewModel> {
@@ -18,9 +20,17 @@ export const jwtService = {
         }
     },
     async createJWTRefreshToken ( user: WithId<UserAccountDBModel> ) {
-        return jwt.sign({ userId: new ObjectId(user._id) },
+        const refreshToken = jwt.sign({ userId: new ObjectId(user._id) },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
+
+        const usingToken: UsedTokenByUser = {
+            userId: user._id.toString(),
+            refreshToken: refreshToken,
+            isValid: true
+        }
+        await jwtDbRepository.addTokenRepo(usingToken)
+        return refreshToken
     },
     async getUserIdByAccessToken ( token: string ) {
         try {
@@ -32,15 +42,21 @@ export const jwtService = {
         }
     },
     async getUserIdByRefreshToken ( token: string ) {
-        debugger;
         try {
             const checkToken = jwt.verify(token,
                 settings.REFRESH_TOKEN_SECRET) as { userId: string }
+
+            const searchTokenInRepo = await jwtDbRepository.findTokenByUserId(checkToken.userId)
+            if(!searchTokenInRepo?.isValid) return null
+
             const userId = new ObjectId(checkToken.userId).toString()
             const user = await usersRepository.findUserById(userId)
             return user
         } catch (error) {
             return null;
         }
+    },
+    async rootingToken (token: string):  Promise<boolean>{
+        return await jwtDbRepository.rootedToken(token)
     }
 }

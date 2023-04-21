@@ -29,7 +29,7 @@ authRouter.post('/login',
             res.cookie('refreshToken',
                 refreshToken,
                 {
-                    httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+                    httpOnly: true, sameSite: 'none', secure: true
                 })
             return res.status(200)
                       .send(accessToken)
@@ -45,14 +45,13 @@ authRouter.post('/refresh-token',
             return res.sendStatus(401)
         }
         const checkRefreshToken = await jwtService.getUserIdByRefreshToken(refreshToken)
-        debugger;
         if (checkRefreshToken) {
             const accessToken = await jwtService.createJWTAccessToken(checkRefreshToken)
             const refreshToken = await jwtService.createJWTRefreshToken(checkRefreshToken)
             res.cookie('refreshToken',
                 refreshToken,
                 {
-                    httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+                    httpOnly: true, sameSite: 'none', secure: true
                 })
             return res.status(200)
                       .send(accessToken)
@@ -62,9 +61,23 @@ authRouter.post('/refresh-token',
         }
     })
 authRouter.post('/logout',
-    async( req: Request, res: Response ) => {
+    async( req: Request, res: Response ) => {//todo сделать типизацию доавить дженерики
+        const refreshToken = req.cookies['refreshToken'];
+        if (!refreshToken) {
+            return res.sendStatus(401)
+        }
+        const checkRefreshToken = await jwtService.getUserIdByRefreshToken(refreshToken)
+        if(!checkRefreshToken) {
+            res.sendStatus(401)
+            return;
+        }
+            const updateRooting = await jwtService.rootingToken(refreshToken)
+        if(updateRooting) {
             res.clearCookie('refreshToken')
             return res.sendStatus(204)
+        }else {
+           return res.sendStatus(500)
+        }
     })
 authRouter.post('/registration',
     validatorBodyUserRegistration,

@@ -28,7 +28,7 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(user);
         const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(user);
         res.cookie('refreshToken', refreshToken, {
-            httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+            httpOnly: true, sameSite: 'none', secure: true
         });
         return res.status(200)
             .send(accessToken);
@@ -44,12 +44,11 @@ exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0
         return res.sendStatus(401);
     }
     const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
-    debugger;
     if (checkRefreshToken) {
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(checkRefreshToken);
         const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);
         res.cookie('refreshToken', refreshToken, {
-            httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000
+            httpOnly: true, sameSite: 'none', secure: true
         });
         return res.status(200)
             .send(accessToken);
@@ -60,8 +59,23 @@ exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0
     }
 }));
 exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.clearCookie('refreshToken');
-    return res.sendStatus(204);
+    const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) {
+        return res.sendStatus(401);
+    }
+    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
+    if (!checkRefreshToken) {
+        res.sendStatus(401);
+        return;
+    }
+    const isRooted = yield jwt_service_1.jwtService.rootingToken(refreshToken);
+    if (isRooted) {
+        res.clearCookie('refreshToken');
+        return res.sendStatus(204);
+    }
+    else {
+        return res.sendStatus(500);
+    }
 }));
 exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegistration, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ipAddresses = ip_1.default.address(); // todo убрать в отдельный модуль реализовать четкую логику.
