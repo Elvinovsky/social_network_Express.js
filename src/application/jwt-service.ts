@@ -46,7 +46,7 @@ export const jwtService = {
             const checkToken = jwt.verify(token,
                 settings.REFRESH_TOKEN_SECRET) as { userId: string }
 
-            const searchTokenInRepo = await jwtDbRepository.findTokenByUserId(new ObjectId(checkToken.userId).toString())
+            const searchTokenInRepo = await jwtDbRepository.findTokenByUserId(token)
             if(!searchTokenInRepo) return null
 
             const userId = new ObjectId(checkToken.userId).toString()
@@ -58,5 +58,6 @@ export const jwtService = {
     },
     async rootingToken (token: string):  Promise<boolean>{
         return await jwtDbRepository.rootedToken(token)
+
     }
 }

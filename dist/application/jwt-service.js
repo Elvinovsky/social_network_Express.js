@@ -54,8 +54,8 @@ exports.jwtService = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const checkToken = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
-                const searchTokenInRepo = yield jwt_db_repository_1.jwtDbRepository.findTokenByUserId(checkToken.userId);
-                if (!(searchTokenInRepo === null || searchTokenInRepo === void 0 ? void 0 : searchTokenInRepo.isValid))
+                const searchTokenInRepo = yield jwt_db_repository_1.jwtDbRepository.findTokenByUserId(token);
+                if (!searchTokenInRepo)
                     return null;
                 const userId = new mongodb_1.ObjectId(checkToken.userId).toString();
                 const user = yield users_db_repository_1.usersRepository.findUserById(userId);

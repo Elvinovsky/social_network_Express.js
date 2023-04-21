@@ -17,9 +17,10 @@ exports.jwtDbRepository = {
             return yield runDB_1.tokenCollection.deleteMany({});
         });
     },
-    findTokenByUserId(userId) {
+    findTokenByUserId(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield runDB_1.tokenCollection.findOne({ userId: userId });
+            const isValidToken = yield runDB_1.tokenCollection.findOne({ refreshToken: token });
+            return isValidToken === null || isValidToken === void 0 ? void 0 : isValidToken.isValid;
         });
     },
     addTokenRepo(usedToken) {

@@ -46,8 +46,9 @@ exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0
     const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
     if (checkRefreshToken) {
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(checkRefreshToken);
-        const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);
-        res.cookie('refreshToken', refreshToken, {
+        const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);
+        yield jwt_service_1.jwtService.rootingToken(refreshToken);
+        res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true, sameSite: 'none', secure: true
         });
         return res.status(200)
@@ -68,8 +69,8 @@ exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 
         res.sendStatus(401);
         return;
     }
-    const isRooted = yield jwt_service_1.jwtService.rootingToken(refreshToken);
-    if (isRooted) {
+    const updateRooting = yield jwt_service_1.jwtService.rootingToken(refreshToken);
+    if (updateRooting) {
         res.clearCookie('refreshToken');
         return res.sendStatus(204);
     }
