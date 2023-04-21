@@ -73,9 +73,7 @@ authRouter.post('/logout',
         }
             const updateRooting = await jwtService.rootingToken(refreshToken)
         if(updateRooting) {
-            res.cookie('refreshToken', '', {
-                httpOnly: true, sameSite: 'none', secure: true
-            })
+            res.clearCookie('refreshToken')
             return res.sendStatus(204)
         }else {
            return res.sendStatus(500)
