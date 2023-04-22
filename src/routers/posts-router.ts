@@ -68,7 +68,7 @@ postsRouter.post('/:postId/comments',validatorInputComment,
             res.sendStatus(404)
             return;
         }
-    const comment = await feedbacksService.createComment(req.params.postId, req.user!.id, req.body.content)
+    const comment = await feedbacksService.createComment(req.params.postId, req.userView!.id, req.body.content)
             res.status(201).send(comment)
     })
 postsRouter.post('/', validatorInputPostBody,

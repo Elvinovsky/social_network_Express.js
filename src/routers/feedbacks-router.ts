@@ -32,7 +32,7 @@ feedBacksRouter.put('/:id',validatorInputComment,
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
+        const validatorUserId = await feedbacksService.searchUserForComment(req.userView!.id)
         if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId ) {
             res.sendStatus(403)
             return
@@ -51,7 +51,7 @@ feedBacksRouter.delete('/:id',userAuthentication,
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
+        const validatorUserId = await feedbacksService.searchUserForComment(req.userView!.id)
         if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId ) {
             res.sendStatus(403)
             return

@@ -1,5 +1,7 @@
 import {Request, Response} from "express";
 import {UserViewModel} from "../models/modelsUsersLogin/user-view";
+import { WithId } from "mongodb";
+import { UserAccountDBModel } from "../models/modelsUsersLogin/user-input";
 
 
 export type RequestInputBody<T> = Request<{},{},T>;
@@ -12,7 +14,8 @@ export type RequestQuery<T> = Request<{},{},{},T>;
 declare global {
     namespace Express {
         export interface Request {
-            user: UserViewModel | null
+            userView: UserViewModel | null
+            userDB: WithId<UserAccountDBModel> | null
         }
     }
 }
