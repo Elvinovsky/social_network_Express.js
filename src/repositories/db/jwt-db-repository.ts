@@ -11,7 +11,7 @@ export const jwtDbRepository = {
     },
     async findTokenByUserId ( token: string ): Promise<boolean> {
         const isUsedToken = await tokenCollection.findOne({ refreshToken: token })
-        return (!isUsedToken)
+        return (!!isUsedToken)
     },
     async addTokenRepo ( usedToken:UsedTokenByUser ):  Promise<InsertOneResult<UsedTokenByUser>>{
         return await tokenCollection.insertOne(usedToken)
