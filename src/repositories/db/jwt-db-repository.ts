@@ -9,9 +9,9 @@ export const jwtDbRepository = {
     async testingDeleteAllUsers (): Promise<DeleteResult> {
         return await tokenCollection.deleteMany({})
     },
-    async findTokenByUserId ( token: string ): Promise<boolean | undefined> {
-        const isValidToken = await tokenCollection.findOne({ refreshToken: token })
-        return isValidToken?.isValid
+    async findTokenByUserId ( token: string ): Promise<boolean> {
+        const isUsedToken = await tokenCollection.findOne({ refreshToken: token })
+        return (!isUsedToken)
     },
     async addTokenRepo ( usedToken:UsedTokenByUser ):  Promise<InsertOneResult<UsedTokenByUser>>{
         return await tokenCollection.insertOne(usedToken)

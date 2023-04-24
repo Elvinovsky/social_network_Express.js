@@ -5,5 +5,4 @@ export type LoginInput = {
 export type UsedTokenByUser = { // todo refactoring
     userId: string,
     refreshToken: string
-    isValid: boolean
 }

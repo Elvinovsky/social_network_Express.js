@@ -47,7 +47,7 @@ const db = exports.client.db('lesson');
 exports.blogsCollection = db.collection('blogs');
 exports.postsCollection = db.collection('posts');
 exports.usersCollection = db.collection('users');
-exports.tokenCollection = db.collection('tokenlist');
+exports.tokenCollection = db.collection('tokenBlacklist');
 exports.feedbacksCollection = db.collection('comments');
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {

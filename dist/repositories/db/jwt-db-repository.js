@@ -19,8 +19,8 @@ exports.jwtDbRepository = {
     },
     findTokenByUserId(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isValidToken = yield runDB_1.tokenCollection.findOne({ refreshToken: token });
-            return isValidToken === null || isValidToken === void 0 ? void 0 : isValidToken.isValid;
+            const isUsedToken = yield runDB_1.tokenCollection.findOne({ refreshToken: token });
+            return (!isUsedToken);
         });
     },
     addTokenRepo(usedToken) {

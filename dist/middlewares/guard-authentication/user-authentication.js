@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userAuthentication = void 0;
+exports.refreshTokenAuthentication = exports.userAuthentication = void 0;
 const jwt_service_1 = require("../../application/jwt-service");
 const users_service_1 = require("../../domains/users-service");
+const jwt_db_repository_1 = require("../../repositories/db/jwt-db-repository");
+const users_db_repository_1 = require("../../repositories/db/users-db-repository");
 exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(401);
@@ -20,12 +22,34 @@ exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void
     const token = (req.headers.authorization).split(' ')[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByAccessToken(token);
     if (userId) {
-        req.user = yield users_service_1.usersService.findUserById(userId);
+        req.userView = yield users_service_1.usersService.findUserById(userId);
         next();
     }
     else {
         res.status(401).send('Authentication required.'); // custom message
         return;
     }
-    // -----------------------------------------------------------------------
+}));
+exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) {
+        return res.sendStatus(401);
+    }
+    const searchTokenInTokenList = yield jwt_db_repository_1.jwtDbRepository.findTokenByUserId(refreshToken);
+    if (searchTokenInTokenList) {
+        return res.sendStatus(401);
+    }
+    const checkUser = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
+    if (checkUser) {
+        const usedToken = {
+            userId: checkUser,
+            refreshToken: refreshToken
+        };
+        yield jwt_db_repository_1.jwtDbRepository.addTokenRepo(usedToken);
+        req.userDB = yield users_db_repository_1.usersRepository.findUserById(checkUser);
+        return next();
+    }
+    else {
+        return res.status(401).send('Authentication required.'); // custom message
+    }
 }));

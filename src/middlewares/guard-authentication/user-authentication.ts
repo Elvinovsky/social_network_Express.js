@@ -3,6 +3,7 @@ import {jwtService} from "../../application/jwt-service";
 import {usersService} from "../../domains/users-service";
 import { jwtDbRepository } from "../../repositories/db/jwt-db-repository";
 import { usersRepository } from "../../repositories/db/users-db-repository";
+import { UsedTokenByUser } from "../../models/modelsUsersLogin/login-input";
 
 
 export const userAuthentication = (async (req: Request, res: Response, next: NextFunction) => {
@@ -23,17 +24,22 @@ export const userAuthentication = (async (req: Request, res: Response, next: Nex
 })
 
 export const refreshTokenAuthentication = (async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies['refreshToken']
+    const refreshToken: string = req.cookies['refreshToken']
     if (!refreshToken) {
         return res.sendStatus(401)
     }
     const searchTokenInTokenList = await jwtDbRepository.findTokenByUserId(refreshToken)
-    if (!searchTokenInTokenList) {
+    if (searchTokenInTokenList) {
         return res.sendStatus(401)
     }
     const checkUser = await jwtService.getUserIdByRefreshToken(refreshToken)
     if (checkUser) {
-        await jwtService.rootingToken(refreshToken) //todo протухание использованного токена.
+        const usedToken: UsedTokenByUser = {
+            userId: checkUser,
+            refreshToken: refreshToken
+        }
+        await jwtDbRepository.addTokenRepo(usedToken)
+
         req.userDB = await usersRepository.findUserById(checkUser)
         return next()
     } else {

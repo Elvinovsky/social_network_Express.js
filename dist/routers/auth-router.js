@@ -21,62 +21,29 @@ const user_authentication_1 = require("../middlewares/guard-authentication/user-
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
 const check_for_errors_1 = require("../middlewares/check-for-errors");
 const ip_1 = __importDefault(require("ip"));
+const cookie_helpers_1 = require("../helpers/cookie-helpers");
 exports.authRouter = (0, express_1.Router)();
 exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (user) {
         const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(user);
         const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(user);
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true, sameSite: 'none', secure: true
-        });
-        return res.status(200)
+        return res
+            .status(200)
+            .cookie('refreshToken', refreshToken, cookie_helpers_1.refreshCookieOptions)
             .send(accessToken);
     }
-    else {
-        res.sendStatus(401);
-        return;
-    }
+    return res.sendStatus(401);
 }));
-exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies['refreshToken'];
-    if (!refreshToken) {
-        return res.sendStatus(401);
-    }
-    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
-    if (checkRefreshToken) {
-        const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(checkRefreshToken);
-        const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(checkRefreshToken);
-        yield jwt_service_1.jwtService.rootingToken(refreshToken);
-        res.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true, sameSite: 'none', secure: true
-        });
-        return res.status(200)
-            .send(accessToken);
-    }
-    else {
-        res.sendStatus(401);
-        return;
-    }
+exports.authRouter.post('/refresh-token', user_authentication_1.refreshTokenAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(req.userDB);
+    const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(req.userDB);
+    return res.status(200)
+        .cookie('refreshToken', newRefreshToken, cookie_helpers_1.refreshCookieOptions)
+        .send(accessToken);
 }));
-exports.authRouter.post('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies['refreshToken'];
-    if (!refreshToken) {
-        return res.sendStatus(401);
-    }
-    const checkRefreshToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
-    if (!checkRefreshToken) {
-        res.sendStatus(401);
-        return;
-    }
-    const updateRooting = yield jwt_service_1.jwtService.rootingToken(refreshToken);
-    if (updateRooting) {
-        res.clearCookie('refreshToken');
-        return res.sendStatus(204);
-    }
-    else {
-        return res.sendStatus(500);
-    }
+exports.authRouter.post('/logout', user_authentication_1.refreshTokenAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.clearCookie('refreshToken').sendStatus(204);
 }));
 exports.authRouter.post('/registration', check_bodyUser_1.validatorBodyUserRegistration, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ipAddresses = ip_1.default.address(); // todo убрать в отдельный модуль реализовать четкую логику.
@@ -106,7 +73,7 @@ exports.authRouter.post('/registration-email-resending', check_bodyUser_1.checks
     return;
 }));
 exports.authRouter.get('/me', user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.user.id);
+    const user = yield users_query_repository_1.usersQueryRepository.getUserInfo(req.userView.id);
     if (user) {
         res.send(user);
         return;

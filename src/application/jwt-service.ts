@@ -6,10 +6,6 @@ import {
     WithId
 } from "mongodb";
 import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
-import { usersRepository } from "../repositories/db/users-db-repository";
-import { jwtDbRepository } from "../repositories/db/jwt-db-repository";
-import { UsedTokenByUser } from "../models/modelsUsersLogin/login-input";
-
 export const jwtService = {
     async createJWTAccessToken ( user: WithId<UserAccountDBModel> ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: user._id },
@@ -20,17 +16,9 @@ export const jwtService = {
         }
     },
     async createJWTRefreshToken ( user: WithId<UserAccountDBModel> ): Promise<string> {
-        const refreshToken = jwt.sign({ userId: user._id },
+        return  jwt.sign({ userId: user._id },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
-
-        const usingToken: UsedTokenByUser = {
-            userId: user._id.toString(),
-            refreshToken: refreshToken,
-            isValid: true
-        }
-        await jwtDbRepository.addTokenRepo(usingToken)
-        return refreshToken
     },
     async getUserIdByAccessToken ( token: string ) {
         try {
@@ -47,8 +35,5 @@ export const jwtService = {
         } catch (error) {
                 return null
         }
-    },
-    async rootingToken (token: string):  Promise<boolean>{
-        return await jwtDbRepository.rootedToken(token)
     }
 }

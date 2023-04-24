@@ -20,7 +20,7 @@ const db = client.db('lesson');
 export const blogsCollection = db.collection<BlogDBModel>('blogs');
 export const postsCollection = db.collection<PostDBModel>('posts');
 export const usersCollection = db.collection<UserAccountDBModel>('users');
-export const tokenCollection = db.collection<UsedTokenByUser>('tokenlist');
+export const tokenCollection = db.collection<UsedTokenByUser>('tokenBlacklist');
 
 export const feedbacksCollection = db.collection<CommentDBModel>('comments');
 export async function runDb() {
