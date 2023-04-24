@@ -75,7 +75,7 @@ export const usersService = {
             if(!codeReplacement) return false
 
         const user = await usersRepository.findByLoginOrEmail(email)
-            if(!user || user.emailConfirmation.isConfirmed) return false // todo слой мидлваре?
+            if(!user || user.emailConfirmation.isConfirmed) return false
 
         try {
             await emailsManager.sendEmailConformationMessage(user)
