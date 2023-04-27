@@ -12,7 +12,7 @@ exports.checkInputContent = (0, express_validator_1.body)('content')
     .isString()
     .withMessage("is not a string");
 exports.validatorInputComment = [
-    user_authentication_1.userAuthentication,
     exports.checkInputContent,
-    check_for_errors_1.checkForErrors
+    check_for_errors_1.checkForErrors,
+    user_authentication_1.userAuthentication
 ];

@@ -10,8 +10,6 @@ export type RegistrationEmailResending = {
      *    pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
      *     Email of already registered but not confirmed user
      */
-
-
 }
 
 export type RegistrationDetectedModel = {

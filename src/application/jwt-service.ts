@@ -1,22 +1,20 @@
-import { UserAccountDBModel } from "../models/modelsUsersLogin/user-input";
 import jwt from 'jsonwebtoken'
 import { settings } from "../settings";
 import {
-    ObjectId,
-    WithId
+    ObjectId
 } from "mongodb";
 import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
 export const jwtService = {
-    async createJWTAccessToken ( user: WithId<UserAccountDBModel> ): Promise<LoginSuccessViewModel> {
-        const accessToken = jwt.sign({ userId: user._id },
+    async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
+        const accessToken = jwt.sign({ userId: userId },
             settings.ACCESS_JWT_SECRET,
             { expiresIn: '10s' })
         return {
             accessToken: accessToken
         }
     },
-    async createJWTRefreshToken ( user: WithId<UserAccountDBModel> ): Promise<string> {
-        return  jwt.sign({ userId: user._id },
+    async createJWTRefreshToken ( userId: ObjectId ): Promise<string> {
+        return  jwt.sign({ userId: userId },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
     },

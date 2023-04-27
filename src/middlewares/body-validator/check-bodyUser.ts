@@ -49,7 +49,7 @@ export const checksEmailResending =  body('email')
             throw new Error("your mailing address is already registered");
         }
     });
-const checkInputLoginOrEmail =  body('loginOrEmail')
+const checkInputLoginOrEmail =  body('loginOrEmail')//todo доделать
     .isString()
     .withMessage("is not a string")
 

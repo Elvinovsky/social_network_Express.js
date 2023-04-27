@@ -32,15 +32,15 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
     if (searchTokenInTokenList) {
         return res.sendStatus(401)
     }
-    const checkUser = await jwtService.getUserIdByRefreshToken(refreshToken)
-    if (checkUser) {
+    const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
+    if (userId) {
         const usedToken: UsedTokenByUser = {
-            userId: checkUser,
+            userId: userId,
             refreshToken: refreshToken
         }
         await jwtDbRepository.addTokenRepo(usedToken)
 
-        req.userDB = await usersRepository.findUserById(checkUser)
+        req.userDB = await usersRepository.findUserById(userId)
         return next()
     } else {
         return res.status(401).send('Authentication required.') // custom message

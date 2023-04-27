@@ -11,7 +11,6 @@ const Testing_DB_Delete_router_1 = require("./routers/Testing-DB-Delete-router")
 const users_router_1 = require("./routers/users-router");
 const auth_router_1 = require("./routers/auth-router");
 const feedbacks_router_1 = require("./routers/feedbacks-router");
-const ip_1 = __importDefault(require("ip"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const jsonBodyMiddleware = express_1.default.json();
 const app = (0, express_1.default)();
@@ -19,7 +18,7 @@ exports.app = app;
 app.use(jsonBodyMiddleware);
 app.use((0, cookie_parser_1.default)());
 app.get('/', (req, res) => {
-    const ipAddress = ip_1.default.address();
+    const ipAddress = req.ip;
     res.send({ ipAddress });
 });
 app.use('/users', users_router_1.usersRouter);

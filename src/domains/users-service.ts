@@ -9,7 +9,7 @@ import {emailsManager} from "../adapter/emails-manager";
 import {userMapping} from "../functions/usersMapping";
 
 export const usersService = {
-    async userByAnAdminRegistration(login: string, password: string, email: string, ip: string ): Promise<UserViewModel> {
+    async userByAnAdminRegistration(login: string, password: string, email: string /*todo обернуть в объект */): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
@@ -20,14 +20,11 @@ export const usersService = {
                 confirmationCode: "not required",
                 expirationDate: "not required",
                 isConfirmed: true
-            },
-            geolocationData: {
-                ip: ip
             }
         }
         return await usersRepository.addNewUser(newUser)
     },
-    async independentUserRegistration(login: string, password: string, email: string, ip: string ): Promise<UserViewModel | null> {
+    async independentUserRegistration(login: string, password: string, email: string): Promise<UserViewModel | null> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
             login: login,
@@ -41,9 +38,6 @@ export const usersService = {
                     minutes:10
                 }),
                 isConfirmed: false
-            },
-            geolocationData: {
-                ip: ip
             }
         }
         const result = await usersRepository.addNewUser(newUser)
@@ -64,9 +58,7 @@ export const usersService = {
         return userMapping(user)
 
     },
-    async confirmCode(code: string, ip: string): Promise <boolean> {
-        const isComparisonIP = await usersRepository.findUserConfirmCode(code)
-            if (isComparisonIP!.geolocationData.ip !== ip) return false // todo доработать. убрать в отдельный модуль?
+    async confirmCode(code: string): Promise <boolean> {
         return  await usersRepository.updateConfirmedCode(code)
     },
     async emailConfirmation(email: string  ): Promise<boolean> {

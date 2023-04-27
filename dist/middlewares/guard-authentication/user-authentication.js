@@ -39,14 +39,14 @@ exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void
     if (searchTokenInTokenList) {
         return res.sendStatus(401);
     }
-    const checkUser = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
-    if (checkUser) {
+    const userId = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
+    if (userId) {
         const usedToken = {
-            userId: checkUser,
+            userId: userId,
             refreshToken: refreshToken
         };
         yield jwt_db_repository_1.jwtDbRepository.addTokenRepo(usedToken);
-        req.userDB = yield users_db_repository_1.usersRepository.findUserById(checkUser);
+        req.userDB = yield users_db_repository_1.usersRepository.findUserById(userId);
         return next();
     }
     else {

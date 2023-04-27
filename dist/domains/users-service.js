@@ -20,7 +20,7 @@ const uuid_1 = require("uuid");
 const emails_manager_1 = require("../adapter/emails-manager");
 const usersMapping_1 = require("../functions/usersMapping");
 exports.usersService = {
-    userByAnAdminRegistration(login, password, email, ip) {
+    userByAnAdminRegistration(login, password, email /*todo обернуть в объект */) {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield this._generateHash(password);
             const newUser = {
@@ -32,15 +32,12 @@ exports.usersService = {
                     confirmationCode: "not required",
                     expirationDate: "not required",
                     isConfirmed: true
-                },
-                geolocationData: {
-                    ip: ip
                 }
             };
             return yield users_db_repository_1.usersRepository.addNewUser(newUser);
         });
     },
-    independentUserRegistration(login, password, email, ip) {
+    independentUserRegistration(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const hash = yield this._generateHash(password);
             const newUser = {
@@ -55,9 +52,6 @@ exports.usersService = {
                         minutes: 10
                     }),
                     isConfirmed: false
-                },
-                geolocationData: {
-                    ip: ip
                 }
             };
             const result = yield users_db_repository_1.usersRepository.addNewUser(newUser);
@@ -81,11 +75,8 @@ exports.usersService = {
             return (0, usersMapping_1.userMapping)(user);
         });
     },
-    confirmCode(code, ip) {
+    confirmCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isComparisonIP = yield users_db_repository_1.usersRepository.findUserConfirmCode(code);
-            if (isComparisonIP.geolocationData.ip !== ip)
-                return false; // todo доработать. убрать в отдельный модуль?
             return yield users_db_repository_1.usersRepository.updateConfirmedCode(code);
         });
     },
@@ -97,7 +88,7 @@ exports.usersService = {
                 return false;
             const user = yield users_db_repository_1.usersRepository.findByLoginOrEmail(email);
             if (!user || user.emailConfirmation.isConfirmed)
-                return false; // todo слой мидлваре?
+                return false;
             try {
                 yield emails_manager_1.emailsManager.sendEmailConformationMessage(user);
             }

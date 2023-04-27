@@ -20,7 +20,6 @@ import {
 } from "../models/modelsRegistration/registration-input";
 import { UserInputModel } from "../models/modelsUsersLogin/user-input";
 import { checkForErrors } from "../middlewares/check-for-errors";
-import ip from "ip";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
 
 
@@ -30,36 +29,34 @@ authRouter.post('/login',
     validatorInputAuthRout,
     async( req: RequestInputBody<LoginInput>, res: Response ) => {
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
-            if (user) {
-                const accessToken = await jwtService.createJWTAccessToken(user)
-                const refreshToken = await jwtService.createJWTRefreshToken(user)
-                    return res
-                        .status(200)
-                        .cookie('refreshToken', refreshToken, refreshCookieOptions)
-                        .send(accessToken)
-            }
-        return res.sendStatus(401)
+        if (!user) return res.sendStatus(401)
+
+            const accessToken = await jwtService.createJWTAccessToken(user._id)
+            const refreshToken = await jwtService.createJWTRefreshToken(user._id)
+            return res
+                .status(200)
+                .cookie('refreshToken', refreshToken, refreshCookieOptions)
+                .send(accessToken)
     })
 authRouter.post('/refresh-token',refreshTokenAuthentication,
-    async( req: Request, res: Response ) => {
-            const accessToken = await jwtService.createJWTAccessToken(req.userDB!)
-            const newRefreshToken = await jwtService.createJWTRefreshToken(req.userDB!)
+    async( req: Request,/*todo*/ res: Response ) => {
+            const accessToken = await jwtService.createJWTAccessToken(req.userDB!._id)
+            const newRefreshToken = await jwtService.createJWTRefreshToken(req.userDB!._id)
                 return res.status(200)
                           .cookie('refreshToken', newRefreshToken, refreshCookieOptions)
                           .send(accessToken)
     })
 authRouter.post('/logout', refreshTokenAuthentication,
-    async( req: Request, res: Response ) => {
+    async( req: Request,/*todo*/ res: Response ) => {
             return res.clearCookie('refreshToken').sendStatus(204)
     })
 authRouter.post('/registration',
     validatorBodyUserRegistration,
     async( req: RequestInputBody<UserInputModel>, res: Response ) => {
-        const ipAddresses = ip.address()// todo убрать в отдельный модуль реализовать четкую логику.
-        const user = await usersService.independentUserRegistration(req.body.login,
+        const user = await usersService.independentUserRegistration(
+            req.body.login,
             req.body.password,
-            req.body.email,
-            ipAddresses)
+            req.body.email)
         if (user) {
             res.sendStatus(204)
             return
@@ -70,9 +67,7 @@ authRouter.post('/registration-confirmation',
     checksConfirmationCode,
     checkForErrors,
     async( req: RequestInputBody<RegistrationConfirmationCodeModel & RegistrationDetectedModel>, res: Response ) => {
-        const ipAddresses = ip.address()// todo убрать в отдельный модуль реализовать четкую логику.
-        const user = await usersService.confirmCode(req.body.code,
-            ipAddresses)
+        const user = await usersService.confirmCode(req.body.code)
         if (user) {
             res.sendStatus(204)
             return
@@ -93,7 +88,7 @@ authRouter.post('/registration-email-resending',
     })
 authRouter.get('/me',
     userAuthentication,
-    async( req: RequestInputBody<LoginInput>, res: Response ) => {
+    async( req: Request, res: Response ) => {
         const user = await usersQueryRepository.getUserInfo(req.userView!.id)
         if (user) {
             res.send(user)

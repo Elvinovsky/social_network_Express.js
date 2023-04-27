@@ -8,9 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRouter = void 0;
 const express_1 = require("express");
@@ -18,15 +15,13 @@ const users_service_1 = require("../domains/users-service");
 const check_bodyUser_1 = require("../middlewares/body-validator/check-bodyUser");
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
 const super_admin_authentication_1 = require("../middlewares/guard-authentication/super-admin-authentication");
-const ip_1 = __importDefault(require("ip"));
 exports.usersRouter = (0, express_1.Router)();
 exports.usersRouter.get('/', super_admin_authentication_1.superAdminAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllUsers = yield users_query_repository_1.usersQueryRepository.returnOfAllUsers(req.query.searchEmailTerm, req.query.searchLoginTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
     res.send(getAllUsers);
 }));
 exports.usersRouter.post('/', check_bodyUser_1.validatorUserBodyRegistrationForSuperAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const ipAddress = ip_1.default.address();
-    const newUser = yield users_service_1.usersService.userByAnAdminRegistration(req.body.login, req.body.password, req.body.email, ipAddress);
+    const newUser = yield users_service_1.usersService.userByAnAdminRegistration(req.body.login, req.body.password, req.body.email);
     res.status(201).send(newUser);
     return;
 }));

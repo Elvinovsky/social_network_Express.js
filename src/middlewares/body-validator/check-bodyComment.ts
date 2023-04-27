@@ -11,7 +11,7 @@ export const checkInputContent =  body ( 'content')
     .withMessage("is not a string")
 
 export const validatorInputComment = [
-    userAuthentication,
     checkInputContent,
-    checkForErrors
+    checkForErrors,
+    userAuthentication
 ]

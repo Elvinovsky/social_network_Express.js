@@ -5,7 +5,6 @@ import {deleteAllDataRouter} from "./routers/Testing-DB-Delete-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
 import {feedBacksRouter} from "./routers/feedbacks-router";
-import ip from 'ip';
 import cookieParser from "cookie-parser";
 
 const jsonBodyMiddleware = express.json()
@@ -15,7 +14,7 @@ app.use(jsonBodyMiddleware)
 app.use(cookieParser())
 
 app.get('/', (req:Request, res:Response) => {
-    const ipAddress = ip.address()
+    const ipAddress = req.ip
     res.send({ipAddress})
 })
 app.use('/users', usersRouter)

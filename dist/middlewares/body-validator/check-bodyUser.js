@@ -59,7 +59,7 @@ exports.checksEmailResending = (0, express_validator_1.body)('email')
         throw new Error("your mailing address is already registered");
     }
 }));
-const checkInputLoginOrEmail = (0, express_validator_1.body)('loginOrEmail')
+const checkInputLoginOrEmail = (0, express_validator_1.body)('loginOrEmail') //todo доделать
     .isString()
     .withMessage("is not a string");
 exports.checksConfirmationCode = (0, express_validator_1.body)('code')

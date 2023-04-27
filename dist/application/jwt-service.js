@@ -17,17 +17,17 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const mongodb_1 = require("mongodb");
 exports.jwtService = {
-    createJWTAccessToken(user) {
+    createJWTAccessToken(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const accessToken = jsonwebtoken_1.default.sign({ userId: user._id }, settings_1.settings.ACCESS_JWT_SECRET, { expiresIn: '10s' });
+            const accessToken = jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.ACCESS_JWT_SECRET, { expiresIn: '10s' });
             return {
                 accessToken: accessToken
             };
         });
     },
-    createJWTRefreshToken(user) {
+    createJWTRefreshToken(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return jsonwebtoken_1.default.sign({ userId: user._id }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
+            return jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.REFRESH_TOKEN_SECRET, { expiresIn: '20s' });
         });
     },
     getUserIdByAccessToken(token) {
