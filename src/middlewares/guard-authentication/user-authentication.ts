@@ -29,12 +29,11 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
         return res.sendStatus(401)
     }
     const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
-    debugger
     if (!issuedAt) {
         return res.sendStatus(401)
     }
 
-    const checkDeviceSession = await devicesSessionsRepository.findDeviceSession(issuedAt)
+    const checkDeviceSession = await devicesSessionsRepository.findDeviceSessionByIAT(issuedAt)
     if(!checkDeviceSession) {
         return res.sendStatus(401)
     }

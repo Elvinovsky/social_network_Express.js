@@ -22,4 +22,22 @@ export const devicesSessionsService = {
     async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number) {
         return await devicesSessionsRepository.updateDeviceSession(newIssuedAt, issuedAt)
     },
+    async logoutDeviceSessionByDeviceId ( deviceId: string, issuedAt: number) {
+        const findDeviceSessionById = await devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
+            if(!findDeviceSessionById) {
+                return null
+            }
+        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId, issuedAt)
+    },
+    async logoutDevicesSessionsByUser (issuedAt: number, userId: string) {
+        const findDeviceSessionByUser = await devicesSessionsRepository.findDeviceSessionByUserId(userId)
+        findDeviceSessionByUser?.forEach(el =>  {
+           if (el.issuedAt !== issuedAt) {
+             const result =  devicesSessionsRepository.deleteDevicesSessionsByUser(findDeviceSessionByUser)
+               return result
+           } else {
+               return null
+           }
+        })
+    }
 }
