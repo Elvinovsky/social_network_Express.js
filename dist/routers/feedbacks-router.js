@@ -25,7 +25,7 @@ exports.feedBacksRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void
         return;
     }
 }));
-exports.feedBacksRouter.put('/:id', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.feedBacksRouter.put('/:id', user_authentication_1.userAuthentication, check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorCommentById = yield feedback_service_1.feedbacksService.getComment(req.params.id);
     if (!validatorCommentById) {
         res.sendStatus(404);

@@ -5,7 +5,6 @@ import {
 } from "express";
 import { RequestInputBody } from "../types/req-res-types";
 import { usersService } from "../domains/users-service";
-import { LoginInput } from "../models/modelsUsersLogin/login-input";
 import {
     checksConfirmationCode, checksEmailResending, validatorBodyUserRegistration, validatorInputAuthRout
 } from "../middlewares/body-validator/check-bodyUser";
@@ -21,34 +20,47 @@ import {
 import { UserInputModel } from "../models/modelsUsersLogin/user-input";
 import { checkForErrors } from "../middlewares/check-for-errors";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
-
+import requestIp from 'request-ip'
+import { devicesSessionsService } from "../domains/devices-service";
+import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 
 export const authRouter = Router()
 
 authRouter.post('/login',
     validatorInputAuthRout,
-    async( req: RequestInputBody<LoginInput>, res: Response ) => {
+    async( req: Request, res: Response ) => {
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if (!user) return res.sendStatus(401)
 
-            const accessToken = await jwtService.createJWTAccessToken(user._id)
-            const refreshToken = await jwtService.createJWTRefreshToken(user._id)
-            return res
+        const accessToken = await jwtService.createJWTAccessToken(user._id)
+        const refreshToken = await jwtService.createJWTRefreshToken(user._id)
+
+        const ipAddress = requestIp.getClientIp(req)
+        const deviceName = req.headers["user-agent"]
+        const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
+        await devicesSessionsService.createDeviceSession( user._id, issuedAt!, ipAddress, deviceName, )
+
+        return res
                 .status(200)
                 .cookie('refreshToken', refreshToken, refreshCookieOptions)
                 .send(accessToken)
     })
 authRouter.post('/refresh-token',refreshTokenAuthentication,
-    async( req: Request,/*todo*/ res: Response ) => {
-            const accessToken = await jwtService.createJWTAccessToken(req.userDB!._id)
-            const newRefreshToken = await jwtService.createJWTRefreshToken(req.userDB!._id)
-                return res.status(200)
+    async( req: Request, res: Response ) => {
+        const accessToken = await jwtService.createJWTAccessToken(req.userId)
+        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId)
+
+        const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
+        await devicesSessionsService.updateIATByDeviceSession(newIssuedAt!,req.issuedAt)
+
+        return res.status(200)
                           .cookie('refreshToken', newRefreshToken, refreshCookieOptions)
                           .send(accessToken)
     })
 authRouter.post('/logout', refreshTokenAuthentication,
-    async( req: Request,/*todo*/ res: Response ) => {
-            return res.clearCookie('refreshToken').sendStatus(204)
+    async( req: Request, res: Response ) => {
+        await devicesSessionsRepository.deleteDeviceSessionByIAT(req.issuedAt)
+        return res.clearCookie('refreshToken').sendStatus(204)
     })
 authRouter.post('/registration',
     validatorBodyUserRegistration,
@@ -89,7 +101,7 @@ authRouter.post('/registration-email-resending',
 authRouter.get('/me',
     userAuthentication,
     async( req: Request, res: Response ) => {
-        const user = await usersQueryRepository.getUserInfo(req.userView!.id)
+        const user = await usersQueryRepository.getUserInfo(req.user!.id)
         if (user) {
             res.send(user)
             return

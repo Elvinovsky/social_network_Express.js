@@ -1,9 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../../application/jwt-service";
 import {usersService} from "../../domains/users-service";
-import { jwtDbRepository } from "../../repositories/db/jwt-db-repository";
 import { usersRepository } from "../../repositories/db/users-db-repository";
-import { UsedTokenByUser } from "../../models/modelsUsersLogin/login-input";
+import { devicesSessionsRepository } from "../../repositories/db/devices-sessions-repository";
 
 
 export const userAuthentication = (async (req: Request, res: Response, next: NextFunction) => {
@@ -15,7 +14,7 @@ export const userAuthentication = (async (req: Request, res: Response, next: Nex
 
     const userId = await jwtService.getUserIdByAccessToken(token)
     if (userId) {
-        req.userView = await usersService.findUserById(userId)
+        req.user = await usersService.findUserById(userId)
         next()
     }else {
         res.status(401).send('Authentication required.') // custom message
@@ -24,25 +23,33 @@ export const userAuthentication = (async (req: Request, res: Response, next: Nex
 })
 
 export const refreshTokenAuthentication = (async (req: Request, res: Response, next: NextFunction) => {
+
     const refreshToken: string = req.cookies['refreshToken']
     if (!refreshToken) {
         return res.sendStatus(401)
     }
-    const searchTokenInTokenList = await jwtDbRepository.findTokenByUserId(refreshToken)
-    if (searchTokenInTokenList) {
+    const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
+    if (!issuedAt) {
         return res.sendStatus(401)
     }
-    const userId = await jwtService.getUserIdByRefreshToken(refreshToken)
-    if (userId) {
-        const usedToken: UsedTokenByUser = {
-            userId: userId,
-            refreshToken: refreshToken
-        }
-        await jwtDbRepository.addTokenRepo(usedToken)
 
-        req.userDB = await usersRepository.findUserById(userId)
-        return next()
-    } else {
-        return res.status(401).send('Authentication required.') // custom message
+    const checkDeviceSession = await devicesSessionsRepository.findDeviceSession(issuedAt)
+    if(!checkDeviceSession) {
+        return res.sendStatus(401)
     }
+
+    const userIdByToken = await jwtService.getUserIdByRefreshToken(refreshToken)
+    if (!userIdByToken) {
+        return res.status(401).send('Authentication required.')
+    }
+
+    const userDB = await usersRepository.findUserById(userIdByToken)
+    if(!userDB){
+        return res.sendStatus(401)
+    }
+
+    req.userId = userDB._id
+    req.issuedAt = issuedAt
+    return next()
+
 })

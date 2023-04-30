@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
 const express_1 = require("express");
@@ -18,6 +21,8 @@ const user_authentication_1 = require("../middlewares/guard-authentication/user-
 const users_query_repository_1 = require("../repositories/queryRepository/users-query-repository");
 const check_for_errors_1 = require("../middlewares/check-for-errors");
 const cookie_helpers_1 = require("../helpers/cookie-helpers");
+const request_ip_1 = __importDefault(require("request-ip"));
+const devices_service_1 = require("../domains/devices-service");
 exports.authRouter = (0, express_1.Router)();
 exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -25,14 +30,22 @@ exports.authRouter.post('/login', check_bodyUser_1.validatorInputAuthRout, (req,
         return res.sendStatus(401);
     const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(user._id);
     const refreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(user._id);
+    const ipAddress = request_ip_1.default.getClientIp(req);
+    const deviceName = req.headers["user-agent"];
+    const deviceId = yield jwt_service_1.jwtService.getIATByRefreshToken(refreshToken);
+    yield devices_service_1.devicesSessionsService.createDeviceSession(user._id, deviceId, ipAddress, deviceName);
     return res
         .status(200)
         .cookie('refreshToken', refreshToken, cookie_helpers_1.refreshCookieOptions)
         .send(accessToken);
 }));
-exports.authRouter.post('/refresh-token', user_authentication_1.refreshTokenAuthentication, (req, /*todo*/ res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/refresh-token', user_authentication_1.refreshTokenAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = yield jwt_service_1.jwtService.createJWTAccessToken(req.userDB._id);
     const newRefreshToken = yield jwt_service_1.jwtService.createJWTRefreshToken(req.userDB._id);
+    const ipAddress = request_ip_1.default.getClientIp(req);
+    const deviceName = req.headers["user-agent"];
+    const deviceId = yield jwt_service_1.jwtService.getIATByRefreshToken(newRefreshToken);
+    yield devices_service_1.devicesSessionsService.updateDeviceSession(deviceId);
     return res.status(200)
         .cookie('refreshToken', newRefreshToken, cookie_helpers_1.refreshCookieOptions)
         .send(accessToken);

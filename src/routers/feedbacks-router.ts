@@ -24,7 +24,7 @@ feedBacksRouter.get('/:id',
             return;
         }
     })
-feedBacksRouter.put('/:id',validatorInputComment,
+feedBacksRouter.put('/:id', userAuthentication, validatorInputComment,
     async (req: RequestParamsAndInputBody<{id: string},CommentInputModel>,
            res: Response) => {
         const validatorCommentById = await feedbacksService.getComment(req.params.id)
@@ -32,7 +32,7 @@ feedBacksRouter.put('/:id',validatorInputComment,
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.userView!.id)
+        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
         if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId ) {
             res.sendStatus(403)
             return
@@ -51,7 +51,7 @@ feedBacksRouter.delete('/:id',userAuthentication,
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.userView!.id)
+        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
         if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId ) {
             res.sendStatus(403)
             return

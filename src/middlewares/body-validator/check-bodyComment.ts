@@ -1,6 +1,5 @@
 import {body} from "express-validator";
 import {checkForErrors} from "../check-for-errors";
-import {userAuthentication} from "../guard-authentication/user-authentication";
 
 export const checkInputContent =  body ( 'content')
     .trim()
@@ -12,6 +11,5 @@ export const checkInputContent =  body ( 'content')
 
 export const validatorInputComment = [
     checkInputContent,
-    checkForErrors,
-    userAuthentication
+    checkForErrors
 ]

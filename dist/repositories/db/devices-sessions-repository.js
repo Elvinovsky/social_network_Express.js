@@ -11,16 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.devicesSessionsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
+const devaceSessionMapping_1 = require("../../functions/devaceSessionMapping");
 exports.devicesSessionsRepository = {
     testingDeleteAllSessions() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield runDB_1.sessionsCollection.deleteMany({});
         });
     },
-    findDeviceSession(token) {
+    findDeviceSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isUsedToken = yield runDB_1.sessionsCollection.findOne({ refreshToken: token });
-            return (!!isUsedToken);
+            const deviceSession = yield runDB_1.sessionsCollection.findOne({ deviceId: deviceId });
+            if (!deviceSession)
+                return null;
+            return (0, devaceSessionMapping_1.deviceSessionMapping)(deviceSession);
         });
     },
     addDeviceSession(deviceSession) {
@@ -28,9 +31,9 @@ exports.devicesSessionsRepository = {
             return yield runDB_1.sessionsCollection.insertOne(deviceSession);
         });
     },
-    rootedToken(token) {
+    updateDeviceSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield runDB_1.sessionsCollection.updateOne({ refreshToken: token }, { $set: { isValid: false } });
+            const result = yield runDB_1.sessionsCollection.updateOne({ deviceId: deviceId.toString() }, { $set: { deviceId: deviceId.toString() } });
             return result.matchedCount === 1;
         });
     }

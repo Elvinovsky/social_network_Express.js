@@ -20,18 +20,26 @@ export const jwtService = {
     },
     async getUserIdByAccessToken ( token: string ) {
         try {
-            const result = jwt.verify(token, settings.ACCESS_JWT_SECRET) as { userId: string }
-            return new ObjectId(result.userId).toString()
+            const userId = jwt.verify(token, settings.ACCESS_JWT_SECRET) as jwt.JwtPayload
+            return new ObjectId(userId.userId).toString()
         } catch (error) {
             return null;
         }
     },
     async getUserIdByRefreshToken ( token: string ) {
         try {
-            const checkToken = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as { userId: string }
-            return  new ObjectId(checkToken.userId).toString()
+            const userId = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as jwt.JwtPayload
+            return  new ObjectId(userId.userId).toString()
         } catch (error) {
                 return null
+        }
+    },
+    async getIATByRefreshToken ( token: string ):Promise<number | null> {
+        try {
+            const decoded = jwt.decode(token, {complete: true}) as jwt.JwtPayload
+            return  decoded.payload.iat
+        } catch (error) {
+            return null
         }
     }
 }

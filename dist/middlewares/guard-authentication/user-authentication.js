@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.refreshTokenAuthentication = exports.userAuthentication = void 0;
 const jwt_service_1 = require("../../application/jwt-service");
 const users_service_1 = require("../../domains/users-service");
-const jwt_db_repository_1 = require("../../repositories/db/jwt-db-repository");
 const users_db_repository_1 = require("../../repositories/db/users-db-repository");
 exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
@@ -35,7 +34,7 @@ exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void
     if (!refreshToken) {
         return res.sendStatus(401);
     }
-    const searchTokenInTokenList = yield jwt_db_repository_1.jwtDbRepository.findTokenByUserId(refreshToken);
+    const searchDeviceIdInDevicesSessions = yield jwtDbRepository.findTokenByUserId(refreshToken);
     if (searchTokenInTokenList) {
         return res.sendStatus(401);
     }
@@ -45,7 +44,7 @@ exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void
             userId: userId,
             refreshToken: refreshToken
         };
-        yield jwt_db_repository_1.jwtDbRepository.addTokenRepo(usedToken);
+        yield jwtDbRepository.addTokenRepo(usedToken);
         req.userDB = yield users_db_repository_1.usersRepository.findUserById(userId);
         return next();
     }

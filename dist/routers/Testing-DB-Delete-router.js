@@ -15,14 +15,14 @@ const blogs_db_repository_1 = require("../repositories/db/blogs-db-repository");
 const posts_db_repository_1 = require("../repositories/db/posts-db-repository");
 const users_db_repository_1 = require("../repositories/db/users-db-repository");
 const feedbacks_db_repository_1 = require("../repositories/db/feedbacks-db-repository");
-const jwt_db_repository_1 = require("../repositories/db/jwt-db-repository");
+const devices_sessions_repository_1 = require("../repositories/db/devices-sessions-repository");
 exports.deleteAllDataRouter = (0, express_1.Router)();
 exports.deleteAllDataRouter.delete('/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield blogs_db_repository_1.blogsRepository.testingDeleteAllBlogs();
     yield posts_db_repository_1.postsRepository.testingDeleteAllPosts();
     yield users_db_repository_1.usersRepository.testingDeleteAllUsers();
     yield feedbacks_db_repository_1.feedBacksRepository.testingDeleteAllComments();
-    yield jwt_db_repository_1.jwtDbRepository.testingDeleteAllUsers();
+    yield devices_sessions_repository_1.jwtDbRepository.testingDeleteAllUsers();
     res.send(204);
     return;
 }));

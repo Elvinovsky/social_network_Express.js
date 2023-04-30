@@ -17,6 +17,7 @@ const check_bodyPost_1 = require("../middlewares/body-validator/check-bodyPost")
 const posts_query_repository_1 = require("../repositories/queryRepository/posts-query-repository");
 const feedback_service_1 = require("../domains/feedback-service");
 const check_bodyComment_1 = require("../middlewares/body-validator/check-bodyComment");
+const user_authentication_1 = require("../middlewares/guard-authentication/user-authentication");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getAllPosts = yield posts_query_repository_1.postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm, Number(req.query.pageNumber), Number(req.query.pageSize), req.query.sortBy, req.query.sortDirection);
@@ -38,7 +39,7 @@ exports.postsRouter.get('/:postId/comments', (req, res) => __awaiter(void 0, voi
     }
     res.send(getCommentsByPostId);
 }));
-exports.postsRouter.post('/:postId/comments', check_bodyComment_1.validatorInputComment, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:postId/comments', check_bodyComment_1.validatorInputComment, user_authentication_1.userAuthentication, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validatorPostIdForCreateComments = yield feedback_service_1.feedbacksService.searchPostIdForComments(req.params.postId); //todo custom validator
     if (!validatorPostIdForCreateComments) {
         res.sendStatus(404);

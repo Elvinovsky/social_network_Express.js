@@ -33,8 +33,8 @@ exports.jwtService = {
     getUserIdByAccessToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = jsonwebtoken_1.default.verify(token, settings_1.settings.ACCESS_JWT_SECRET);
-                return new mongodb_1.ObjectId(result.userId).toString();
+                const userId = jsonwebtoken_1.default.verify(token, settings_1.settings.ACCESS_JWT_SECRET);
+                return new mongodb_1.ObjectId(userId.userId).toString();
             }
             catch (error) {
                 return null;
@@ -44,8 +44,19 @@ exports.jwtService = {
     getUserIdByRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const checkToken = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
-                return new mongodb_1.ObjectId(checkToken.userId).toString();
+                const userId = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
+                return new mongodb_1.ObjectId(userId.userId).toString();
+            }
+            catch (error) {
+                return null;
+            }
+        });
+    },
+    getIATByRefreshToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const decoded = jsonwebtoken_1.default.decode(token, { complete: true });
+                return decoded.payload.iat;
             }
             catch (error) {
                 return null;

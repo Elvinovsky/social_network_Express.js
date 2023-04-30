@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorInputComment = exports.checkInputContent = void 0;
 const express_validator_1 = require("express-validator");
 const check_for_errors_1 = require("../check-for-errors");
-const user_authentication_1 = require("../guard-authentication/user-authentication");
 exports.checkInputContent = (0, express_validator_1.body)('content')
     .trim()
     .isLength({ min: 20, max: 300 })
@@ -13,6 +12,5 @@ exports.checkInputContent = (0, express_validator_1.body)('content')
     .withMessage("is not a string");
 exports.validatorInputComment = [
     exports.checkInputContent,
-    check_for_errors_1.checkForErrors,
-    user_authentication_1.userAuthentication
+    check_for_errors_1.checkForErrors
 ];

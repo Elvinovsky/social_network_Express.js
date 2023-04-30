@@ -12,7 +12,6 @@ export type DeviceView = {
      *  Date of the last generating of refresh/access tokens
      */
     deviceId:	string
-    id: string
     /**
      * id of connected device session
      */
