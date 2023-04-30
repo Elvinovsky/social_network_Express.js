@@ -44,8 +44,8 @@ exports.jwtService = {
     getUserIdByRefreshToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
-                return new mongodb_1.ObjectId(userId.userId).toString();
+                const payload = jsonwebtoken_1.default.verify(token, settings_1.settings.REFRESH_TOKEN_SECRET);
+                return new mongodb_1.ObjectId(payload.userId).toString();
             }
             catch (error) {
                 return null;
@@ -56,6 +56,7 @@ exports.jwtService = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const decoded = jsonwebtoken_1.default.decode(token, { complete: true });
+                debugger;
                 return decoded.payload.iat;
             }
             catch (error) {

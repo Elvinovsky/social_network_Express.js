@@ -14,7 +14,7 @@ export const devicesSessionsRepository = {
         return await sessionsCollection.deleteMany({})
     },
     async findDeviceSession ( issuedAt: number ): Promise<DeviceView | null> {
-       const deviceSession =  await sessionsCollection.findOne({ deviceId: issuedAt.toString() })
+       const deviceSession =  await sessionsCollection.findOne({ issuedAt: issuedAt })
         if(!deviceSession) return null
         return deviceSessionMapping(deviceSession)
     },

@@ -31,7 +31,7 @@ exports.feedBacksRouter.put('/:id', user_authentication_1.userAuthentication, ch
         res.sendStatus(404);
         return;
     }
-    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.userView.id);
+    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.user.id);
     if (validatorUserId.id !== validatorCommentById.commentatorInfo.userId) {
         res.sendStatus(403);
         return;
@@ -48,7 +48,7 @@ exports.feedBacksRouter.delete('/:id', user_authentication_1.userAuthentication,
         res.sendStatus(404);
         return;
     }
-    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.userView.id);
+    const validatorUserId = yield feedback_service_1.feedbacksService.searchUserForComment(req.user.id);
     if (validatorUserId.id !== validatorCommentById.commentatorInfo.userId) {
         res.sendStatus(403);
         return;

@@ -16,10 +16,10 @@ exports.devicesSessionsService = void 0;
 const add_1 = __importDefault(require("date-fns/add"));
 const devices_sessions_repository_1 = require("../repositories/db/devices-sessions-repository");
 exports.devicesSessionsService = {
-    createDeviceSession(userId, deviceId, ip, deviceName) {
+    createDeviceSession(userId, issuedAt, ip, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
             const createDeviceSession = {
-                deviceId: deviceId.toString(),
+                issuedAt: issuedAt,
                 userId: userId.toString(),
                 ip: ip || null,
                 title: deviceName || null,
@@ -32,9 +32,9 @@ exports.devicesSessionsService = {
             return yield devices_sessions_repository_1.devicesSessionsRepository.addDeviceSession(createDeviceSession);
         });
     },
-    updateDeviceSession(deviceId) {
+    updateIATByDeviceSession(newIssuedAt, issuedAt) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield devices_sessions_repository_1.devicesSessionsRepository.updateDeviceSession(deviceId);
+            return yield devices_sessions_repository_1.devicesSessionsRepository.updateDeviceSession(newIssuedAt, issuedAt);
         });
     },
 };

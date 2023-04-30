@@ -22,7 +22,7 @@ exports.deleteAllDataRouter.delete('/all-data', (req, res) => __awaiter(void 0, 
     yield posts_db_repository_1.postsRepository.testingDeleteAllPosts();
     yield users_db_repository_1.usersRepository.testingDeleteAllUsers();
     yield feedbacks_db_repository_1.feedBacksRepository.testingDeleteAllComments();
-    yield devices_sessions_repository_1.jwtDbRepository.testingDeleteAllUsers();
+    yield devices_sessions_repository_1.devicesSessionsRepository.testingDeleteAllSessions();
     res.send(204);
     return;
 }));

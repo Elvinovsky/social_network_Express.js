@@ -26,16 +26,17 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
 
     const refreshToken: string = req.cookies['refreshToken']
     if (!refreshToken) {
-        return res.sendStatus(402)
+        return res.sendStatus(401)
     }
     const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
+    debugger
     if (!issuedAt) {
-        return res.sendStatus(403)
+        return res.sendStatus(401)
     }
 
     const checkDeviceSession = await devicesSessionsRepository.findDeviceSession(issuedAt)
     if(!checkDeviceSession) {
-        return res.sendStatus(404)
+        return res.sendStatus(401)
     }
 
     const userIdByToken = await jwtService.getUserIdByRefreshToken(refreshToken)
@@ -45,7 +46,7 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
 
     const userDB = await usersRepository.findUserById(userIdByToken)
     if(!userDB){
-        return res.sendStatus(405)
+        return res.sendStatus(401)
     }
 
     req.userId = userDB._id

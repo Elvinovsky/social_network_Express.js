@@ -11,19 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.devicesSessionsRepository = void 0;
 const runDB_1 = require("../../database/runDB");
-const devaceSessionMapping_1 = require("../../functions/devaceSessionMapping");
+const deviceSessionMapping_1 = require("../../functions/deviceSessionMapping");
 exports.devicesSessionsRepository = {
     testingDeleteAllSessions() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield runDB_1.sessionsCollection.deleteMany({});
         });
     },
-    findDeviceSession(deviceId) {
+    findDeviceSession(issuedAt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deviceSession = yield runDB_1.sessionsCollection.findOne({ deviceId: deviceId });
+            const deviceSession = yield runDB_1.sessionsCollection.findOne({ issuedAt: issuedAt });
             if (!deviceSession)
                 return null;
-            return (0, devaceSessionMapping_1.deviceSessionMapping)(deviceSession);
+            return (0, deviceSessionMapping_1.deviceSessionMapping)(deviceSession);
         });
     },
     addDeviceSession(deviceSession) {
@@ -31,10 +31,16 @@ exports.devicesSessionsRepository = {
             return yield runDB_1.sessionsCollection.insertOne(deviceSession);
         });
     },
-    updateDeviceSession(deviceId) {
+    updateDeviceSession(newIssuedAt, issuedAt) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield runDB_1.sessionsCollection.updateOne({ deviceId: deviceId.toString() }, { $set: { deviceId: deviceId.toString() } });
+            const result = yield runDB_1.sessionsCollection.updateOne({ issuedAt: issuedAt }, { $set: { issuedAt: newIssuedAt } });
             return result.matchedCount === 1;
         });
-    }
+    },
+    deleteDeviceSessionByIAT(issuedAt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield runDB_1.sessionsCollection.deleteOne({ issuedAt: issuedAt });
+            return result.deletedCount === 1;
+        });
+    },
 };

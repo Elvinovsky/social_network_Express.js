@@ -13,6 +13,7 @@ exports.refreshTokenAuthentication = exports.userAuthentication = void 0;
 const jwt_service_1 = require("../../application/jwt-service");
 const users_service_1 = require("../../domains/users-service");
 const users_db_repository_1 = require("../../repositories/db/users-db-repository");
+const devices_sessions_repository_1 = require("../../repositories/db/devices-sessions-repository");
 exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(401);
@@ -21,7 +22,7 @@ exports.userAuthentication = ((req, res, next) => __awaiter(void 0, void 0, void
     const token = (req.headers.authorization).split(' ')[1];
     const userId = yield jwt_service_1.jwtService.getUserIdByAccessToken(token);
     if (userId) {
-        req.userView = yield users_service_1.usersService.findUserById(userId);
+        req.user = yield users_service_1.usersService.findUserById(userId);
         next();
     }
     else {
@@ -34,21 +35,24 @@ exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void
     if (!refreshToken) {
         return res.sendStatus(401);
     }
-    const searchDeviceIdInDevicesSessions = yield jwtDbRepository.findTokenByUserId(refreshToken);
-    if (searchTokenInTokenList) {
+    const issuedAt = yield jwt_service_1.jwtService.getIATByRefreshToken(refreshToken);
+    debugger;
+    if (!issuedAt) {
         return res.sendStatus(401);
     }
-    const userId = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
-    if (userId) {
-        const usedToken = {
-            userId: userId,
-            refreshToken: refreshToken
-        };
-        yield jwtDbRepository.addTokenRepo(usedToken);
-        req.userDB = yield users_db_repository_1.usersRepository.findUserById(userId);
-        return next();
+    const checkDeviceSession = yield devices_sessions_repository_1.devicesSessionsRepository.findDeviceSession(issuedAt);
+    if (!checkDeviceSession) {
+        return res.sendStatus(401);
     }
-    else {
-        return res.status(401).send('Authentication required.'); // custom message
+    const userIdByToken = yield jwt_service_1.jwtService.getUserIdByRefreshToken(refreshToken);
+    if (!userIdByToken) {
+        return res.status(401).send('Authentication required.');
     }
+    const userDB = yield users_db_repository_1.usersRepository.findUserById(userIdByToken);
+    if (!userDB) {
+        return res.sendStatus(401);
+    }
+    req.userId = userDB._id;
+    req.issuedAt = issuedAt;
+    return next();
 }));

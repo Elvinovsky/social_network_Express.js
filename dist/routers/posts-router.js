@@ -45,7 +45,7 @@ exports.postsRouter.post('/:postId/comments', check_bodyComment_1.validatorInput
         res.sendStatus(404);
         return;
     }
-    const comment = yield feedback_service_1.feedbacksService.createComment(req.params.postId, req.userView.id, req.body.content);
+    const comment = yield feedback_service_1.feedbacksService.createComment(req.params.postId, req.user.id, req.body.content);
     res.status(201).send(comment);
 }));
 exports.postsRouter.post('/', check_bodyPost_1.validatorInputPostBody, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

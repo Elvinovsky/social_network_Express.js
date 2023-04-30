@@ -18,6 +18,7 @@ const app = (0, express_1.default)();
 exports.app = app;
 app.use(jsonBodyMiddleware);
 app.use((0, cookie_parser_1.default)());
+app.set('trust proxy', true);
 app.get('/', (req, res) => {
     const ipAddress = req.ip;
     res.send({ ipAddress });
