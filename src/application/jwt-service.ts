@@ -28,16 +28,16 @@ export const jwtService = {
     },
     async getUserIdByRefreshToken ( token: string ) {
         try {
-            const userId = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as jwt.JwtPayload
-            return  new ObjectId(userId.userId).toString()
+            const payload = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as {userId: string}
+            return  new ObjectId(payload.userId).toString()
         } catch (error) {
                 return null
         }
     },
-    async getIATByRefreshToken ( token: string ):Promise<number | null> {
+    async getIATByRefreshToken ( token: string ):Promise<number | undefined | null> {
         try {
             const decoded = jwt.decode(token, {complete: true}) as jwt.JwtPayload
-            return  decoded.payload.iat
+            return  decoded.iat
         } catch (error) {
             return null
         }
