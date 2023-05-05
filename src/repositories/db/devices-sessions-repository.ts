@@ -38,7 +38,10 @@ export const devicesSessionsRepository = {
         return await sessionsCollection.insertOne(deviceSession)
     },
     async updateDeviceSession( newIssuedAt: number, issuedAt: number ):  Promise<boolean>{
-        const result = await sessionsCollection.updateOne({issuedAt: issuedAt}, {$set: {issuedAt: newIssuedAt}})
+        const updateActiveDAte = new Date().toISOString()
+        const result = await sessionsCollection.updateOne(
+            { issuedAt: issuedAt},
+            { $set: {issuedAt: newIssuedAt, lastActiveDate: updateActiveDAte}})
         return result.matchedCount === 1
     },
     async deleteDeviceSessionByIAT (issuedAt: number): Promise<boolean> {
@@ -49,8 +52,12 @@ export const devicesSessionsRepository = {
         const result = await sessionsCollection.deleteOne({ userId: userId, _id: new ObjectId(deviceId) })
         return result.deletedCount === 1
     },
-    async deleteDevicesSessionsByUser (user: WithId<DeviceAuthSessionsDBModel>[]): Promise<boolean> {
-        const result = await sessionsCollection.deleteMany(user)
+    async deleteDevicesSessionsByUser (issuedAt: number, userId: string): Promise<boolean> {
+        const result = await sessionsCollection.deleteMany({
+            userId: userId,
+            issuedAt: { $ne: issuedAt }, // исключаем документы с определенным значением issuedAt
+            status: { $nin: ['closed', 'expired'] } // исключаем документы со статусами 'closed' и 'expired'
+        })
         return result.deletedCount === 1
     },
 }
