@@ -36,11 +36,10 @@ exports.refreshTokenAuthentication = ((req, res, next) => __awaiter(void 0, void
         return res.sendStatus(401);
     }
     const issuedAt = yield jwt_service_1.jwtService.getIATByRefreshToken(refreshToken);
-    debugger;
     if (!issuedAt) {
         return res.sendStatus(401);
     }
-    const checkDeviceSession = yield devices_sessions_repository_1.devicesSessionsRepository.findDeviceSession(issuedAt);
+    const checkDeviceSession = yield devices_sessions_repository_1.devicesSessionsRepository.findDeviceSessionByIAT(issuedAt);
     if (!checkDeviceSession) {
         return res.sendStatus(401);
     }

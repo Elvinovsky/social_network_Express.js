@@ -12,7 +12,7 @@ const users_router_1 = require("./routers/users-router");
 const auth_router_1 = require("./routers/auth-router");
 const feedbacks_router_1 = require("./routers/feedbacks-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const security_devices_router_1 = require("./routers/security-devices-router");
+const devices_router_1 = require("./routers/devices-router");
 const jsonBodyMiddleware = express_1.default.json();
 const app = (0, express_1.default)();
 exports.app = app;
@@ -28,7 +28,7 @@ app.use('/auth', auth_router_1.authRouter);
 app.use('/posts', posts_router_1.postsRouter);
 app.use('/blogs', blogs_router_1.blogsRouter);
 app.use('/comments', feedbacks_router_1.feedBacksRouter);
-app.use('/security', security_devices_router_1.securityDevicesRouter);
+app.use('/security', devices_router_1.devicesRouter);
 app.use('/testing', Testing_DB_Delete_router_1.deleteAllDataRouter);
 const startServer = () => {
     const port = process.env.PORT || 3007;

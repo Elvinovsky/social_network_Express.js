@@ -20,7 +20,8 @@ devicesRouter.delete('/devices', refreshTokenAuthentication,
 devicesRouter.delete('/devices/:deviceId', refreshTokenAuthentication,
     async ( req: Request, res: Response) => {
         const deviceId = req.params.deviceId
-        const logoutDeviceSession = await devicesSessionsService.logoutDeviceSessionByDeviceId(deviceId, req.issuedAt)
+        const userId = req.userId.toString()
+        const logoutDeviceSession = await devicesSessionsService.logoutDeviceSessionByDeviceId(deviceId,userId)
             if(logoutDeviceSession === null) {
                res.sendStatus(404)
                return

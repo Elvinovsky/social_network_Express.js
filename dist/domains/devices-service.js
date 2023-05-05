@@ -26,7 +26,7 @@ exports.devicesSessionsService = {
                 lastActiveDate: new Date().toISOString(),
                 expirationDate: (0, add_1.default)(new Date(), {
                     seconds: 20
-                    //minutes:10
+                    //minutes:20
                 })
             };
             return yield devices_sessions_repository_1.devicesSessionsRepository.addDeviceSession(createDeviceSession);
@@ -37,4 +37,27 @@ exports.devicesSessionsService = {
             return yield devices_sessions_repository_1.devicesSessionsRepository.updateDeviceSession(newIssuedAt, issuedAt);
         });
     },
+    logoutDeviceSessionByDeviceId(deviceId, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const findDeviceSessionById = yield devices_sessions_repository_1.devicesSessionsRepository.findDeviceIdAmongSessions(deviceId);
+            if (!findDeviceSessionById) {
+                return null;
+            }
+            return yield devices_sessions_repository_1.devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId, userId);
+        });
+    },
+    logoutDevicesSessionsByUser(issuedAt, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const findDeviceSessionByUser = yield devices_sessions_repository_1.devicesSessionsRepository.findDeviceSessionByUserId(userId);
+            findDeviceSessionByUser === null || findDeviceSessionByUser === void 0 ? void 0 : findDeviceSessionByUser.forEach(el => {
+                if (el.issuedAt !== issuedAt) {
+                    const result = devices_sessions_repository_1.devicesSessionsRepository.deleteDevicesSessionsByUser(findDeviceSessionByUser);
+                    return result;
+                }
+                else {
+                    return null;
+                }
+            });
+        });
+    }
 };

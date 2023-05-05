@@ -13,7 +13,7 @@ export const devicesSessionsService = {
                 lastActiveDate: new Date().toISOString(),
                 expirationDate: add(new Date(), {
                     seconds: 20
-                    //minutes:10
+                    //minutes:20
                 })
             }
         return await devicesSessionsRepository.addDeviceSession(createDeviceSession)
@@ -22,12 +22,12 @@ export const devicesSessionsService = {
     async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number) {
         return await devicesSessionsRepository.updateDeviceSession(newIssuedAt, issuedAt)
     },
-    async logoutDeviceSessionByDeviceId ( deviceId: string, issuedAt: number) {
+    async logoutDeviceSessionByDeviceId ( deviceId: string, userId: string) {
         const findDeviceSessionById = await devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
             if(!findDeviceSessionById) {
                 return null
             }
-        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId, issuedAt)
+        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId, userId)
     },
     async logoutDevicesSessionsByUser (issuedAt: number, userId: string) {
         const findDeviceSessionByUser = await devicesSessionsRepository.findDeviceSessionByUserId(userId)
