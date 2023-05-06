@@ -5,10 +5,11 @@ import { devicesSessionsService } from "../domains/devices-service";
 
 export const devicesRouter = Router();
 
-devicesRouter.get('/devices', refreshTokenAuthentication, async ( req: Request, res: Response) => {
-    const userId = req.userId.toString()
-    const devicesSessionsByUser = await devicesSessionsRepository.findDevicesSessionsByUserId(userId)
-    res.send(devicesSessionsByUser)
+devicesRouter.get('/devices', refreshTokenAuthentication,
+    async ( req: Request, res: Response) => {
+        const userId = req.userId.toString()
+        const devicesSessionsByUser = await devicesSessionsRepository.findDevicesSessionsByUserId(userId)
+        res.send(devicesSessionsByUser)
     })
 devicesRouter.delete('/devices', refreshTokenAuthentication,
     async ( req: Request, res: Response) => {

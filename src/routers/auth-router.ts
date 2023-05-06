@@ -33,7 +33,7 @@ authRouter.post('/login',
         if (!user) return res.sendStatus(401)
 
         const  deviceId = new Date().toISOString()
-        const accessToken = await jwtService.createJWTAccessToken(user._id, deviceId)
+        const accessToken = await jwtService.createJWTAccessToken(user._id)
         const refreshToken = await jwtService.createJWTRefreshToken(user._id, deviceId)
 
         const ipAddress = requestIp.getClientIp(req)
@@ -49,7 +49,7 @@ authRouter.post('/login',
 authRouter.post('/refresh-token',refreshTokenAuthentication,
     async( req: Request, res: Response ) => {
         const  deviceId = new Date().toISOString()
-        const accessToken = await jwtService.createJWTAccessToken(req.userId, deviceId)
+        const accessToken = await jwtService.createJWTAccessToken(req.userId)
         const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId, deviceId)
 
         const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
