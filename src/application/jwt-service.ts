@@ -6,7 +6,8 @@ import {
 import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
 export const jwtService = {
     async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
-        const accessToken = jwt.sign({ userId: userId },
+
+        const accessToken = jwt.sign({ userId: userId, iat: Math.floor(Date.now() / 1000) },
             settings.ACCESS_JWT_SECRET,
             { expiresIn: '10s' })
         return {
@@ -14,7 +15,7 @@ export const jwtService = {
         }
     },
     async createJWTRefreshToken ( userId: ObjectId ): Promise<string> {
-        return  jwt.sign({ userId: userId },
+        return  jwt.sign({ userId: userId, iat: Math.floor(Date.now() / 1000) },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
     },
