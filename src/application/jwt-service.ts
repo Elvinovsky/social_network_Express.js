@@ -5,9 +5,7 @@ import {
 } from "mongodb";
 import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
 export const jwtService = {
-    async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
-        const  deviceId = new Date().toISOString()
-
+    async createJWTAccessToken ( userId: ObjectId, deviceId: string ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: userId, deviceId },
             settings.ACCESS_JWT_SECRET,
             { expiresIn: '10s' })
@@ -15,8 +13,8 @@ export const jwtService = {
             accessToken: accessToken
         }
     },
-    async createJWTRefreshToken ( userId: ObjectId ): Promise<string> {
-        const  deviceId = new Date().toISOString()
+    async createJWTRefreshToken ( userId: ObjectId, deviceId: string ): Promise<string> {
+
         return  jwt.sign({ userId: userId, deviceId },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
