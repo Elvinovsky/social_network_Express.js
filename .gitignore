@@ -4,8 +4,6 @@
 /pnp
 .pnp.js
 
-/dist
-
 # testing
 coverage
 
@@ -29,5 +27,5 @@ posts.e2e.test.ts
 blogs.e2e.test.ts
 
 /.idea
-
+/dist
 jest.config.js
