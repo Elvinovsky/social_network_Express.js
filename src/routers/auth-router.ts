@@ -32,12 +32,12 @@ authRouter.post('/login',
     async( req: Request, res: Response ) => {
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if (!user) return res.sendStatus(401)
+
+        const accessToken = await jwtService.createJWTAccessToken(user._id)
+        const refreshToken = await jwtService.createJWTRefreshToken(user._id)
+
         const ipAddress = requestIp.getClientIp(req)
         const deviceName = req.headers["user-agent"]
-        const  deviceId = uuidv4()
-        const accessToken = await jwtService.createJWTAccessToken(user._id)
-        const refreshToken = await jwtService.createJWTRefreshToken(user._id, deviceId, ipAddress, deviceName)
-
         const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
         await devicesSessionsService.createDeviceSession( user._id, issuedAt!, ipAddress, deviceName, )
 
@@ -48,11 +48,9 @@ authRouter.post('/login',
     })
 authRouter.post('/refresh-token',refreshTokenAuthentication,
     async( req: Request, res: Response ) => {
-        const ipAddress = requestIp.getClientIp(req)
-        const deviceName = req.headers["user-agent"]
-        const  deviceId = uuidv4()
+
         const accessToken = await jwtService.createJWTAccessToken(req.userId)
-        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId, deviceId, ipAddress, deviceName)
+        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId)
 
         const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
         await devicesSessionsService.updateIATByDeviceSession(newIssuedAt!,req.issuedAt)
