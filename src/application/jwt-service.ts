@@ -38,7 +38,6 @@ export const jwtService = {
     async getIATByRefreshToken ( token: string ):Promise<number | undefined | null> {
         try {
             const decoded = jwt.decode(token, {complete: true}) as jwt.JwtPayload
-          debugger
             return  decoded.payload.iat
         } catch (error) {
             return null
