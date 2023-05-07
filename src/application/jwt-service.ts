@@ -13,8 +13,8 @@ export const jwtService = {
             accessToken: accessToken
         }
     },
-    async createJWTRefreshToken ( userId: ObjectId ): Promise<string> {
-        const deviceId = Math.floor(Date.now() / 1000);
+    async createJWTRefreshToken ( userId: ObjectId, deviceId: string ): Promise<string> {
+
         return  jwt.sign({ userId: userId, deviceId },
             settings.REFRESH_TOKEN_SECRET,
             { expiresIn: '20s' })
