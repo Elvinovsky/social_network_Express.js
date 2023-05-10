@@ -32,6 +32,10 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
     if (!issuedAt) {
         return res.sendStatus(401)
     }
+    const deviceId = await jwtService.getDeviceIdRefreshToken(refreshToken)
+    if (!deviceId ) {
+        return res.sendStatus(401)
+    }
 
     const checkDeviceSession = await devicesSessionsRepository.findDeviceSessionByIAT(issuedAt)
     if(!checkDeviceSession) {
@@ -50,6 +54,7 @@ export const refreshTokenAuthentication = (async (req: Request, res: Response, n
 
     req.userId = userDB._id
     req.issuedAt = issuedAt
+    req.deviceId = deviceId
     return next()
 
 })

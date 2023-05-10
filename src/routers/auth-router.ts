@@ -23,7 +23,7 @@ import { refreshCookieOptions } from "../helpers/cookie-helpers";
 import requestIp from 'request-ip'
 import { devicesSessionsService } from "../domains/devices-service";
 import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
-import { v4 as uuidv4 } from "uuid"
+import {v4 as uuidv4} from 'uuid'
 
 export const authRouter = Router()
 
@@ -33,7 +33,7 @@ authRouter.post('/login',
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if (!user) return res.sendStatus(401)
 
-        const deviceId = Math.floor(Date.now() / 1000).toString()
+        const deviceId = uuidv4()
         const accessToken = await jwtService.createJWTAccessToken(user._id)
         const refreshToken = await jwtService.createJWTRefreshToken(user._id, deviceId)
 
@@ -49,9 +49,8 @@ authRouter.post('/login',
     })
 authRouter.post('/refresh-token',refreshTokenAuthentication,
     async( req: Request, res: Response ) => {
-        const deviceId = Math.floor(Date.now() / 1000).toString()
         const accessToken = await jwtService.createJWTAccessToken(req.userId)
-        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId, deviceId)
+        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId, req.deviceId)
 
         const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
         await devicesSessionsService.updateIATByDeviceSession(newIssuedAt!,req.issuedAt)

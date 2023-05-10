@@ -19,6 +19,7 @@ declare global {
             user: UserViewModel | null
             userId: ObjectId
             issuedAt: number
+            deviceId: string
         }
     }
 }

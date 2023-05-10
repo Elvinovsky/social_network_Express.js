@@ -35,6 +35,14 @@ export const jwtService = {
                 return null
         }
     },
+    async getDeviceIdRefreshToken ( token: string ) {
+        try {
+            const payload = jwt.verify(token, settings.REFRESH_TOKEN_SECRET) as {deviceId: string}
+            return  payload.deviceId
+        } catch (error) {
+            return null
+        }
+    },
     async getIATByRefreshToken ( token: string ):Promise<number | undefined | null> {
         try {
             const decoded = jwt.decode(token, {complete: true}) as jwt.JwtPayload
