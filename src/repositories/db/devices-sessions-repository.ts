@@ -49,7 +49,7 @@ export const devicesSessionsRepository = {
         return result.deletedCount === 1
     },
     async deleteDeviceSessionSpecified (deviceId: string, userId: string): Promise<boolean> {
-        const result = await sessionsCollection.deleteOne({ userId: userId, _id: new ObjectId(deviceId) })
+        const result = await sessionsCollection.deleteOne({ userId: userId, deviceId: deviceId })
         return result.deletedCount === 1
     },
     async deleteDevicesSessionsByUser (issuedAt: number, userId: string): Promise<boolean> {
