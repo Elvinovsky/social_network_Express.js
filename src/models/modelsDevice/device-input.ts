@@ -17,6 +17,7 @@ export type DeviceInputModel = {
      */
 }
 export type DeviceAuthSessionsDBModel = {
+    deviceId:	string
     issuedAt: number
     userId: string
     ip:	string | null

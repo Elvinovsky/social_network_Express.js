@@ -4,18 +4,19 @@ import add from "date-fns/add";
 import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 
 export const devicesSessionsService = {
-    async createDeviceSession ( userId: ObjectId, issuedAt: number, ip: string | null, deviceName?: string ) {
+    async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {
         const createDeviceSession: DeviceAuthSessionsDBModel = {
+            deviceId: deviceId,
             issuedAt: issuedAt,
             userId: userId.toString(),
-                ip: ip || null,
-                title: deviceName || null,
-                lastActiveDate: new Date().toISOString(),
-                expirationDate: add(new Date(), {
-                    //seconds: 20
-                    minutes:20
-                })
-            }
+            ip: ip || null,
+            title: deviceName || null,
+            lastActiveDate: new Date().toISOString(),
+            expirationDate: add(new Date(), {
+                seconds: 20
+                //minutes:20
+            })
+        }
         return await devicesSessionsRepository.addDeviceSession(createDeviceSession)
 
     },

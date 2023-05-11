@@ -16,7 +16,7 @@ export const devicesSessionsMapping = (array: Array<WithId<DeviceAuthSessionsDBM
             ip: (el.ip)? el.ip : 'ip',
             title: (el.title)? el.title : 'Device Name',
             lastActiveDate: el.lastActiveDate,
-            deviceId: el._id.toString()
+            deviceId: el.deviceId
         }
     })
 }

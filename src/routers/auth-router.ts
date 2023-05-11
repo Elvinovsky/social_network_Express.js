@@ -40,7 +40,7 @@ authRouter.post('/login',
         const ipAddress = requestIp.getClientIp(req)
         const deviceName = req.headers["user-agent"]
         const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
-        await devicesSessionsService.createDeviceSession( user._id, issuedAt!, ipAddress, deviceName, )
+        await devicesSessionsService.createDeviceSession( user._id, deviceId, issuedAt!, ipAddress, deviceName, )
 
         return res
                 .status(200)
