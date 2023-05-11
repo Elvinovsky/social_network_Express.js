@@ -12,26 +12,30 @@ export const devicesSessionsService = {
             ip: ip || null,
             title: deviceName || null,
             lastActiveDate: new Date().toISOString(),
-            expirationDate: add(new Date(), {
-                seconds: 20
-                //minutes:20
-            })
+            expirationDate: add(new Date(),
+                {
+                    seconds: 20
+                    //minutes:20
+                })
         }
         return await devicesSessionsRepository.addDeviceSession(createDeviceSession)
 
     },
-    async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number) {
-        return await devicesSessionsRepository.updateDeviceSession(newIssuedAt, issuedAt)
+    async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number ) {
+        return await devicesSessionsRepository.updateDeviceSession(newIssuedAt,
+            issuedAt)
     },
-    async logoutDeviceSessionByDeviceId ( deviceId: string, userId: string) {
+    async logoutDeviceSessionByDeviceId ( deviceId: string, userId: string ) {
         const findDeviceSessionById = await devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
-            if(!findDeviceSessionById) {
-                return null
-            }
-        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId, userId)
+        if (!findDeviceSessionById) {
+            return null
+        }
+        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId,
+            userId)
     },
-    async logoutDevicesSessionsByUser (issuedAt: number, userId: string) {
-        const result =  devicesSessionsRepository.deleteDevicesSessionsByUser(issuedAt, userId)
-               return result
+    async logoutDevicesSessionsByUser ( issuedAt: number, userId: string ) {
+        const result = devicesSessionsRepository.deleteDevicesSessionsByUser(issuedAt,
+            userId)
+        return result
     }
 }

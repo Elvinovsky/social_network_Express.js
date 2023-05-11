@@ -22,7 +22,7 @@ export const devicesSessionsRepository = {
         return !!deviceSession
     },
     async findDeviceIdAmongSessions ( deviceID: string ): Promise<WithId<DeviceAuthSessionsDBModel> | null> {
-        return  await sessionsCollection.findOne({ _id: new ObjectId(deviceID) })
+        return  await sessionsCollection.findOne({deviceId: deviceID })
     },
     async findDeviceSessionByUserId ( userId: string): Promise<WithId<DeviceAuthSessionsDBModel>[] | null> {
         return  await sessionsCollection.find({ userId: userId }).toArray()
