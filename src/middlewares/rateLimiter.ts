@@ -3,12 +3,13 @@ import {
 } from "express";
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
 import { subSeconds } from "date-fns";
+import requestIp from "request-ip";
 
 export type RequestAttempt = {
     urlAndIp: string, date: string
 }
 export const ipLimiter: RequestHandler = async( req, res, next ) => {
-    const ip = req.ip
+    const ip = requestIp.getClientIp(req) || "ip undefined"
     const url = req.url
     const date = new Date(Date.now()).toISOString()
     const urlAndIp = url + ip
