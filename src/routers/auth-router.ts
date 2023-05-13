@@ -87,8 +87,8 @@ authRouter.post('/logout',
                   .sendStatus(204)
     })
 authRouter.post('/registration',
-    validatorBodyUserRegistration,
     ipLimiter,
+    validatorBodyUserRegistration,
     async( req: RequestInputBody<UserInputModel>, res: Response ) => {
         const user = await usersService.independentUserRegistration(req.body.login,
             req.body.password,
@@ -112,9 +112,9 @@ authRouter.post('/registration-confirmation',
         res.sendStatus(400)
     })
 authRouter.post('/registration-email-resending',
+    ipLimiter,
     checksEmailResending,
     checkForErrors,
-    ipLimiter,
     async( req: RequestInputBody<RegistrationEmailResending>, res: Response ) => {
         const user = await usersService.emailConfirmation(req.body.email)
         if (user) {
