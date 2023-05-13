@@ -15,7 +15,7 @@ export const ipLimiter: RequestHandler = async( req, res, next ) => {
     const urlAndIp = url + ip
     const limit: number = 5
     const tenSecAgo = subSeconds(new Date(date),
-        30)
+        10)
         .toISOString()
     const shouldBlock = await attemptsRepository.getAttemptsCount(urlAndIp,
         tenSecAgo) >= limit

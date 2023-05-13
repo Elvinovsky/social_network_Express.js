@@ -4,10 +4,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const emailsManager = {
-    async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {//todo output type ?
+    async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {
         const transporter = createTransport({
             host: "smtp.mail.ru",
-            port:  465,
+            port:  587,
             secure: true, // true for 465, false for other ports
             auth: {
                 user: process.env.AUTH_EMAIL,
