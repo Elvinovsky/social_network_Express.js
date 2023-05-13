@@ -29,10 +29,12 @@ import requestIp from 'request-ip'
 import { devicesSessionsService } from "../domains/devices-service";
 import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 import { v4 as uuidv4 } from 'uuid'
+import { ipLimiter } from "../middlewares/rateLimiter";
 
 export const authRouter = Router()
 
 authRouter.post('/login',
+    ipLimiter,
     validatorInputAuthRout,
     async( req: Request, res: Response ) => {
         const user = await usersService.checkCredentials(req.body.loginOrEmail,
@@ -85,6 +87,7 @@ authRouter.post('/logout',
                   .sendStatus(204)
     })
 authRouter.post('/registration',
+    ipLimiter,
     validatorBodyUserRegistration,
     async( req: RequestInputBody<UserInputModel>, res: Response ) => {
         const user = await usersService.independentUserRegistration(req.body.login,
@@ -97,6 +100,7 @@ authRouter.post('/registration',
         res.sendStatus(400)
     })
 authRouter.post('/registration-confirmation',
+    ipLimiter,
     checksConfirmationCode,
     checkForErrors,
     async( req: RequestInputBody<RegistrationConfirmationCodeModel & RegistrationDetectedModel>, res: Response ) => {
@@ -108,6 +112,7 @@ authRouter.post('/registration-confirmation',
         res.sendStatus(400)
     })
 authRouter.post('/registration-email-resending',
+    ipLimiter,
     checksEmailResending,
     checkForErrors,
     async( req: RequestInputBody<RegistrationEmailResending>, res: Response ) => {
