@@ -4,6 +4,7 @@ import {
 import {
     attemptsCollection,
 } from "../../database/runDB";
+import { RequestAttempt } from "../../middlewares/rateLimiter";
 
 export const attemptsRepository = {
     //тестовое удаление базы данных
@@ -14,7 +15,7 @@ export const attemptsRepository = {
         return await attemptsCollection.countDocuments({ urlAndIp: { $gte: date } })
     },
     async addNewAttempts ( urlAndIp: string, date: string ) {
-        const attempts = {
+        const attempts: RequestAttempt = {
             urlAndIp,
             date
         }
