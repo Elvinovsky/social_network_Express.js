@@ -7,7 +7,7 @@ export const emailsManager = {
     async sendEmailConformationMessage (newUser: UserAccountDBModel):Promise<void> {
         const transporter = createTransport({
             host: "smtp.mail.ru",
-            port:  587,
+            port:  465,
             secure: true, // true for 465, false for other ports
             auth: {
                 user: process.env.AUTH_EMAIL,
@@ -35,17 +35,14 @@ export const emailsManager = {
             <a href='https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}'>complete registration</a>
         </p>`// plain text body
         }
-        await new Promise((resolve, reject) => {
+
             // send mail
             transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     console.error(err)
-                    reject(err)
                 } else {
                     console.log(info)
-                    resolve(info)
                 }
             })
-        })
     }
 }
