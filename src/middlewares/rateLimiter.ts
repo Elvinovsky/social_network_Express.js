@@ -10,7 +10,7 @@ export type RequestAttempt = {
 }
 export const ipLimiter: RequestHandler = async( req, res, next ) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const url = req.baseUrl
+    const url = req.originalUrl
     const date = new Date(Date.now()).toISOString()
     const urlAndIp = url + ip
     await attemptsRepository.addNewAttempts(urlAndIp,
@@ -21,6 +21,7 @@ export const ipLimiter: RequestHandler = async( req, res, next ) => {
         .toISOString()
     const shouldBlock = await attemptsRepository.getAttemptsCount(urlAndIp,
         tenSecAgo) > limit
+    debugger
     if (shouldBlock) {
         return res.sendStatus(429)
     }
