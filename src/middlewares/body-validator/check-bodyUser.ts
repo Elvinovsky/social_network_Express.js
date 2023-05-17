@@ -19,7 +19,7 @@ const checksLogin =  body('login', )
             throw new Error("a user with this username already exists");
         }
     });
-const checksPassword =  body('password')
+export const checksPassword =  body('password')
     .trim()
     .isLength({min: 6, max: 20 })
     .withMessage("must be at least 20 chars long")
@@ -49,6 +49,17 @@ export const checksEmailResending =  body('email')
             throw new Error("your mailing address is already registered");
         }
     });
+export const checksEmailForPasswordRecovery =  body('email')
+    .matches( /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage("is not a link to the email")
+    .bail()
+    .isString()
+    .withMessage("is not a string").custom(async (email: string) => {
+        const validationEmail = await usersRepository.findByLoginOrEmail(email)
+        if (!validationEmail ||  !validationEmail.emailConfirmation.isConfirmed ) {
+            throw new Error("your email is unconfirmed");
+        }
+    });
 const checkInputLoginOrEmail =  body('loginOrEmail')//todo доделать
     .isString()
     .withMessage("is not a string")
@@ -64,6 +75,8 @@ export const checksConfirmationCode =  body('code',)
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
     })
+
+
 
 export const validatorUserBodyRegistrationForSuperAdmin = [
     superAdminAuthentication,

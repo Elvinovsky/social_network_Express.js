@@ -41,9 +41,10 @@ export const usersService = {
                 isConfirmed: false
             }
         }
+
         const result = await usersRepository.addNewUser(newUser)
         try {
-            await emailsManager.sendEmailConformationMessage(newUser)
+            await emailsManager.sendEmailConformationMessage(email, newUser.emailConfirmation.confirmationCode)
         } catch (error) {
             console.error(error)
             await usersRepository.userByIdDelete(result.id)
@@ -51,6 +52,15 @@ export const usersService = {
         }
         return result
     },
+    async passwordRecovery ( password: string, code: string ):Promise <boolean | null> {
+    const isConfirmed = await this.confirmCode(code)
+    if (!isConfirmed) {
+        return null
+    }
+    const hash = await this._generateHash(password)
+    const isRestored = await usersRepository.updatePasswordHash(hash, code)
+    return isRestored
+},
     async findUserById ( id: string ): Promise<UserViewModel | null> {
         const user = await usersRepository.findUserById(id)
         if (!user) {
@@ -60,24 +70,46 @@ export const usersService = {
 
     },
     async confirmCode ( code: string ): Promise<boolean> {
-        return await usersRepository.updateConfirmedCode(code)
+        return await usersRepository.updateConfirmCode(code)
     },
     async emailConfirmation ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
             newCode)
-        if (!codeReplacement) return false
-
-        const user = await usersRepository.findByLoginOrEmail(email)
-        if (!user || user.emailConfirmation.isConfirmed) return false
+        if (!codeReplacement) {
+            return false
+        }
 
         try {
-            await emailsManager.sendEmailConformationMessage(user)
+            await emailsManager.sendEmailConformationMessage(email,
+                newCode)
         } catch (error) {
-            await usersRepository.userByIdDelete(user._id.toString())
+            const user = await usersRepository.findByLoginOrEmail(email)
+            await usersRepository.userByIdDelete(user!._id.toString()) // емайл не подтвержден! user валидириуется в верхних слоях экспресс валидатора
             console.error(error)
             return false
         }
+        return true
+    },
+    async sendPasswordRecovery ( email: string ): Promise<boolean> {
+        const newCode = uuidv4()
+        const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
+            newCode)
+
+        if (!codeReplacement) {
+            return false
+        }
+
+        try {
+            await emailsManager.sendEmailPasswordRecovery(email,
+                newCode)
+        } catch (error) {
+            const user = await usersRepository.findByLoginOrEmail(email)
+            await usersRepository.userByIdDelete(user!._id.toString()) // емайл подтвержден! user валидириуется при запросе на эндпоинт экспресс валидаторомю
+            console.error(error)
+            return false
+        }
+
         return true
     },
     async checkCredentials ( loginOrEmail: string, password: string ): Promise<WithId<UserAccountDBModel> | null> {

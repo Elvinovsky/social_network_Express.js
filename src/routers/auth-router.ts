@@ -7,7 +7,9 @@ import { RequestInputBody } from "../types/req-res-types";
 import { usersService } from "../domains/users-service";
 import {
     checksConfirmationCode,
+    checksEmailForPasswordRecovery,
     checksEmailResending,
+    checksPassword,
     validatorBodyUserRegistration,
     validatorInputAuthRout
 } from "../middlewares/body-validator/check-bodyUser";
@@ -18,8 +20,9 @@ import {
 } from "../middlewares/guard-authentication/user-authentication";
 import { usersQueryRepository } from "../repositories/queryRepository/users-query-repository";
 import {
+    NewPasswordRecoveryInputModel,
+    PasswordRecoveryInputModel,
     RegistrationConfirmationCodeModel,
-    RegistrationDetectedModel,
     RegistrationEmailResending
 } from "../models/modelsRegistration/registration-input";
 import { UserInputModel } from "../models/modelsUsersLogin/user-input";
@@ -104,9 +107,9 @@ authRouter.post('/registration-confirmation',
     ipLimiter,
     checksConfirmationCode,
     checkForErrors,
-    async( req: RequestInputBody<RegistrationConfirmationCodeModel & RegistrationDetectedModel>, res: Response ) => {
-        const user = await usersService.confirmCode(req.body.code)
-        if (user) {
+    async( req: RequestInputBody<RegistrationConfirmationCodeModel>, res: Response ) => {
+        const isConfirmed = await usersService.confirmCode(req.body.code)
+        if (isConfirmed) {
             res.sendStatus(204)
             return
         }
@@ -117,13 +120,47 @@ authRouter.post('/registration-email-resending',
     checksEmailResending,
     checkForErrors,
     async( req: RequestInputBody<RegistrationEmailResending>, res: Response ) => {
-        const user = await usersService.emailConfirmation(req.body.email)
-        if (user) {
+        const isSentCode = await usersService.emailConfirmation(req.body.email)
+        if (isSentCode) {
             res.sendStatus(204)
             return
         }
         res.sendStatus(400)
         return
+    })
+authRouter.post('/password-recovery',
+    ipLimiter,
+    checksEmailForPasswordRecovery,
+    checkForErrors,
+    async( req: RequestInputBody<PasswordRecoveryInputModel>, res: Response ) => {
+        const isSentCode = await usersService.sendPasswordRecovery(req.body.email)
+        if (isSentCode) {
+            res.sendStatus(204)
+            return
+        }
+        res.sendStatus(400)
+        return
+    })
+authRouter.post('/new-password',
+    ipLimiter,
+    checksPassword,
+    checksConfirmationCode,
+    checkForErrors,
+    async( req: RequestInputBody<NewPasswordRecoveryInputModel>, res: Response ) => {
+
+        const recoveryPassword = await usersService.passwordRecovery(req.body.newPassword,
+            req.body.recoveryCode)
+        if (recoveryPassword === null) {
+            res.sendStatus(403)
+            return
+        }
+        if(recoveryPassword) {
+            res.sendStatus(204)
+            return
+        }
+        res.sendStatus(400)
+
+
     })
 authRouter.get('/me',
     userAuthentication,

@@ -5,13 +5,20 @@ export type RegistrationConfirmationCodeModel = {
      */
 }
 export type RegistrationEmailResending = {
-    email:	string
+    email: string
     /**
      *    pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
      *     Email of already registered but not confirmed user
      */
 }
-
-export type RegistrationDetectedModel = {
-    ip: string
+export type PasswordRecoveryInputModel = {
+    email: string
+}
+export type NewPasswordRecoveryInputModel = {
+    newPassword: string
+    /**
+     * maxLength: 20
+     * minLength: 6
+     */
+    recoveryCode: string
 }
