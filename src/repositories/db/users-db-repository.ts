@@ -25,10 +25,10 @@ export const usersRepository = {
         return updateResult.matchedCount === 1
     },
     async updatePasswordHash (passwordHash: string, code: string):Promise<boolean | null> {
-        const isOneUser = await usersCollection. find(
+        const isOneUser = await usersCollection. find( // todo вынести в сервис
             {"emailConfirmation.confirmationCode": code}
         ).toArray()
-        if (isOneUser.length !== 1) {
+        if (isOneUser.length !== 1) { // проверяем код подверждения на совпадения, чтобы не сменить пароль другому юзеру
             return null
         }
         const updateResult = await usersCollection.updateOne(

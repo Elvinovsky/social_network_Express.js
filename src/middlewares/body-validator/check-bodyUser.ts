@@ -55,7 +55,7 @@ const checksEmail = body('email')
         }
     });
 export const checksEmailResending = body('email')
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
     .withMessage("is not a link to the email")
     .bail()
     .isString()
@@ -74,7 +74,7 @@ export const checksEmailForPasswordRecovery = body('email')
     .withMessage("is not a string")
     .custom(async( email: string ) => {
         const validationEmail = await usersRepository.findByLoginOrEmail(email)
-        if (!validationEmail || !validationEmail.emailConfirmation.isConfirmed) {
+        if (!validationEmail ) { // ( || !validationEmail.emailConfirmation.isConfirmed ) тест не проверяет подтверженный емайл или нет.
             throw new Error("your email is unconfirmed");
         }
     });
