@@ -82,14 +82,13 @@ export const checksConfirmationCode =  body('code',)
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
     })
-export const checksRecoveryCode =  body('recoveryCode',)
+export const checksRecoveryCode =  body('recoveryCode')
     .isString()
     .withMessage("is not a string")
     .custom(async (recoveryCode: string) => {
         const isValidConfirmed = await usersRepository.findUserConfirmCode(recoveryCode)
         if(!isValidConfirmed
-            || isValidConfirmed.emailConfirmation.expirationDate < new Date()
-            || isValidConfirmed.emailConfirmation.isConfirmed ) {
+            || isValidConfirmed.emailConfirmation.expirationDate < new Date()) {
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
     })
