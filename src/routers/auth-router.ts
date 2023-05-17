@@ -135,10 +135,10 @@ authRouter.post('/registration-email-resending',
     })
 authRouter.post('/password-recovery',
     ipLimiter,
-    checksEmailByCustom,
-    checkForEmailInDB,
     checksEmailPattern,
     checkForErrors,
+    checksEmailByCustom,
+    checkForEmailInDB,
     async( req: RequestInputBody<PasswordRecoveryInputModel>, res: Response ) => {
         const isSentCode = await usersService.sendPasswordRecovery(req.body.email)
         if (isSentCode) {
