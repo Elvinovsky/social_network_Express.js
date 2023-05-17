@@ -12,7 +12,10 @@ export const attemptsRepository = {
         return await attemptsCollection.deleteMany({})
     },
     async getAttemptsCount ( urlAndIp: string, date: string ) {
-        return await attemptsCollection.countDocuments({ urlAndIp, date: { $gte: date } })
+        return await attemptsCollection.countDocuments({
+            urlAndIp,
+            date: { $gte: date }
+        })
     },
     async addNewAttempts ( urlAndIp: string, date: string ) {
         const attempts: RequestAttempt = {
