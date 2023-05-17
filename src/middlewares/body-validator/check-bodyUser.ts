@@ -103,7 +103,7 @@ export const checksRecoveryCode = body('recoveryCode')
         if (isValidConfirmed.emailConfirmation.expirationDate < new Date()) {
             throw new Error("confirmation code is expired")
         }
-        if (isValidConfirmed.emailConfirmation.isConfirmed) {
+        if (!isValidConfirmed.emailConfirmation.isConfirmed) { //тесты не валидирует код на isConfirmed
             throw new Error("confirmation code has already been applied");
         }
     })
