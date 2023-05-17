@@ -9,7 +9,8 @@ import {
     checksConfirmationCode,
     checksEmailForPasswordRecovery,
     checksEmailResending,
-    checksPassword,
+    checksNewPassword,
+    checksRecoveryCode,
     validatorBodyUserRegistration,
     validatorInputAuthRout
 } from "../middlewares/body-validator/check-bodyUser";
@@ -143,8 +144,8 @@ authRouter.post('/password-recovery',
     })
 authRouter.post('/new-password',
     ipLimiter,
-    checksPassword,
-    checksConfirmationCode,
+    checksNewPassword,
+    checksRecoveryCode,
     checkForErrors,
     async( req: RequestInputBody<NewPasswordRecoveryInputModel>, res: Response ) => {
 
