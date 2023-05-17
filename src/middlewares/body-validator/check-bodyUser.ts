@@ -88,7 +88,8 @@ export const checksRecoveryCode =  body('recoveryCode')
     .custom(async (recoveryCode: string) => {
         const isValidConfirmed = await usersRepository.findUserConfirmCode(recoveryCode)
         if(!isValidConfirmed
-            || isValidConfirmed.emailConfirmation.expirationDate < new Date()) {
+            || isValidConfirmed.emailConfirmation.expirationDate < new Date()
+            || isValidConfirmed.emailConfirmation.isConfirmed ) {
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
     })

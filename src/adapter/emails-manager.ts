@@ -69,7 +69,7 @@ export const emailsManager = {
             subject: 'PASSWORD RECOVERY', // Subject line
             html: ` <h1>To finish password recovery</h1>
        <p> Please follow the link below:
-          <a href='https://somesite.com/password-recovery?recoveryCode=your_recovery_code=${newCode}'>recovery password</a>
+          <a href='https://somesite.com/password-recovery?recoveryCode=${newCode}'>recovery password</a>
       </p>`// plain text body
         }
 
