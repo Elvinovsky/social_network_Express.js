@@ -7,7 +7,8 @@ import { RequestInputBody } from "../types/req-res-types";
 import { usersService } from "../domains/users-service";
 import {
     checksConfirmationCode,
-    checksEmailForPasswordRecovery,
+    checksEmailByCustom,
+    checksEmailPattern,
     checksEmailResending,
     checksNewPassword,
     checksRecoveryCode,
@@ -29,7 +30,7 @@ import {
 import { UserInputModel } from "../models/modelsUsersLogin/user-input";
 import {
     checkForErrors,
-    checkForErrorsSendEmail
+    checkForEmailInDB
 } from "../middlewares/check-for-errors";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
 import requestIp from 'request-ip'
@@ -134,8 +135,10 @@ authRouter.post('/registration-email-resending',
     })
 authRouter.post('/password-recovery',
     ipLimiter,
-    checksEmailForPasswordRecovery,
-    checkForErrorsSendEmail,
+    checksEmailByCustom,
+    checkForEmailInDB,
+    checksEmailPattern,
+    checkForErrors,
     async( req: RequestInputBody<PasswordRecoveryInputModel>, res: Response ) => {
         const isSentCode = await usersService.sendPasswordRecovery(req.body.email)
         if (isSentCode) {

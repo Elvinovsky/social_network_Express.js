@@ -66,9 +66,7 @@ export const checksEmailResending = body('email')
             throw new Error("your mailing address is already registered");
         }
     });
-export const checksEmailForPasswordRecovery = body('email')
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-    .withMessage("is not a link to the email")
+export const checksEmailByCustom = body('email')
     .bail()
     .isString()
     .withMessage("is not a string")
@@ -78,6 +76,10 @@ export const checksEmailForPasswordRecovery = body('email')
             throw new Error("your email is unconfirmed");
         }
     });
+export const checksEmailPattern = body('email')
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+    .withMessage("is not a link to the email")
+
 const checkInputLoginOrEmail = body('loginOrEmail')//todo доделать
     .isString()
     .withMessage("is not a string")
