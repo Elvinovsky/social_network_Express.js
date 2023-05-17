@@ -37,7 +37,7 @@ export const emailsManager = {
         }
 
             // send mail
-            transporter.sendMail(mailOptions, (err, info) => {
+          return transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     console.error(err)
                 } else {

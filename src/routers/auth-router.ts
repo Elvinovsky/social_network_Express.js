@@ -97,6 +97,7 @@ authRouter.post('/registration',
             res.sendStatus(204)
             return
         }
+
         res.sendStatus(400)
     })
 authRouter.post('/registration-confirmation',
