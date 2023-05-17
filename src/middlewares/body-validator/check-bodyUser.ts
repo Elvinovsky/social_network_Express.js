@@ -72,13 +72,12 @@ export const checksEmailForPasswordRecovery = body('email')
     .bail()
     .isString()
     .withMessage("is not a string")
-// тест не проверяет не валидирует емайл  в ДБ.
-    /*.custom(async( email: string ) => {
+    .custom(async( email: string ) => {
         const validationEmail = await usersRepository.findByLoginOrEmail(email)
         if (!validationEmail || !validationEmail.emailConfirmation.isConfirmed  ) {
             throw new Error("your email is unconfirmed");
         }
-    });*/
+    });
 const checkInputLoginOrEmail = body('loginOrEmail')//todo доделать
     .isString()
     .withMessage("is not a string")

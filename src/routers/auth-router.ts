@@ -27,7 +27,10 @@ import {
     RegistrationEmailResending
 } from "../models/modelsRegistration/registration-input";
 import { UserInputModel } from "../models/modelsUsersLogin/user-input";
-import { checkForErrors } from "../middlewares/check-for-errors";
+import {
+    checkForErrors,
+    checkForErrorsSendEmail
+} from "../middlewares/check-for-errors";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
 import requestIp from 'request-ip'
 import { devicesSessionsService } from "../domains/devices-service";
@@ -132,7 +135,7 @@ authRouter.post('/registration-email-resending',
 authRouter.post('/password-recovery',
     ipLimiter,
     checksEmailForPasswordRecovery,
-    checkForErrors,
+    checkForErrorsSendEmail,
     async( req: RequestInputBody<PasswordRecoveryInputModel>, res: Response ) => {
         const isSentCode = await usersService.sendPasswordRecovery(req.body.email)
         if (isSentCode) {
