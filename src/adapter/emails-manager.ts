@@ -1,5 +1,9 @@
 import { createTransport } from 'nodemailer'
 import dotenv from 'dotenv'
+import {
+    sendMailPromise,
+    transporterVerify
+} from "../helpers/email-helpers";
 
 dotenv.config()
 
@@ -14,18 +18,13 @@ export const emailsManager = {
                 pass: process.env.AUTH_PASS
             }
         })
-        await new Promise(( resolve, reject ) => {
-            // verify connection configuration
-            transporter.verify(function ( error, success ) {
-                if (error) {
-                    console.log(error)
-                    reject(error)
-                } else{
-                    console.log("Server is ready to take our messages")
-                    resolve(success)
-                }
-            })
-        })
+
+        try {
+            await transporterVerify(transporter)
+        } catch (error) {
+            console.error(error)
+        }
+
         const mailOptions = {
             from: 'ELVIN <elov2024@mail.ru>', // sender address
             to: email, // list of receivers
@@ -37,14 +36,14 @@ export const emailsManager = {
         }
 
         // send mail
-        transporter.sendMail(mailOptions,
-            ( err, info ) => {
-                if (err) {
-                    console.error(err)
-                } else{
-                    console.log(info)
-                }
-            })
+        try {
+            await sendMailPromise(transporter,
+                mailOptions);
+            // обработка успешного результата
+        } catch (err) {
+            // обработка ошибки
+            console.error(err);
+        }
     },
 
     async sendEmailPasswordRecovery ( email: string, newCode: string ): Promise<void> {
@@ -57,18 +56,13 @@ export const emailsManager = {
                 pass: process.env.AUTH_PASS
             }
         })
-        await new Promise(( resolve, reject ) => {
-            // verify connection configuration
-            transporter.verify(function ( error, success ) {
-                if (error) {
-                    console.log(error)
-                    reject(error)
-                } else{
-                    console.log("Server is ready to take our messages")
-                    resolve(success)
-                }
-            })
-        })
+
+        try {
+            await transporterVerify(transporter)
+        } catch (error) {
+            console.error(error)
+        }
+
         const mailOptions = {
             from: 'ELVIN <elov2024@mail.ru>', // sender address
             to: email, // list of receivers
@@ -80,13 +74,13 @@ export const emailsManager = {
         }
 
         // send mail
-        transporter.sendMail(mailOptions,
-            ( err, info ) => {
-                if (err) {
-                    console.error(err)
-                } else{
-                    console.log(info)
-                }
-            })
+        try {
+            await sendMailPromise(transporter,
+                mailOptions);
+            // обработка успешного результата
+        } catch (err) {
+            // обработка ошибки
+            console.error(err);
+        }
     }
 }

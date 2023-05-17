@@ -41,7 +41,6 @@ export const usersService = {
                 isConfirmed: false
             }
         }
-
         const result = await usersRepository.addNewUser(newUser)
         try {
             await emailsManager.sendEmailConformationMessage(email, newUser.emailConfirmation.confirmationCode)
