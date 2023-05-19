@@ -161,7 +161,7 @@ authRouter.post('/new-password',
             res.sendStatus(403)
             return
         }
-        if(recoveryPassword) {
+        if (recoveryPassword) {
             res.sendStatus(204)
             return
         }
