@@ -23,7 +23,6 @@ import {PaginatorType} from "../helpers/pagination-helpers";
 
 export const blogsRouter = Router ()
 
-
 blogsRouter.get('/',
     async (req: RequestQuery<QueryInputParams&SearchNameTerm>,
                    res: Response) => {
