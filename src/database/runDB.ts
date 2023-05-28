@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv'
 import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import { UserAccountDBModel } from "../models/modelsUsersLogin/user-input";
 import { BlogDBModel } from "../models/modelsBlogs/blog-input";
 import { CommentDBModel } from "../models/modelsComment/comment-input";
@@ -9,8 +10,9 @@ import { RequestAttempt } from "../middlewares/rateLimiter";
 
 dotenv.config()
 
-const mongoURI = process.env.MONGO_URL;
-// const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
+const dbName = 'home_works'
+const mongoURI = process.env.MONGO_URL || `mongodb://0.0.0.0:27017/${dbName}`
+
 if (!mongoURI) {
     throw Error(`not found`)
 }
@@ -25,7 +27,8 @@ export const sessionsCollection = db.collection<DeviceAuthSessionsDBModel>('devi
 export const feedbacksCollection = db.collection<CommentDBModel>('comments');
 export const attemptsCollection = db.collection<RequestAttempt>('attempts');
 export async function runDb () {
-    try {
+
+    /*  try { //запуск монгодб
         await client.connect()
         await client.db()
                     .command({ ping: 1 })
@@ -33,5 +36,14 @@ export async function runDb () {
     } catch {
         await client.close()
         console.log('Not connect to mongo server')
+    }
+} */
+
+    try {
+        await mongoose.connect(mongoURI)
+        console.log('it is ok')
+    } catch (e) {
+        console.log('no connection')
+        await mongoose.disconnect()
     }
 }

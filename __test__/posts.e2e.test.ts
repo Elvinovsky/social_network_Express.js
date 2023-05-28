@@ -1,140 +1,270 @@
-import request from "supertest"
-import { postsRouter } from "../src/routers/posts-router";
-import { MongoClient } from "mongodb";
-
-describe(`'mongodb integration`,
-    () => {
-        const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
-        const clientTest = new MongoClient(mongoURI)
-
-        beforeAll(async() => {
-            await clientTest.connect()
-            await clientTest.db()
-                            .command({ ping: 1 })
-            console.log('Connected to mongo server')
-        })
+import request from "supertest";
+import {app } from "../src/app";
+import {blogCreator, postCreator} from "../../tests-utils/tests-functions";
+import {
+    postFilterString01,
+    postFilterString02,
+    postFilterString03,
+    postFilterString04,
+    postFilterString05
+} from "../../tests-utils/test-string";
+import {runDb } from "../src/database/runDB";
 
 
-        it('/posts',
-            async() => {
-                await request(postsRouter)
-                    .delete('/posts')
-                    .expect(204)
-            })
+describe('posts', () => {
 
-        it('GET allVideos = []',
-            async() => {
-                await request(postsRouter)
-                    .get('/posts')
-                    .expect(200,
-                        [])
-            })
-        it('GET searchVideo 404 for not existing course',
-            async() => {
-                await request(postsRouter)
-                    .get('/posts')
-                    .expect(404)
-            })
-        it('- POST does not create the post with incorrect data',
-            async() => {
-                await request(postsRouter)
-                    .post('/posts')
-                    .send({
-                        title: '',
-                        author: ''
-                    })
-                    .expect(400,
-                        {
-                            errorsMessages: "errors",
-                        })
+    jest.setTimeout(3 * 60 * 1000)
 
-                await request(postsRouter)
-                    .get('/posts/')
-                    .expect(200)
-            })
-        let createNewPost: any = null
-        it('+ POST does created the video with correct data ( title, author)',
-            async() => {
+    //DELETE ALL DATA
 
-                const responseCreatePost = await request(postsRouter)
-                    .post('/posts')
-                    .send({
-                        title: 'New Video',
-                        shortDescription: 'shortDescription'
-                    })
-                    .expect(201)
+    beforeAll(async () => {
+        await runDb()
+        await request(app)
+            .delete('/testing/all-data')
+            .expect(204)
 
-                createNewPost = responseCreatePost.body
+    })
 
-                expect(createNewPost)
-                    .toEqual({
-                        id: (+(new Date())).toString(),
-                        title: createNewPost.title,
-                        shortDescription: createNewPost.shortDescription,
-                        content: createNewPost.content,
-                        blogId: createNewPost.blogId,
-                        blogName: createNewPost.outputBlogName,
-                        createdAt: new Date().toISOString()
-                    })
-            })
-        it('- GET videos by ID with incorrect id',
-            async() => {
-                await request(postsRouter)
-                    .get('/posts' + -123)
-                    .expect(404)
-            })
-        it('+ GET product by ID with correct id',
-            async() => {
-                await request(postsRouter)
-                    .get('/posts/' + createNewPost.id)
-                    .expect(200,
-                        createNewPost)
-            })
-        it('- PUT product by ID with incorrect data',
-            async() => {
-                await request(postsRouter)
-                    .put('/posts' + -1223)
-                    .send({
-                        title: 'title',
-                        author: 'title'
-                    })
-                    .expect(404)
+    //CHECK FOR EMPTY POST DATA BASE
 
-                const resGet = await request(postsRouter)
-                    .get('/videos/')
-                expect(resGet.body[0])
-                    .toEqual(createNewPost)
-            })
-        it('+ PUT product by ID with correct data',
-            async() => {
-                await request(postsRouter)
-                    .put('/posts/' + createNewPost.id)
-                    .send({
-                        title: 'hello title',
-                        author: 'hello author',
-                        publicationDate: '2023-01-12T08:12:39.261Z',
-                    })
-                    .expect(204)
-            })
-        it('- DELETE post by ID with incorrect id',
-            async() => {
-                await request(postsRouter)
-                    .delete('/videos/' + -123)
-                    .expect(404)
-            })
-        it('+ DELETE post by ID with correct id',
-            async() => {
-                await request(postsRouter)
-                    .delete('/videos/' + createNewPost.id)
-                    .expect(204)
-
-                await request(postsRouter)
-                    .get('/posts')
-                    .expect(200,
-                        [])
-            })
-        afterAll(async() => {
-            await clientTest.close()
-            console.log('Exit to mongo server')
+    it ('GET EMPTY POST DATA BASE', async  () => {
+        const res = await request(app).get('/posts')
+        expect(res.body).toEqual({
+            pagesCount: 0,
+            page: 1,
+            pageSize: 10,
+            totalCount: 0,
+            items: []
         })
     })
+
+    let blogId : any = null
+
+    it ('SUCCESSFULLY CREATE NEW BLOG', async () => {
+        blogId = await request(app)
+            .post('/blogs')
+            .send({
+                "name": "Nastya",
+                "description": "about me",
+                "websiteUrl": "http://www.nastyastar.com"
+            })
+            .set({Authorization: "Basic YWRtaW46cXdlcnR5"})
+        expect(blogId.body).toStrictEqual({
+            "id": expect.any(String),
+            "name": "Nastya",
+            "description": "about me",
+            "websiteUrl": "http://www.nastyastar.com",
+            "createdAt" : expect.any(String),
+            "isMembership" : false
+        })
+    })
+
+    //UNSUCCESSFULLY CREATE NEW POST WITH NO AUTH
+
+    it ('UNSUCCESSFULLY CREATE NEW POST WITH NO AUTH', async () => {
+        await request(app)
+            .post('/posts')
+            .send({
+                "title": "string",
+                "shortDescription": "string",
+                "content": "string",
+                "blogId": blogId.body.id
+            })
+            .expect(401)
+    })
+
+    //UNSUCCESSFULLY CREATE NEW POST WITH BAD DATA
+
+    it ('UNSUCCESSFULLY CREATE NEW POST WITH BAD DATA', async () => {
+        await request(app)
+            .post('/posts')
+            .send({
+                "title": "",
+                "shortDescription": "",
+                "content": "",
+                "blogId": ""
+            })
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(400)
+    })
+
+    //UNSUCCESSFULLY CREATE NEW POST WITH WRONG DATA
+
+    it ('UNSUCCESSFULLY CREATE NEW POST WITH WRONG DATA', async () => {
+        await request(app)
+            .post('/posts')
+            .send({
+                "title": "",
+                "shortDescription": "",
+                "content": "string",
+                "blogId": blogId.body.id
+            })
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(400)
+    })
+
+    //SUCCESSFULLY CREATE NEW POST
+
+    let createResponsePost : any = null
+
+    it ('SUCCESSFULLY CREATE NEW POST', async () => {
+        createResponsePost = await request(app)
+            .post('/posts')
+            .send({
+                "title": "string",
+                "shortDescription": "string",
+                "content": "string",
+                "blogId": blogId.body.id
+            })
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(201)
+    })
+
+    //CHECK FOR CREATED POST
+
+    it ('SUCCESSFULLY GET CREATED POST', async () => {
+        const post = await request(app)
+            .get('/posts/' + createResponsePost.body.id)
+        expect(post.body).toStrictEqual({
+            "title": "string",
+            "shortDescription": "string",
+            "content": "string",
+            "blogId": blogId.body.id,
+            "blogName" : blogId.body.name,
+            "createdAt" : expect.any(String),
+            "id" : createResponsePost.body.id
+        })
+    })
+
+    //SUCCESSFULLY UPDATE CREATED POST
+
+    it ('SUCCESSFULLY UPDATE CREATED POST', async () => {
+        const req = await request(app)
+            .put("/posts/" + createResponsePost.body.id)
+            .send({
+                "title": "updated string",
+                "shortDescription": "updated string",
+                "content": "updated string",
+                "blogId" : blogId.body.id
+            })
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+        expect(req.statusCode).toBe(204)
+    })
+
+    //CHECK FOR UPDATED POST
+
+    it ('SUCCESSFULLY GET UPDATED POST', async () => {
+        const post = await request(app)
+            .get('/posts/' + createResponsePost.body.id)
+        expect(post.body).toStrictEqual({
+            "id" : expect.any(String),
+            "title": "updated string",
+            "shortDescription": "updated string",
+            "content": "updated string",
+            "blogId": blogId.body.id,
+            "blogName" : blogId.body.name,
+            "createdAt" : expect.any(String)
+        })
+    })
+
+    //GET NOT EXISTING POST
+
+    it ('UNSUCCESSFULLY GET NOT EXISTING POST', async () => {
+        await request(app)
+            .get('/posts/notexistingid')
+            .expect(404)
+    })
+
+    //UNSUCCESSFULLY DELETE POST WITH NO AUTH
+
+    it ('UNSUCCESSFULLY DELETE POST WITH NO AUTH', async () => {
+        await request(app)
+            .delete('/posts/' + createResponsePost.body.id)
+            .expect(401)
+    })
+
+    //SUCCESSFULLY DELETE POST
+
+    it ('SUCCESSFULLY DELETE POST', async () => {
+        await request(app)
+            .delete('/posts/' + createResponsePost.body.id)
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(204)
+    })
+
+    //DELETE NOT EXISTING POST
+
+    it ('UNSUCCESSFULLY DELETE NOT EXISTING POST', async () => {
+        await request(app)
+            .delete('/posts/notexistingid')
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(404)
+    })
+
+    //SUCCESSFULLY CREATE 5 POSTS
+
+    it("SUCCESSFULLY CREATE 5 POSTS", async () => {
+        await postCreator(undefined, blogId.body.id, postFilterString01);
+        await postCreator(undefined, blogId.body.id, postFilterString02);
+        await postCreator(undefined, blogId.body.id, postFilterString03);
+        await postCreator(undefined, blogId.body.id, postFilterString04);
+        const lastPostResponse = await postCreator(undefined, blogId.body.id, postFilterString05);
+        expect(lastPostResponse.status).toBe(201);
+    })
+
+    //CHECK FOR 5 CREATED POSTS WITH PAGINATION AND SORT BY TITLE
+
+    it ("CHECK POSTS FOR PAGINATION WITH SORT BY NAME", async () => {
+        const post = await request(app)
+            .get( "/posts?sortBy=title&sortDirection=asc&pageSize=3&pageNumber=1")
+        expect(post.body).toStrictEqual({
+            pagesCount: 2,
+            page: 1,
+            pageSize: 3,
+            totalCount: 5,
+            items: [
+                {
+                    "id" : expect.any(String),
+                    "title": "Anastasia",
+                    "shortDescription": "Test description",
+                    "content": "Test content",
+                    "blogId": blogId.body.id,
+                    "blogName" : blogId.body.name,
+                    "createdAt" : expect.any(String)
+                },
+                {
+                    "id" : expect.any(String),
+                    "title": "Banastasia",
+                    "shortDescription": "Test description",
+                    "content": "Test content",
+                    "blogId": blogId.body.id,
+                    "blogName" : blogId.body.name,
+                    "createdAt" : expect.any(String)
+                },
+                {
+                    "id" : expect.any(String),
+                    "title": "Cbanastasia",
+                    "shortDescription": "Test description",
+                    "content": "Test content",
+                    "blogId": blogId.body.id,
+                    "blogName" : blogId.body.name,
+                    "createdAt" : expect.any(String)
+                },
+
+            ]
+        })
+    })
+
+
+
+    //DELETE ALL DATA
+
+    afterAll(async () => {
+        await request(app)
+            .delete('/testing/all-data')
+            .set({Authorization : "Basic YWRtaW46cXdlcnR5"})
+            .expect(204)
+
+    })
+
+})
