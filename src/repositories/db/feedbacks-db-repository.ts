@@ -1,30 +1,32 @@
 import {DeleteResult, ObjectId} from "mongodb";
-import {feedbacksCollection} from "../../database/runDB";
 import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {CommentDBModel} from "../../models/modelsComment/comment-input";
 import {commentMapping} from "../../functions/commentsMapping";
 import {PostDBModel} from "../../models/modelsPosts/post-input";
-import { PostModelClass } from "../../models/mongoose/models";
+import {
+    CommentModelClass,
+    PostModelClass
+} from "../../models/mongoose/models";
 
 export const feedBacksRepository = {
     async testingDeleteAllComments(): Promise<DeleteResult> {
-        return await feedbacksCollection.deleteMany({})
+        return await CommentModelClass.deleteMany({})
     },
     async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
         return await PostModelClass.findOne({_id: new ObjectId(postId)})
     },
     async getCommentById(id: string): Promise<CommentViewModel | null> {
-        const comment = await feedbacksCollection.findOne({_id: new ObjectId(id)})
+        const comment = await CommentModelClass.findOne({_id: new ObjectId(id)})
         if (!comment) {
             return null
         }
         return commentMapping(comment)
     },
     async addNewComment(comment: CommentDBModel): Promise <CommentViewModel> {
-        const result = await feedbacksCollection.insertOne(comment)
+        const result = await CommentModelClass.create(comment)
 
         return {
-            id: result.insertedId.toString(),
+            id: result._id.toString(),
             content: comment.content,
             commentatorInfo: {
                 userId: comment.commentatorInfo.userId,
@@ -34,11 +36,11 @@ export const feedBacksRepository = {
         }
     },
     async updateCommentById(id: string, content: string): Promise<boolean> {
-        const result = await feedbacksCollection.updateOne({_id: new ObjectId(id)}, {$set: {content}})
+        const result = await CommentModelClass.updateOne({_id: new ObjectId(id)}, {$set: {content}})
         return result.matchedCount === 1
     },
     async deleteComment(id: string): Promise<boolean> {
-        const resultDeleted = await feedbacksCollection.deleteOne({_id: new ObjectId(id)})
+        const resultDeleted = await CommentModelClass.deleteOne({_id: new ObjectId(id)})
         return resultDeleted.deletedCount === 1
     },
 }

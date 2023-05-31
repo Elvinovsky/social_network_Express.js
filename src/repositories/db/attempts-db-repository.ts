@@ -1,18 +1,16 @@
 import {
     DeleteResult,
 } from "mongodb";
-import {
-    attemptsCollection,
-} from "../../database/runDB";
-import { RequestAttempt } from "../../middlewares/rateLimiter";
+import { AttemptModelClass } from "../../models/mongoose/models";
+import { RequestAttempt } from "../../models/mongoose/schemas";
 
 export const attemptsRepository = {
     //тестовое удаление базы данных
     async testingDeleteAttempts (): Promise<DeleteResult> {
-        return await attemptsCollection.deleteMany({})
+        return await AttemptModelClass.deleteMany({})
     },
     async getAttemptsCount ( urlAndIp: string, date: string ) {
-        return await attemptsCollection.countDocuments({
+        return await AttemptModelClass.countDocuments({
             urlAndIp,
             date: { $gte: date }
         })
@@ -22,6 +20,6 @@ export const attemptsRepository = {
             urlAndIp,
             date
         }
-        return await attemptsCollection.insertOne(attempts)
+        return await AttemptModelClass.create(attempts)
     }
 }

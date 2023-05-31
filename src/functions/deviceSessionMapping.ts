@@ -1,8 +1,8 @@
 import { WithId } from "mongodb";
-import { DeviceAuthSessionsDBModel } from "../models/modelsDevice/device-input";
+import { SessionDBModel } from "../models/modelsDevice/device-input";
 import { DeviceView } from "../models/modelsDevice/device-view";
 
-export const devicesSessionsMapping = (array: Array<WithId<DeviceAuthSessionsDBModel>>): DeviceView[] => {
+export const devicesSessionsMapping = (array: Array<WithId<SessionDBModel>>): DeviceView[] => {
     return array.map((el) => {
         return {
             ip: (el.ip)? el.ip : 'ip',

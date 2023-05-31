@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
-import { DeviceAuthSessionsDBModel } from "../models/modelsDevice/device-input";
+import { SessionDBModel } from "../models/modelsDevice/device-input";
 import add from "date-fns/add";
 import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 
 export const devicesSessionsService = {
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {
-        const createDeviceSession: DeviceAuthSessionsDBModel = {
+        const createDeviceSession: SessionDBModel = {
             deviceId: deviceId,
             issuedAt: issuedAt,
             userId: userId.toString(),

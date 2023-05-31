@@ -1,8 +1,5 @@
 import * as dotenv from 'dotenv'
 import mongoose from "mongoose";
-import { CommentDBModel } from "../models/modelsComment/comment-input";
-import { DeviceAuthSessionsDBModel } from "../models/modelsDevice/device-input";
-import { RequestAttempt } from "../middlewares/rateLimiter";
 
 dotenv.config()
 
@@ -20,9 +17,9 @@ console.log(process.env.MONGO_URL)
 //export const blogsCollection = db.collection<BlogDBModel>('blogs');
 //export const postsCollection = db.collection<PostDBModel>('posts');
 //export const usersCollection = db.collection<UserAccountDBModel>('users');
-export const sessionsCollection = db.collection<DeviceAuthSessionsDBModel>('devices-sessions');
-export const feedbacksCollection = db.collection<CommentDBModel>('comments');
-export const attemptsCollection = db.collection<RequestAttempt>('attempts');
+//export const sessionsCollection = db.collection<SessionDBModel>('devices-sessions');
+//export const feedbacksCollection = db.collection<CommentDBModel>('comments');
+//export const attemptsCollection = db.collection<RequestAttempt>('attempts');
 export async function runDb () {
 
     /*  try { //запуск монгодб

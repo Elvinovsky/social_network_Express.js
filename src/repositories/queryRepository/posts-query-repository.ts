@@ -1,5 +1,4 @@
 import {PostView} from "../../models/modelsPosts/post-view";
-import {feedbacksCollection} from "../../database/runDB";
 import {postsMapping} from "../../functions/postsMapping";
 import {
     getPageNumber, getPageSize,
@@ -13,7 +12,10 @@ import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {commentsMapping} from "../../functions/commentsMapping";
 import {CommentDBModel} from "../../models/modelsComment/comment-input";
 import {PostDBModel} from "../../models/modelsPosts/post-input";
-import { PostModelClass } from "../../models/mongoose/models";
+import {
+    CommentModelClass,
+    PostModelClass
+} from "../../models/mongoose/models";
 import mongoose from "mongoose";
 
 
@@ -53,17 +55,17 @@ export const postQueryRepository = {
      sortDirection?: string,
     ):Promise<PaginatorType<CommentViewModel[]> | null> {
 
-        const postIdForPost = await feedbacksCollection.findOne({postId: postId}) //express validator .custom
-        if (!postIdForPost){
+        const postIdForComment = await PostModelClass.findOne({postId: postId}) //express validator .custom
+        if (!postIdForComment){
             return null
         }
-        const calculateOfFiles = await feedbacksCollection.countDocuments({postId})
+        const calculateOfFiles = await CommentModelClass.countDocuments({postId})
 
-        const foundComments: WithId<CommentDBModel>[] = await feedbacksCollection
+        const foundComments: WithId<CommentDBModel>[] = await CommentModelClass
             .find({postId})
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
-            .limit(getPageSize(pageSize)).toArray()
+            .limit(getPageSize(pageSize))
         return {
             pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
             page: getPageNumber(pageNumber),

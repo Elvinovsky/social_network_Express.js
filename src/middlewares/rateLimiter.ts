@@ -4,10 +4,6 @@ import {
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
 import { subSeconds } from "date-fns";
 
-
-export type RequestAttempt = {
-    urlAndIp: string, date: string
-}
 export const ipLimiter: RequestHandler = async( req, res, next ) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const url = req.originalUrl

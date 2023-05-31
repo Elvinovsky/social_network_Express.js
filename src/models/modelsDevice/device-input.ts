@@ -1,4 +1,4 @@
-export type DeviceInputModel = {
+export type SessionInputModel = {
     ip:	string
     /**
      * IP address of device during signing in
@@ -16,7 +16,7 @@ export type DeviceInputModel = {
      * id of connected device session
      */
 }
-export type DeviceAuthSessionsDBModel = {
+export type SessionDBModel = {
     deviceId:	string
     issuedAt: number
     userId: string
