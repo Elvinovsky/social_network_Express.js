@@ -8,10 +8,10 @@ import {
 } from "../../helpers/pagination-helpers";
 import {filterLoginOrEmail} from "../../functions/filters";
 import {UserAccountDBModel} from "../../models/modelsUsersLogin/user-input";
-import {usersCollection} from "../../database/runDB";
 import {usersMapping} from "../../functions/usersMapping";
 import {ObjectId, WithId} from "mongodb";
 import {MeViewModel, UserViewModel} from "../../models/modelsUsersLogin/user-view";
+import { UserModelClass } from "../../models/mongoose/models";
 
 export const usersQueryRepository = {
 
@@ -24,12 +24,12 @@ export const usersQueryRepository = {
      sortDirection?: string
     ): Promise<PaginatorType<UserViewModel[]>> {
 
-        const calculateOfFiles = await usersCollection.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
-        const foundUsers: WithId<UserAccountDBModel>[] = await usersCollection
+        const calculateOfFiles = await UserModelClass.countDocuments(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
+        const foundUsers: WithId<UserAccountDBModel>[] = await UserModelClass
             .find(filterLoginOrEmail(searchEmailTerm, searchLoginTerm))
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
-            .limit(getPageSize(pageSize)).toArray()
+            .limit(getPageSize(pageSize))
         return {
             pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
             page: getPageNumber(pageNumber),
@@ -39,7 +39,7 @@ export const usersQueryRepository = {
         }
     },
     async getUserInfo(id: string): Promise <MeViewModel | null> {
-        const user = await usersCollection.findOne({_id: new ObjectId(id)})
+        const user = await UserModelClass.findOne({_id: new ObjectId(id)})
         if(!user) {
             return null
         }

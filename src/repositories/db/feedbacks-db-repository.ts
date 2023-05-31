@@ -1,16 +1,17 @@
 import {DeleteResult, ObjectId} from "mongodb";
-import {feedbacksCollection, postsCollection} from "../../database/runDB";
+import {feedbacksCollection} from "../../database/runDB";
 import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {CommentDBModel} from "../../models/modelsComment/comment-input";
 import {commentMapping} from "../../functions/commentsMapping";
 import {PostDBModel} from "../../models/modelsPosts/post-input";
+import { PostModelClass } from "../../models/mongoose/models";
 
 export const feedBacksRepository = {
     async testingDeleteAllComments(): Promise<DeleteResult> {
         return await feedbacksCollection.deleteMany({})
     },
     async searchPostIdForComments(postId: string):Promise <PostDBModel | null > {
-        return await postsCollection.findOne({_id: new ObjectId(postId)})
+        return await PostModelClass.findOne({_id: new ObjectId(postId)})
     },
     async getCommentById(id: string): Promise<CommentViewModel | null> {
         const comment = await feedbacksCollection.findOne({_id: new ObjectId(id)})

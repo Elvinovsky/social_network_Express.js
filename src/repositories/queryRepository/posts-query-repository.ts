@@ -1,5 +1,5 @@
 import {PostView} from "../../models/modelsPosts/post-view";
-import {feedbacksCollection, postsCollection} from "../../database/runDB";
+import {feedbacksCollection} from "../../database/runDB";
 import {postsMapping} from "../../functions/postsMapping";
 import {
     getPageNumber, getPageSize,
@@ -8,11 +8,13 @@ import {
     getDirection, pagesCountOfBlogs,
     PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
-import {Filter, WithId} from "mongodb";
+import {WithId} from "mongodb";
 import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {commentsMapping} from "../../functions/commentsMapping";
 import {CommentDBModel} from "../../models/modelsComment/comment-input";
 import {PostDBModel} from "../../models/modelsPosts/post-input";
+import { PostModelClass } from "../../models/mongoose/models";
+import mongoose from "mongoose";
 
 
 export const postQueryRepository = {
@@ -24,17 +26,17 @@ export const postQueryRepository = {
      sortDirection?: string,
     ): Promise<PaginatorType<PostView[]>> {
 
-        const filter: Filter<PostDBModel> = {}
+        const filter: mongoose.FilterQuery<PostDBModel> = {}
         if(searchTitleTerm) {
             filter.title = {$regex: searchTitleTerm, $options: 'i'}
         }
 
-        const calculateOfFiles = await postsCollection.countDocuments(filter)
-        const foundPosts: WithId<PostDBModel>[] = await postsCollection
+        const calculateOfFiles = await PostModelClass.countDocuments(filter)
+        const foundPosts: WithId<PostDBModel>[] = await PostModelClass
             .find(filter)
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection),  [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
-            .limit(getPageSize(pageSize)).toArray()
+            .limit(getPageSize(pageSize))
         return {
             pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
             page: getPageNumber(pageNumber),
