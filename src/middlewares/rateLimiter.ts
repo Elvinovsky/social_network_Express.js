@@ -3,6 +3,7 @@ import {
 } from "express";
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
 import { subSeconds } from "date-fns";
+import { RequestAttempt } from "../models/mongoose/schemas";
 
 export const ipLimiter: RequestHandler = async( req, res, next ) => {
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -18,7 +19,10 @@ export const ipLimiter: RequestHandler = async( req, res, next ) => {
     if (shouldBlock) {
         return res.sendStatus(429)
     }
-    await attemptsRepository.addNewAttempts(urlAndIp,
-        date)
+    const attempts: RequestAttempt = {
+        urlAndIp,
+        date
+    }
+    await attemptsRepository.addNewAttempts(attempts)
     return next()
 }

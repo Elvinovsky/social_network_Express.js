@@ -9,9 +9,11 @@ export type CommentInputModel = {
 export type CommentDBModel = {
     postId: string,
     content: string,
-    commentatorInfo: {
-        userId: string,
-        userLogin: string
-    }
+    commentatorInfo: CommentatorInfo
     createdAt: string
+}
+
+export type CommentatorInfo = {
+    userId: string,
+    userLogin: string
 }

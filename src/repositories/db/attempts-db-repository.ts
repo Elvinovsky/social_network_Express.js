@@ -15,11 +15,7 @@ export const attemptsRepository = {
             date: { $gte: date }
         })
     },
-    async addNewAttempts ( urlAndIp: string, date: string ) {
-        const attempts: RequestAttempt = {
-            urlAndIp,
-            date
-        }
+    async addNewAttempts ( attempts: RequestAttempt ) {
         return await AttemptModelClass.create(attempts)
     }
 }

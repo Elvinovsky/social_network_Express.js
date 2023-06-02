@@ -45,10 +45,7 @@ export const sessionSchema = new mongoose.Schema<WithId<SessionDBModel>>({
 export const commentSchema = new mongoose.Schema<CommentDBModel>({
     postId: {type: String, required: true},
     content: {type: String, required: true},
-    commentatorInfo: {type: {
-        userId: String,
-        userLogin: String
-    }, required: true},
+    commentatorInfo: {type: Object, required: true},
     createdAt: {type: String, required: true}
 })
 
