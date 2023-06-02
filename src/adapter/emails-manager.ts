@@ -37,7 +37,7 @@ export const emailsManager = {
 
         // send mail
         try {
-            await sendMailPromise(transporter,
+             sendMailPromise(transporter,
                 mailOptions);
             // обработка успешного результата
         } catch (err) {
@@ -75,7 +75,7 @@ export const emailsManager = {
 
         // send mail
         try {
-            await sendMailPromise(transporter,
+             sendMailPromise(transporter,
                 mailOptions);
             // обработка успешного результата
         } catch (err) {
