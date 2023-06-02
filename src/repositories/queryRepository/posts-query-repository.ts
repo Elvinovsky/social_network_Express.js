@@ -55,14 +55,10 @@ export const postQueryRepository = {
      sortDirection?: string,
     ):Promise<PaginatorType<CommentViewModel[]> | null> {
 
-        const postIdForComment = await PostModelClass.findOne({postId: postId}) //express validator .custom
-        if (!postIdForComment){
-            return null
-        }
-        const calculateOfFiles = await CommentModelClass.countDocuments({postId})
+        const calculateOfFiles = await CommentModelClass.countDocuments({postId: postId})
 
         const foundComments: WithId<CommentDBModel>[] = await CommentModelClass
-            .find({postId})
+            .find({postId: postId})
             .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
             .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
             .limit(getPageSize(pageSize))
