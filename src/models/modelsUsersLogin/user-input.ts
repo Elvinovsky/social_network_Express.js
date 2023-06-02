@@ -18,11 +18,12 @@ export type UserAccountDBModel = {
     passwordHash: string,
     email: string,
     createdAt: string
-    emailConfirmation: {
-        confirmationCode: string,
-        expirationDate: Date | string,
-        isConfirmed: boolean
-    }
+    emailConfirmation: EmailConfirmationModel
+}
+export type EmailConfirmationModel = {
+    confirmationCode: string,
+    expirationDate: Date | string,
+    isConfirmed: boolean
 }
 
 

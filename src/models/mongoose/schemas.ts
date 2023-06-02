@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 import { WithId } from "mongodb";
 import { BlogDBModel } from "../modelsBlogs/blog-input";
 import { PostDBModel } from "../modelsPosts/post-input";
-import { UserAccountDBModel } from "../modelsUsersLogin/user-input";
+import {
+    UserAccountDBModel
+} from "../modelsUsersLogin/user-input";
 import { SessionDBModel } from "../modelsDevice/device-input";
 import { CommentDBModel } from "../modelsComment/comment-input";
 
@@ -27,10 +29,7 @@ export const userSchema = new mongoose.Schema<WithId<UserAccountDBModel>>({
     passwordHash: {type: String, required: true},
     email: {type: String, required: true},
     createdAt: {type: String, required: true},
-    emailConfirmation: {type: {
-        confirmationCode: String,
-        expirationDate: Date || String,
-        isConfirmed: Boolean }, required: true}
+    emailConfirmation: {type: Object, required: true}
 })
 
 export const sessionSchema = new mongoose.Schema<WithId<SessionDBModel>>({
