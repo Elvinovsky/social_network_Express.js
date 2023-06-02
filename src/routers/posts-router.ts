@@ -60,7 +60,7 @@ postsRouter.get('/:postId/comments',
         }
         res.send(getCommentsByPostId)
     })
-postsRouter.post('/:postId/comments',validatorInputComment, userAuthentication,
+postsRouter.post('/:postId/comments',userAuthentication, validatorInputComment,
     async (req: RequestParamsAndInputBody<{postId: string},CommentInputModel>,
            res: ResponseViewBody<CommentViewModel>) => {
 

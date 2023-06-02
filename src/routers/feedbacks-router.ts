@@ -24,7 +24,7 @@ feedBacksRouter.get('/:id',
             return;
         }
     })
-feedBacksRouter.put('/:id', userAuthentication, validatorInputComment,
+feedBacksRouter.put('/:id',  validatorInputComment, userAuthentication,
     async (req: RequestParamsAndInputBody<{id: string},CommentInputModel>,
            res: Response) => {
         const validatorCommentById = await feedbacksService.getComment(req.params.id)
