@@ -6,14 +6,16 @@ export type CommentInputModel = {
      */
 }
 
-export type CommentDBModel = {
-    postId: string,
-    content: string,
-    commentatorInfo: CommentatorInfo
-    createdAt: string
+export class CommentDBModel {
+    constructor (public postId: string,
+                 public content: string,
+                 public commentatorInfo: CommentatorInfo,
+                 public createdAt: string) {
+    }
 }
 
-export type CommentatorInfo = {
-    userId: string,
-    userLogin: string
+export class CommentatorInfo {
+    constructor (  public  userId: string,
+                    public userLogin: string) {
+    }
 }
