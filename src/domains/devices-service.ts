@@ -3,7 +3,7 @@ import { SessionDBModel } from "../models/modelsDevice/device-input";
 import add from "date-fns/add";
 import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 
-export const devicesSessionsService = {
+class DevicesService {
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {
         const createDeviceSession: SessionDBModel = {
             deviceId: deviceId,
@@ -20,11 +20,11 @@ export const devicesSessionsService = {
         }
         return await devicesSessionsRepository.addDeviceSession(createDeviceSession)
 
-    },
+    }
     async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number ) {
         return await devicesSessionsRepository.updateDeviceSession(newIssuedAt,
             issuedAt)
-    },
+    }
     async logoutDeviceSessionByDeviceId ( deviceId: string, userId: string ) {
         const findDeviceSessionById = await devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
         if (!findDeviceSessionById) {
@@ -32,10 +32,11 @@ export const devicesSessionsService = {
         }
         return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId,
             userId)
-    },
+    }
     async logoutDevicesSessionsByUser ( issuedAt: number, userId: string ) {
         const result = devicesSessionsRepository.deleteDevicesSessionsByUser(issuedAt,
             userId)
         return result
     }
 }
+export const devicesSessionsService = new DevicesService()

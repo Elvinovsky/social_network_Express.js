@@ -9,18 +9,18 @@ import {
 import { PostDBModel } from "../models/modelsPosts/post-input";
 import { userMapping } from "../functions/usersMapping";
 
-export const feedbacksService = {
+class FeedbackService {
     async getComment ( id: string ): Promise<CommentViewModel | null> {
         return await feedBacksRepository.getCommentById(id)
-    },
+    }
     async searchUserForComment ( userId: string ): Promise<UserViewModel | null> {
         const user = await usersRepository.findUserForComment(userId)
         if (!user) return null
         return userMapping(user)
-    },
+    }
     async searchPostIdForComments ( postId: string ): Promise<PostDBModel | null> {
         return await feedBacksRepository.searchPostIdForComments(postId)
-    },
+    }
     async createComment ( postId: string, userId: string, content: string, ): Promise<CommentViewModel> {
         const outputUserLogin: UserViewModel | null = await this.searchUserForComment(userId)
 
@@ -31,13 +31,14 @@ export const feedbacksService = {
             new Date().toISOString())
 
         return await feedBacksRepository.addNewComment(newComment)
-    },
+    }
     async updateCommentById ( id: string, content: string ): Promise<boolean> {
         return feedBacksRepository.updateCommentById(id,
             content)
-    },
+    }
     async deletedCountComment ( id: string ): Promise<boolean> {
         return await feedBacksRepository.deleteComment(id)
     }
 
 }
+export const feedbacksService = new FeedbackService()
