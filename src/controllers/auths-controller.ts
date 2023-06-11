@@ -6,9 +6,10 @@ import { usersService } from "../domains/users-service";
 import { v4 as uuidv4 } from "uuid";
 import { jwtService } from "../application/jwt-service";
 import requestIp from "request-ip";
-import { devicesSessionsService } from "../domains/devices-service";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
-import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
+import {
+    DevicesSessionsRepository
+} from "../repositories/db/devices-sessions-repository";
 import { RequestInputBody } from "../types/req-res-types";
 import {
     NewPasswordRecoveryInputModel,
@@ -17,8 +18,15 @@ import {
     RegistrationEmailResending
 } from "../models/modelsRegistration/registration-input";
 import { usersQueryRepository } from "../repositories/queryRepository/users-query-repository";
+import { DevicesService } from "../domains/devices-service";
 
-class AuthController {
+export class AuthController {
+    private devicesSessionsRepository: DevicesSessionsRepository;
+    private devicesService: DevicesService
+    constructor () {
+        this.devicesSessionsRepository = new DevicesSessionsRepository()
+        this.devicesService = new DevicesService()
+    }
     async createLogin ( req: Request, res: Response ) {
         const user = await usersService.checkCredentials(req.body.loginOrEmail,
             req.body.password)
@@ -32,7 +40,7 @@ class AuthController {
         const ipAddress = requestIp.getClientIp(req)
         const deviceName = req.headers["user-agent"]
         const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
-        await devicesSessionsService.createDeviceSession(user._id,
+        await this.devicesService.createDeviceSession(user._id,
             deviceId,
             issuedAt!,
             ipAddress,
@@ -52,7 +60,7 @@ class AuthController {
             req.deviceId)
 
         const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
-        await devicesSessionsService.updateIATByDeviceSession(newIssuedAt!,
+        await this.devicesService.updateIATByDeviceSession(newIssuedAt!,
             req.issuedAt)
 
         return res.status(200)
@@ -63,7 +71,7 @@ class AuthController {
     }
 
     async logout ( req: Request, res: Response ) {
-        await devicesSessionsRepository.deleteDeviceSessionByIAT(req.issuedAt)
+        await this.devicesSessionsRepository.deleteDeviceSessionByIAT(req.issuedAt)
         return res.clearCookie('refreshToken')
                   .sendStatus(204)
     }

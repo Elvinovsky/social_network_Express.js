@@ -28,7 +28,7 @@ export const checkForErrors = (( req: Request, res: Response, next: NextFunction
     return next()
 })
 
-export const checkForEmailInDB = (( req: Request, res: Response, next: NextFunction ) => {
+export const checkForEmailToDB = (( req: Request, res: Response, next: NextFunction ) => {
     const invalid = validationResult(req)
     if (!invalid.isEmpty()) {
         return res.sendStatus(204)

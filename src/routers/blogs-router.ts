@@ -7,11 +7,11 @@ import { blogsControllerInstance } from "../controllers/blogs-controller";
 
 export const blogsRouter = Router ()
 
-blogsRouter.get('/',blogsControllerInstance.getBlogs)
-blogsRouter.get('/:id', blogsControllerInstance.getBlog)
-blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostsByBlog)
-blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody, blogsControllerInstance.createPostForBlog)
-blogsRouter.post('/', validatorBlogInputBody, blogsControllerInstance.createBlog)
-blogsRouter.put('/:id', validatorBlogInputBody, blogsControllerInstance.updateBlog)
-blogsRouter.delete('/:id', superAdminAuthentication, blogsControllerInstance.deleteBlog)
+blogsRouter.get('/',blogsControllerInstance.getBlogs.bind(blogsControllerInstance))
+blogsRouter.get('/:id', blogsControllerInstance.getBlog.bind(blogsControllerInstance))
+blogsRouter.get('/:blogId/posts', blogsControllerInstance.getPostsByBlog.bind(blogsControllerInstance))
+blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody, blogsControllerInstance.createPostForBlog.bind(blogsControllerInstance))
+blogsRouter.post('/', validatorBlogInputBody, blogsControllerInstance.createBlog.bind(blogsControllerInstance))
+blogsRouter.put('/:id', validatorBlogInputBody, blogsControllerInstance.updateBlog.bind(blogsControllerInstance))
+blogsRouter.delete('/:id', superAdminAuthentication, blogsControllerInstance.deleteBlog.bind(blogsControllerInstance))
 
