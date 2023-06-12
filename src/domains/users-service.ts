@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { emailsManager } from "../adapter/emails-manager";
 import { userMapping } from "../functions/usersMapping";
 
-class UsersService  {
+export class UsersService  {
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
@@ -137,4 +137,3 @@ class UsersService  {
         return await usersRepository.userByIdDelete(id)
     }
 }
-export const usersService = new UsersService()

@@ -2,7 +2,9 @@ import {
     Request,
     Response
 } from "express";
-import { usersService } from "../domains/users-service";
+import {
+    UsersService
+} from "../domains/users-service";
 import { v4 as uuidv4 } from "uuid";
 import requestIp from "request-ip";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
@@ -24,10 +26,11 @@ import { JwtService } from "../application/jwt-service";
 export class AuthController {
     constructor ( protected jwtService: JwtService,
                   protected devicesService: DevicesService,
-                  protected devicesSessionsRepository: DevicesSessionsRepository) { }
+                  protected devicesSessionsRepository: DevicesSessionsRepository,
+                  protected usersService: UsersService) { }
 
     async createLogin ( req: Request, res: Response ) {
-        const user = await usersService.checkCredentials(req.body.loginOrEmail,
+        const user = await this.usersService.checkCredentials(req.body.loginOrEmail,
             req.body.password)
         if (!user) return res.sendStatus(401)
 
@@ -76,7 +79,7 @@ export class AuthController {
     }
 
     async registration ( req: Request, res: Response ) {
-        const user = await usersService.independentUserRegistration(req.body.login,
+        const user = await this.usersService.independentUserRegistration(req.body.login,
             req.body.password,
             req.body.email)
         if (user) {
@@ -88,7 +91,7 @@ export class AuthController {
     }
 
     async registrationConfirm ( req: RequestInputBody<RegistrationConfirmationCodeModel>, res: Response ) {
-        const isConfirmed = await usersService.confirmCode(req.body.code)
+        const isConfirmed = await this.usersService.confirmCode(req.body.code)
         if (isConfirmed) {
             res.sendStatus(204)
             return
@@ -97,7 +100,7 @@ export class AuthController {
     }
 
     async emailResending ( req: RequestInputBody<RegistrationEmailResending>, res: Response ) {
-        const isSentCode = await usersService.emailConfirmation(req.body.email)
+        const isSentCode = await this.usersService.emailConfirmation(req.body.email)
         if (isSentCode) {
             res.sendStatus(204)
             return
@@ -107,7 +110,7 @@ export class AuthController {
     }
 
     async passwordRecovery ( req: RequestInputBody<PasswordRecoveryInputModel>, res: Response ) {
-        const isSentCode = await usersService.sendPasswordRecovery(req.body.email)
+        const isSentCode = await this.usersService.sendPasswordRecovery(req.body.email)
         if (isSentCode) {
             res.sendStatus(204)
             return
@@ -118,7 +121,7 @@ export class AuthController {
 
     async newPassword ( req: RequestInputBody<NewPasswordRecoveryInputModel>, res: Response ) {
 
-        const recoveryPassword = await usersService.passwordRecovery(req.body.newPassword,
+        const recoveryPassword = await this.usersService.passwordRecovery(req.body.newPassword,
             req.body.recoveryCode)
         if (recoveryPassword === null) {
             res.sendStatus(403)
