@@ -78,7 +78,7 @@ feedBacksRouter.delete('/:id',
         }
     })
 
-feedBacksRouter.put('/:id/like-status',
+feedBacksRouter.put('/:commentId/like-status',
     userAuthentication,
     checkInputLikeValue,
     checkForErrors,

@@ -45,7 +45,7 @@ export const feedBacksRepository = {
                 }
             }, {
                 returnDocument: "after"
-            })
+            })// todo userView status 
         if (!comment) {
             return null
         }
