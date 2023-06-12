@@ -1,8 +1,12 @@
-export type LikeDBInfo = {
+export type LikeDBCommentInfo = {
     likesCount: number
-
     dislikesCount: number
 
-    status: string
+}
 
+export type LikeDBInfo  = {
+    status: string
+    userId: string
+    postOrCommentId: string
+    createdAt: Date
 }

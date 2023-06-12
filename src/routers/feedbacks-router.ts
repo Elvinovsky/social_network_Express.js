@@ -1,4 +1,5 @@
 import {
+    Request,
     Response,
     Router
 } from "express";
@@ -20,6 +21,8 @@ import { userAuthentication } from "../middlewares/guard-authentication/user-aut
 import { CommentInputModel } from "../models/modelsComment/comment-input";
 import { feedbacksService } from "../compositions-root";
 import { checkForErrors } from "../middlewares/check-for-errors";
+import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
+import { LikeModelClass } from "../models/mongoose/models";
 
 
 export const feedBacksRouter = Router()
@@ -58,13 +61,13 @@ feedBacksRouter.put('/:id',
 feedBacksRouter.delete('/:id',
     userAuthentication,
     async( req: RequestParamsAndInputBody<{ id: string }, CommentInputModel>, res: Response ) => {
-        const validatorCommentById = await feedbacksService.getComment(req.params.id)
-        if (!validatorCommentById) {
+        const comment = await feedbacksService.getComment(req.params.id)
+        if (!comment) {
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
-        if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId) {
+        const user = await feedbacksService.searchUserForComment(req.user!.id)
+        if (user!.id !== comment.commentatorInfo.userId) {
             res.sendStatus(403)
             return
         }
@@ -75,10 +78,37 @@ feedBacksRouter.delete('/:id',
         }
     })
 
-/*feedBacksRouter.put('/:id/like-status',
+feedBacksRouter.put('/:id/like-status',
     userAuthentication,
     checkInputLikeValue,
     checkForErrors,
     async( req: Request, res: Response ) => {
 
-    })*/
+        try {
+            const likeStatus = req.body.likeStatus
+            const userId = req.user!.id
+            const commentId = req.params.id
+
+            const comment = await feedBacksRepository.getCommentById(commentId)
+            if (!comment) {
+                res.sendStatus(404)
+                return
+            }
+
+            const newLikeInfo = new LikeModelClass({
+                likeStatus,
+                userId,
+                postOrCommentId: commentId,
+                createdAt: new Date()
+            })
+
+            await newLikeInfo.save()
+
+            res.sendStatus(204)
+            return
+
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500)
+        }
+    })

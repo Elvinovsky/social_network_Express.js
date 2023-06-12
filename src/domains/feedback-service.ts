@@ -24,11 +24,17 @@ export class FeedbackService {
     async createComment ( postId: string, userId: string, content: string, ): Promise<CommentViewModel> {
         const outputUserLogin: UserViewModel | null = await this.searchUserForComment(userId)
 
-        const newComment = new  CommentDBModel(
-            postId,
-            content,
-            new CommentatorInfo(userId, outputUserLogin!.login),
-            new Date().toISOString())
+        const newComment: CommentDBModel = {
+            postId: postId,
+            content: content,
+            commentatorInfo: new CommentatorInfo(userId, outputUserLogin!.login),
+            createdAt: new Date().toISOString(),
+            likeInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: "None"
+            }
+        }
 
         return await feedBacksRepository.addNewComment(newComment)
     }
