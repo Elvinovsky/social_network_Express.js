@@ -9,11 +9,10 @@ import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository"
 import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
 
-class TestDeleteAllDBController {
-    private devicesRepository: DevicesSessionsRepository
 
-    constructor () {
-        this.devicesRepository = new DevicesSessionsRepository()
+export class TestDeleteAllDBController {
+
+    constructor (protected devicesRepository: DevicesSessionsRepository) {
     }
 
     async delete ( req: Request, res: Response ) {
@@ -27,5 +26,3 @@ class TestDeleteAllDBController {
         return;
     }
 }
-
-export const deleteAllDBController = new TestDeleteAllDBController()

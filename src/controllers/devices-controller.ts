@@ -7,13 +7,10 @@ import {
 } from "../domains/devices-service";
 import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 
-class DevicesController {
+export class DevicesController {
 
-    private devicesService: DevicesService
-    private devicesRepository: DevicesSessionsRepository
-    constructor () {
-        this.devicesService = new DevicesService()
-        this.devicesRepository = new DevicesSessionsRepository()
+    constructor (protected devicesRepository: DevicesSessionsRepository,
+                 protected devicesService: DevicesService) {
     }
 
     async getDevices ( req: Request, res: Response ) {
@@ -48,4 +45,3 @@ class DevicesController {
     }
 }
 
-export const devicesController = new DevicesController()

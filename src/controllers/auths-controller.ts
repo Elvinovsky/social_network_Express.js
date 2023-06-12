@@ -4,7 +4,6 @@ import {
 } from "express";
 import { usersService } from "../domains/users-service";
 import { v4 as uuidv4 } from "uuid";
-import { jwtService } from "../application/jwt-service";
 import requestIp from "request-ip";
 import { refreshCookieOptions } from "../helpers/cookie-helpers";
 import {
@@ -19,27 +18,27 @@ import {
 } from "../models/modelsRegistration/registration-input";
 import { usersQueryRepository } from "../repositories/queryRepository/users-query-repository";
 import { DevicesService } from "../domains/devices-service";
+import { JwtService } from "../application/jwt-service";
+
 
 export class AuthController {
-    private devicesSessionsRepository: DevicesSessionsRepository;
-    private devicesService: DevicesService
-    constructor () {
-        this.devicesSessionsRepository = new DevicesSessionsRepository()
-        this.devicesService = new DevicesService()
-    }
+    constructor ( protected jwtService: JwtService,
+                  protected devicesService: DevicesService,
+                  protected devicesSessionsRepository: DevicesSessionsRepository) { }
+
     async createLogin ( req: Request, res: Response ) {
         const user = await usersService.checkCredentials(req.body.loginOrEmail,
             req.body.password)
         if (!user) return res.sendStatus(401)
 
         const deviceId = uuidv4()
-        const accessToken = await jwtService.createJWTAccessToken(user._id)
-        const refreshToken = await jwtService.createJWTRefreshToken(user._id,
+        const accessToken = await this.jwtService.createJWTAccessToken(user._id)
+        const refreshToken = await this.jwtService.createJWTRefreshToken(user._id,
             deviceId)
 
         const ipAddress = requestIp.getClientIp(req)
         const deviceName = req.headers["user-agent"]
-        const issuedAt = await jwtService.getIATByRefreshToken(refreshToken)
+        const issuedAt = await this.jwtService.getIATByRefreshToken(refreshToken)
         await this.devicesService.createDeviceSession(user._id,
             deviceId,
             issuedAt!,
@@ -55,11 +54,11 @@ export class AuthController {
     }
 
     async createRefToken ( req: Request, res: Response ) {
-        const accessToken = await jwtService.createJWTAccessToken(req.userId)
-        const newRefreshToken = await jwtService.createJWTRefreshToken(req.userId,
+        const accessToken = await this.jwtService.createJWTAccessToken(req.userId)
+        const newRefreshToken = await this.jwtService.createJWTRefreshToken(req.userId,
             req.deviceId)
 
-        const newIssuedAt = await jwtService.getIATByRefreshToken(newRefreshToken)
+        const newIssuedAt = await this.jwtService.getIATByRefreshToken(newRefreshToken)
         await this.devicesService.updateIATByDeviceSession(newIssuedAt!,
             req.issuedAt)
 
@@ -141,4 +140,3 @@ export class AuthController {
     }
 }
 
-export const authController = new AuthController()

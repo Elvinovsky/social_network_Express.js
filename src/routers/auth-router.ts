@@ -20,7 +20,7 @@ import {
     checkForEmailToDB
 } from "../middlewares/check-for-errors";
 import { ipLimiter } from "../middlewares/rateLimiter";
-import { authController } from "../controllers/auths-controller";
+import { authController } from "../compositions-root";
 
 export const authRouter = Router()
 

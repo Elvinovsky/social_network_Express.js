@@ -1,4 +1,3 @@
-
 import {BlogView} from "../../models/modelsBlogs/blog-view";
 import {ObjectId, DeleteResult} from "mongodb";
 import {BlogDBModel} from "../../models/modelsBlogs/blog-input";

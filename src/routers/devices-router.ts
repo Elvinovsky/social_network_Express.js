@@ -2,7 +2,7 @@ import {
     Router
 } from "express";
 import { refreshTokenAuthentication } from "../middlewares/guard-authentication/user-authentication";
-import { devicesController } from "../controllers/devices-controller";
+import { devicesController } from "../compositions-root";
 
 export const devicesRouter = Router();
 

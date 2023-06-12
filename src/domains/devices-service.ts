@@ -6,10 +6,7 @@ import {
 } from "../repositories/db/devices-sessions-repository";
 
 export class DevicesService {
-
-    private devicesSessionsRepository: DevicesSessionsRepository;
-    constructor () {
-        this.devicesSessionsRepository = new DevicesSessionsRepository()
+    constructor (protected devicesSessionsRepository: DevicesSessionsRepository) {
     }
 
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {

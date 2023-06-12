@@ -3,12 +3,13 @@ import {
     Request,
     Response
 } from "express";
-import { jwtService } from "../../application/jwt-service";
 import { usersService } from "../../domains/users-service";
 import { usersRepository } from "../../repositories/db/users-db-repository";
-import { DevicesSessionsRepository } from "../../repositories/db/devices-sessions-repository";
+import {
+    devicesRepository,
+    jwtService
+} from "../../compositions-root";
 
-const devicesRepository = new DevicesSessionsRepository() //todo refoctoring
 export const userAuthentication = (async( req: Request, res: Response, next: NextFunction ) => {
     if (!req.headers.authorization) {
         res.sendStatus(401)

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { deleteAllDBController } from "../controllers/test-delete-allDB";
+import { deleteAllDBController } from "../compositions-root";
 
 export const deleteAllDataRouter = Router();
 
