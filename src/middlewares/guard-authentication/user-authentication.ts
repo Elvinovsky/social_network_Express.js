@@ -3,11 +3,11 @@ import {
     Request,
     Response
 } from "express";
-import { usersService } from "../../domains/users-service";
 import { usersRepository } from "../../repositories/db/users-db-repository";
 import {
     devicesRepository,
-    jwtService
+    jwtService,
+    usersService
 } from "../../compositions-root";
 
 export const userAuthentication = (async( req: Request, res: Response, next: NextFunction ) => {

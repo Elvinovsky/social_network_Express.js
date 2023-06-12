@@ -1,15 +1,27 @@
-import {body} from "express-validator";
-import {checkForErrors} from "../check-for-errors";
+import { body } from "express-validator";
+import { checkForErrors } from "../check-for-errors";
+import { Status } from "../../helpers/like-helpers";
 
-export const checkInputContent =  body ( 'content')
+
+export const checkInputContent = body('content')
     .trim()
-    .isLength({ min: 20, max: 300 })
+    .isLength({
+        min: 20,
+        max: 300
+    })
     .withMessage("length should be no more than 300 characters")
     .bail()
     .isString()
     .withMessage("is not a string")
 
-export const validatorInputComment = [
-    checkInputContent,
-    checkForErrors
-]
+export const checkInputLikeValue = body('likeStatus')
+    .trim()
+    .isLength({ min: 4, max: 7})
+    .custom(likeStatus => {
+        const statusesValue = Object.values(Status)
+        if (!statusesValue.includes(likeStatus)) {
+            throw new Error("invalid Value");
+        }
+    })
+
+export const validatorInputComment = [checkInputContent, checkForErrors]

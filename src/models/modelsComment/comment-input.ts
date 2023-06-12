@@ -1,3 +1,5 @@
+import { LikeDBInfo } from "../modelsLike/like-input";
+
 export type CommentInputModel = {
     content: string
     /**
@@ -10,7 +12,8 @@ export class CommentDBModel {
     constructor (public postId: string,
                  public content: string,
                  public commentatorInfo: CommentatorInfo,
-                 public createdAt: string) {
+                 public createdAt: string,
+                 /*public likeDBInfo: LikeDBInfo*/ ) {
     }
 }
 

@@ -1,4 +1,4 @@
-export type LikesInfoViewModel = {
+export type LikesInfoView = {
     likesCount: number
 
     dislikesCount: number
@@ -6,5 +6,3 @@ export type LikesInfoViewModel = {
     myStatus: string
 
 }
-
-enum status {  'None', 'Like', 'Dislike' }

@@ -9,7 +9,7 @@ import {
 import { PostDBModel } from "../models/modelsPosts/post-input";
 import { userMapping } from "../functions/usersMapping";
 
-class FeedbackService {
+export class FeedbackService {
     async getComment ( id: string ): Promise<CommentViewModel | null> {
         return await feedBacksRepository.getCommentById(id)
     }
@@ -41,4 +41,3 @@ class FeedbackService {
     }
 
 }
-export const feedbacksService = new FeedbackService()

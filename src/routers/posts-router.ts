@@ -15,10 +15,10 @@ import {postQueryRepository} from "../repositories/queryRepository/posts-query-r
 import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryInputParams, SearchTitleTerm} from "../models/query-input-params";
 import {CommentViewModel} from "../models/modelsComment/comment-view";
-import {feedbacksService} from "../domains/feedback-service";
 import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
 import {CommentInputModel} from "../models/modelsComment/comment-input";
 import { userAuthentication } from "../middlewares/guard-authentication/user-authentication";
+import { feedbacksService } from "../compositions-root";
 
 export const postsRouter = Router()
 
