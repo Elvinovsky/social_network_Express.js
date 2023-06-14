@@ -50,6 +50,9 @@ feedBacksRouter.get('/:id',
                 comment.likesInfo.myStatus = likeInfo.status
                 res.send(comment)
                 return
+            } else {
+                res.sendStatus(404)
+                return;
             }
         } else if (comment) {
             res.send(comment)
