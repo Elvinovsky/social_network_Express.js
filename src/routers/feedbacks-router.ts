@@ -87,16 +87,17 @@ feedBacksRouter.put('/:commentId/like-status',
         try {
             const likeStatus = req.body.likeStatus
             const userId = req.user!.id
-            const commentId = req.params.id
+            const commentId = req.params.commentId
 
             const comment = await feedBacksRepository.getCommentById(commentId)
             if (!comment) {
                 res.sendStatus(404)
                 return
             }
+            debugger;
 
             const newLikeInfo = new LikeModelClass({
-                likeStatus,
+                status: likeStatus,
                 userId,
                 postOrCommentId: commentId,
                 createdAt: new Date()

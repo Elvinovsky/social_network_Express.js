@@ -23,25 +23,29 @@ export const feedBacksRepository = {
     },
     async getCommentById ( id: string ): Promise<CommentViewModel | null> {
         const likesArr: LikeDBInfo[] = await LikeModelClass.find({ postOrCommentId: id })
-                                                           .lean()
-        const disAndLikeCountArr = likesArr.map(el => {
+        const likeCount = likesArr.map(el => {
             let likesCount = 0
-            let disCount = 0
             if (el.status === "Like") {
                 likesCount++
             }
+
+            return likesCount
+        })
+        const disCount = likesArr.map(el => {
+            let disCount = 0
             if (el.status === "Dislike") {
                 disCount++
             }
-            return [likesCount, disCount]
+
+            return disCount
         })
 
         const comment = await CommentModelClass.findOneAndUpdate(
             { _id: new ObjectId(id) },
             {
                 likeInfo: {
-                    likesCount: disAndLikeCountArr[1],
-                    dislikesCount: disAndLikeCountArr[2]
+                    likesCount: Number(likeCount),
+                    dislikesCount: Number(disCount)
                 }
             }, {
                 returnDocument: "after"

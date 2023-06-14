@@ -1,7 +1,5 @@
 import { body } from "express-validator";
 import { checkForErrors } from "../check-for-errors";
-import { Status } from "../../helpers/like-helpers";
-
 
 export const checkInputContent = body('content')
     .trim()
@@ -18,11 +16,11 @@ export const checkInputLikeValue = body('likeStatus')
     .trim()
     .isString()
     .isLength({ min: 4, max: 7})
-    .custom(likeStatus => {
+    /*.custom(likeStatus => {
         const statusesValue = Object.values(Status)
         if (!statusesValue.includes(likeStatus)) {
             throw new Error("invalid Value");
         }
-    })
+    })*/
 
 export const validatorInputComment = [checkInputContent, checkForErrors]

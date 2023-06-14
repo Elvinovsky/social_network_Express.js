@@ -18,7 +18,6 @@ export const userAuthentication = (async( req: Request, res: Response, next: Nex
     const token = (req.headers.authorization).split(' ')[1]
 
     const userId = await jwtService.getUserIdByAccessToken(token)
-
     if (userId) {
         req.user = await usersService.findUserById(userId)
         next()

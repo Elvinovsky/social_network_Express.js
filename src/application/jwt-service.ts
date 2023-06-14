@@ -9,7 +9,7 @@ export class JwtService {
     async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: userId },
             settings.ACCESS_JWT_SECRET,
-            { expiresIn: '10m' })
+            { expiresIn: '10h' })
         return {
             accessToken: accessToken
         }
@@ -23,16 +23,17 @@ export class JwtService {
                 deviceId
             },
             settings.REFRESH_TOKEN_SECRET,
-            { expiresIn: '20m' })
+            { expiresIn: '10h' })
     }
 
 
     async getUserIdByAccessToken ( token: string ) {
         try {
             const userId = jwt.verify(token,
-                settings.ACCESS_JWT_SECRET) as jwt.JwtPayload
+                settings.ACCESS_JWT_SECRET) as { userId: string }
             return new ObjectId(userId.userId).toString()
         } catch (error) {
+            console.log("error verify", error)
             return null;
         }
     }
