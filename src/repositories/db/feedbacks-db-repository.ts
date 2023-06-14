@@ -32,9 +32,7 @@ export const feedBacksRepository = {
                     likesCount: Number(likeCount),
                     dislikesCount: Number(disCount)
                 }
-            }, {
-                returnDocument: "after"
-            })// todo userView status 
+            })
         if (!comment) {
             return null
         }
