@@ -20,6 +20,7 @@ console.log(process.env.MONGO_URL)
 //export const sessionsCollection = db.collection<SessionDBModel>('devices-sessions');
 //export const feedbacksCollection = db.collection<CommentDBModel>('comments');
 //export const attemptsCollection = db.collection<RequestAttempt>('attempts');
+
 export async function runDb () {
 
     /*  try { //запуск монгодб
