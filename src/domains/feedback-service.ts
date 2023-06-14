@@ -29,7 +29,7 @@ export class FeedbackService {
             content: content,
             commentatorInfo: new CommentatorInfo(userId, outputUserLogin!.login),
             createdAt: new Date().toISOString(),
-            likeInfo: {
+            likesInfo: {
                 likesCount: 0,
                 dislikesCount: 0,
                 myStatus: "None"
