@@ -64,7 +64,7 @@ postsRouter.post('/:postId/comments',userAuthentication, validatorInputComment,
     async (req: RequestParamsAndInputBody<{postId: string},CommentInputModel>,
            res: ResponseViewBody<CommentViewModel>) => {
 
-    const validatorPostIdForCreateComments = await feedbacksService.searchPostIdForComments(req.params.postId)//todo custom validator
+    const validatorPostIdForCreateComments = await feedbacksService.findPostIdForComments(req.params.postId)
         if (!validatorPostIdForCreateComments) {
             res.sendStatus(404)
             return;

@@ -23,6 +23,8 @@ import { feedbacksService } from "../compositions-root";
 import { checkForErrors } from "../middlewares/check-for-errors";
 import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { LikeModelClass } from "../models/mongoose/models";
+import { ObjectId } from "mongodb";
+import { statusTypeHelper } from "../helpers/like-helpers";
 
 
 export const feedBacksRouter = Router()
@@ -46,7 +48,7 @@ feedBacksRouter.put('/:id',
             res.sendStatus(404)
             return;
         }
-        const validatorUserId = await feedbacksService.searchUserForComment(req.user!.id)
+        const validatorUserId = await feedbacksService.findUserForComment(req.user!.id)
         if (validatorUserId!.id !== validatorCommentById.commentatorInfo.userId) {
             res.sendStatus(403)
             return
@@ -66,7 +68,7 @@ feedBacksRouter.delete('/:id',
             res.sendStatus(404)
             return;
         }
-        const user = await feedbacksService.searchUserForComment(req.user!.id)
+        const user = await feedbacksService.findUserForComment(req.user!.id)
         if (user!.id !== comment.commentatorInfo.userId) {
             res.sendStatus(403)
             return
@@ -85,28 +87,43 @@ feedBacksRouter.put('/:commentId/like-status',
     async( req: Request, res: Response ) => {
 
         try {
-            const likeStatus = req.body.likeStatus
+            const statusType = req.body.likeStatus
             const userId = req.user!.id
             const commentId = req.params.commentId
 
-            const comment = await feedBacksRepository.getCommentById(commentId)
+            const comment = await feedbacksService.getComment(commentId)
             if (!comment) {
                 res.sendStatus(404)
                 return
             }
-            debugger;
 
-            const newLikeInfo = new LikeModelClass({
-                status: likeStatus,
-                userId,
-                postOrCommentId: commentId,
-                createdAt: new Date()
-            })
+            const isAlreadyLiked = await LikeModelClass.findOne({userId: userId, postOrCommentId: commentId})
 
-            await newLikeInfo.save()
+            //если пользователь не ставил ранне оценку коментарию
+            if (!isAlreadyLiked) {
+                const newLikeInfo = new LikeModelClass({
+                    status: statusType,
+                    userId,
+                    postOrCommentId: commentId,
+                    createdAt: new Date()
+                })
+                await newLikeInfo.save()
 
-            res.sendStatus(204)
-            return
+                res.sendStatus(204)
+                return
+            }
+            // если отправленный статус совпадает со стасом в БД
+            if (isAlreadyLiked.status === statusType){
+                await LikeModelClass.deleteOne({userId: userId, postOrCommentId: commentId})
+                res.sendStatus(204)
+                return
+            }
+            // если отправленный статус не совпадает с существующий статусом в БД
+                const changeLikeInfo = await LikeModelClass.updateOne({userId: userId, postOrCommentId: commentId}, {$set: {status: statusType}})
+
+                res.sendStatus(204)
+                return
+
 
         } catch (error) {
             console.log(error)

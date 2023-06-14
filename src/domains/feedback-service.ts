@@ -13,16 +13,16 @@ export class FeedbackService {
     async getComment ( id: string ): Promise<CommentViewModel | null> {
         return await feedBacksRepository.getCommentById(id)
     }
-    async searchUserForComment ( userId: string ): Promise<UserViewModel | null> {
+    async findUserForComment ( userId: string ): Promise<UserViewModel | null> {
         const user = await usersRepository.findUserForComment(userId)
         if (!user) return null
         return userMapping(user)
     }
-    async searchPostIdForComments ( postId: string ): Promise<PostDBModel | null> {
+    async findPostIdForComments ( postId: string ): Promise<PostDBModel | null> {
         return await feedBacksRepository.searchPostIdForComments(postId)
     }
     async createComment ( postId: string, userId: string, content: string, ): Promise<CommentViewModel> {
-        const outputUserLogin: UserViewModel | null = await this.searchUserForComment(userId)
+        const outputUserLogin: UserViewModel | null = await this.findUserForComment(userId)
 
         const newComment: CommentDBModel = {
             postId: postId,
