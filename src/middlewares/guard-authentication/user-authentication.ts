@@ -3,11 +3,12 @@ import {
     Request,
     Response
 } from "express";
-import { jwtService } from "../../application/jwt-service";
-import { usersService } from "../../domains/users-service";
 import { usersRepository } from "../../repositories/db/users-db-repository";
-import { devicesSessionsRepository } from "../../repositories/db/devices-sessions-repository";
-
+import {
+    devicesRepository,
+    jwtService,
+    usersService
+} from "../../compositions-root";
 
 export const userAuthentication = (async( req: Request, res: Response, next: NextFunction ) => {
     if (!req.headers.authorization) {
@@ -27,7 +28,7 @@ export const userAuthentication = (async( req: Request, res: Response, next: Nex
     }
 })
 
-export const refreshTokenAuthentication = (async( req: Request, res: Response, next: NextFunction ) => {
+export const refreshTokenAuthentication = ( async( req: Request, res: Response, next: NextFunction ) => {
 
     const refreshToken: string = req.cookies['refreshToken']
     if (!refreshToken) {
@@ -42,7 +43,7 @@ export const refreshTokenAuthentication = (async( req: Request, res: Response, n
         return res.sendStatus(401)
     }
 
-    const checkDeviceSession = await devicesSessionsRepository.findDeviceSessionByIAT(issuedAt)
+    const checkDeviceSession = await devicesRepository.findDeviceSessionByIAT(issuedAt)
     if (!checkDeviceSession) {
         return res.sendStatus(401)
     }

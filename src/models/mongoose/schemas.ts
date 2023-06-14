@@ -7,6 +7,9 @@ import {
 } from "../modelsUsersLogin/user-input";
 import { SessionDBModel } from "../modelsDevice/device-input";
 import { CommentDBModel } from "../modelsComment/comment-input";
+import {
+    LikeDBInfo
+} from "../modelsLike/like-input";
 
 export const blogSchema = new mongoose.Schema <WithId<BlogDBModel>> ({
     name: {type: String, required: true},
@@ -46,7 +49,11 @@ export const commentSchema = new mongoose.Schema<CommentDBModel>({
     postId: {type: String, required: true},
     content: {type: String, required: true},
     commentatorInfo: {type: Object, required: true},
-    createdAt: {type: String, required: true}
+    createdAt: {type: String, required: true},
+    likeInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String}
 })
 
 export type RequestAttempt = {
@@ -56,4 +63,11 @@ export type RequestAttempt = {
 export const attemptSchema = new mongoose.Schema<RequestAttempt>({
     urlAndIp: {type: String, required: true},
     date: {type: String, required: true}
+})
+
+export const likeSchema = new mongoose.Schema<LikeDBInfo>({
+    status: { type: String, required: true },
+    userId: {type: String, required: true},
+    postOrCommentId: {type: String, required: true},
+    createdAt: { type: Date, required: true }
 })

@@ -1,9 +1,14 @@
 import { ObjectId } from "mongodb";
 import { SessionDBModel } from "../models/modelsDevice/device-input";
 import add from "date-fns/add";
-import { devicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
+import {
+    DevicesSessionsRepository
+} from "../repositories/db/devices-sessions-repository";
 
-export const devicesSessionsService = {
+export class DevicesService {
+    constructor (protected devicesSessionsRepository: DevicesSessionsRepository) {
+    }
+
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {
         const createDeviceSession: SessionDBModel = {
             deviceId: deviceId,
@@ -18,23 +23,26 @@ export const devicesSessionsService = {
                     //minutes:20
                 })
         }
-        return await devicesSessionsRepository.addDeviceSession(createDeviceSession)
+        return await this.devicesSessionsRepository.addDeviceSession(createDeviceSession)
 
-    },
+    }
+
     async updateIATByDeviceSession ( newIssuedAt: number, issuedAt: number ) {
-        return await devicesSessionsRepository.updateDeviceSession(newIssuedAt,
+        return await this.devicesSessionsRepository.updateDeviceSession(newIssuedAt,
             issuedAt)
-    },
+    }
+
     async logoutDeviceSessionByDeviceId ( deviceId: string, userId: string ) {
-        const findDeviceSessionById = await devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
+        const findDeviceSessionById = await this.devicesSessionsRepository.findDeviceIdAmongSessions(deviceId)
         if (!findDeviceSessionById) {
             return null
         }
-        return await devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId,
+        return await this.devicesSessionsRepository.deleteDeviceSessionSpecified(deviceId,
             userId)
-    },
+    }
+
     async logoutDevicesSessionsByUser ( issuedAt: number, userId: string ) {
-        const result = devicesSessionsRepository.deleteDevicesSessionsByUser(issuedAt,
+        const result = this.devicesSessionsRepository.deleteDevicesSessionsByUser(issuedAt,
             userId)
         return result
     }

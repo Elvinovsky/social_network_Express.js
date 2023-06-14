@@ -1,13 +1,13 @@
 import {Response, Router} from "express";
 import {RequestInputBody, RequestParamsId, RequestQuery, ResponseViewBody} from "../types/req-res-types";
 import {UserInputModel} from "../models/modelsUsersLogin/user-input";
-import {usersService} from "../domains/users-service";
 import {validatorUserBodyRegistrationForSuperAdmin} from "../middlewares/body-validator/check-bodyUser";
 import {PaginatorType} from "../helpers/pagination-helpers";
 import {QueryInputParams, SearchEmailTerm, SearchLoginTerm} from "../models/query-input-params";
 import {usersQueryRepository} from "../repositories/queryRepository/users-query-repository";
 import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 import {UserViewModel} from "../models/modelsUsersLogin/user-view";
+import { usersService } from "../compositions-root";
 
 
 

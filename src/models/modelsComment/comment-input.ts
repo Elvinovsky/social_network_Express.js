@@ -1,3 +1,4 @@
+
 export type CommentInputModel = {
     content: string
     /**
@@ -9,11 +10,16 @@ export type CommentInputModel = {
 export type CommentDBModel = {
     postId: string,
     content: string,
-    commentatorInfo: CommentatorInfo
-    createdAt: string
+    commentatorInfo: CommentatorInfo,
+    createdAt: string,
+    likeInfo: {
+        likesCount: number
+        dislikesCount: number
+        myStatus: string
+    }
 }
 
-export type CommentatorInfo = {
-    userId: string,
-    userLogin: string
+export class CommentatorInfo {
+    constructor ( public userId: string, public userLogin: string ) {
+    }
 }

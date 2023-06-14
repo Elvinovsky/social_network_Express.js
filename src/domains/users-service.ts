@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { emailsManager } from "../adapter/emails-manager";
 import { userMapping } from "../functions/usersMapping";
 
-export const usersService = {
+export class UsersService  {
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
@@ -23,7 +23,7 @@ export const usersService = {
             }
         }
         return await usersRepository.addNewUser(newUser)
-    },
+    }
     async independentUserRegistration ( login: string, password: string, email: string ): Promise<UserViewModel | null> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
@@ -50,16 +50,16 @@ export const usersService = {
             return null
         }
         return result
-    },
-    async passwordRecovery ( password: string, code: string ):Promise <boolean | null> {
-    const isConfirmed = await this.confirmCode(code)
-    if (!isConfirmed) {
-        return null
     }
-    const hash = await this._generateHash(password)
-    const isRestored = await usersRepository.updatePasswordHash(hash, code)
-    return isRestored
-},
+    async passwordRecovery ( password: string, code: string ):Promise <boolean | null> {
+        const isConfirmed = await this.confirmCode(code)
+        if (!isConfirmed) {
+            return null
+        }
+        const hash = await this._generateHash(password)
+        const isRestored = await usersRepository.updatePasswordHash(hash, code)
+        return isRestored
+    }
     async findUserById ( id: string ): Promise<UserViewModel | null> {
         const user = await usersRepository.findUserById(id)
         if (!user) {
@@ -67,10 +67,10 @@ export const usersService = {
         }
         return userMapping(user)
 
-    },
+    }
     async confirmCode ( code: string ): Promise<boolean> {
         return await usersRepository.updateConfirmCode(code)
-    },
+    }
     async emailConfirmation ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
@@ -89,7 +89,7 @@ export const usersService = {
             return false
         }
         return true
-    },
+    }
     async sendPasswordRecovery ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
@@ -110,7 +110,7 @@ export const usersService = {
         }
 
         return true
-    },
+    }
     async checkCredentials ( loginOrEmail: string, password: string ): Promise<WithId<UserAccountDBModel> | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!user || !user.emailConfirmation.isConfirmed) {
@@ -124,15 +124,15 @@ export const usersService = {
         } else{
             return null
         }
-    },
+    }
     async _generateHash ( password: string ): Promise<string> {
         return await bcrypt.hash(password,
             7)
-    },
+    }
     async _isPasswordCorrect ( password: string, hash: string ): Promise<boolean> {
         return await bcrypt.compare(password,
             hash)
-    },
+    }
     async userByIdDelete ( id: string ): Promise<boolean> {
         return await usersRepository.userByIdDelete(id)
     }

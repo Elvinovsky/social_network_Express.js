@@ -14,13 +14,13 @@ export type BlogInput = {
 
 }
 
-export type BlogDBModel = {
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-    /**
-     * True if user has not expired membership subscription to blog
-     */
-    isMembership: boolean
+export class BlogDBModel {
+    constructor ( public name: string,
+                  public description: string,
+                  public websiteUrl: string,
+                  public createdAt: string,
+                  /**
+                   * True if user has not expired membership subscription to blog
+                   */
+                  public isMembership: boolean) { }
 }
