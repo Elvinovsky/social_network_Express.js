@@ -15,13 +15,11 @@ export const checkInputContent = body('content')
 export const checkInputLikeValue = body('likeStatus')
     .trim()
     .isString()
-    .isLength({ min: 4, max: 7})
+    .withMessage("is not a string")
+    .bail()
     .matches( /^Like$|^Dislike$|^None$/)
-    /*.custom(likeStatus => {
-        const statusesValue = Object.values(Status)
-        if (!statusesValue.includes(likeStatus)) {
-            throw new Error("invalid Value");
-        }
-    })*/
+    .withMessage("invalid value")
+    .bail()
+
 
 export const validatorInputComment = [checkInputContent, checkForErrors]
