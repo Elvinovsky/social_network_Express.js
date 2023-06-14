@@ -9,7 +9,7 @@ export class JwtService {
     async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: userId },
             settings.ACCESS_JWT_SECRET,
-            { expiresIn: '10s' })
+            { expiresIn: '10m' })
         return {
             accessToken: accessToken
         }
@@ -23,7 +23,7 @@ export class JwtService {
                 deviceId
             },
             settings.REFRESH_TOKEN_SECRET,
-            { expiresIn: '20s' })
+            { expiresIn: '20m' })
     }
 
 
