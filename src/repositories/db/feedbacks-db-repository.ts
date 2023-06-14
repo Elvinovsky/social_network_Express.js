@@ -32,6 +32,8 @@ export const feedBacksRepository = {
                     likesCount: Number(likeCount),
                     dislikesCount: Number(disCount)
                 }
+            }, {
+                returnDocument: "after"
             })
         if (!comment) {
             return null
