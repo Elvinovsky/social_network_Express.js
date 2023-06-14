@@ -28,7 +28,7 @@ export const feedBacksRepository = {
         const comment = await CommentModelClass.findOneAndUpdate(
             { _id: new ObjectId(id) },
             {
-                likeInfo: {
+                likesInfo: {
                     likesCount: Number(likeCount),
                     dislikesCount: Number(disCount)
                 }
