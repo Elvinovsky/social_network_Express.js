@@ -112,9 +112,8 @@ feedBacksRouter.put('/:commentId/like-status',
                 res.sendStatus(204)
                 return
             }
-            // если отправленный статус совпадает со стасом в БД
+            // если отправленный статус "None"
             if (isAlreadyLiked.status === statusType){
-                await LikeModelClass.deleteOne({userId: userId, postOrCommentId: commentId})
                 res.sendStatus(204)
                 return
             }
