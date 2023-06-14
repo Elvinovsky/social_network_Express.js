@@ -50,10 +50,11 @@ export const commentSchema = new mongoose.Schema<CommentDBModel>({
     content: {type: String, required: true},
     commentatorInfo: {type: Object, required: true},
     createdAt: {type: String, required: true},
-    likeInfo: {
+    likesInfo: {
         likesCount: Number,
         dislikesCount: Number,
-        myStatus: String}
+        myStatus: String
+    }
 })
 
 export type RequestAttempt = {

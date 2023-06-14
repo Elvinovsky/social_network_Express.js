@@ -11,10 +11,10 @@ export const commentsMapping = (array: Array<WithId<CommentDBModel>>): CommentVi
                 userId: el.commentatorInfo.userId,
                 userLogin: el.commentatorInfo.userLogin
             },
-            likeInfo: {
-                likesCount: el.likeInfo.likesCount,
-                dislikesCount: el.likeInfo.dislikesCount,
-                myStatus: el.likeInfo.myStatus
+            likesInfo: {
+                likesCount: el.likesInfo.likesCount,
+                dislikesCount: el.likesInfo.dislikesCount,
+                myStatus: el.likesInfo.myStatus
             },
             createdAt: el.createdAt
         }
@@ -28,10 +28,10 @@ export const commentMapping = (comment: WithId<CommentDBModel> ): CommentViewMod
             userId: comment.commentatorInfo.userId,
             userLogin: comment.commentatorInfo.userLogin
         },
-        likeInfo: {
-            likesCount: comment.likeInfo.likesCount,
-            dislikesCount: comment.likeInfo.dislikesCount,
-            myStatus: comment.likeInfo.myStatus
+        likesInfo: {
+            likesCount: comment.likesInfo.likesCount,
+            dislikesCount: comment.likesInfo.dislikesCount,
+            myStatus: comment.likesInfo.myStatus
         },
         createdAt: comment.createdAt
     }

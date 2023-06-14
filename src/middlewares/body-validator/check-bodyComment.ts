@@ -16,6 +16,7 @@ export const checkInputLikeValue = body('likeStatus')
     .trim()
     .isString()
     .isLength({ min: 4, max: 7})
+    .matches( /^Like$|^Dislike$|^None$/)
     /*.custom(likeStatus => {
         const statusesValue = Object.values(Status)
         if (!statusesValue.includes(likeStatus)) {

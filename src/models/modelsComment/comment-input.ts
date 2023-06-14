@@ -12,7 +12,7 @@ export type CommentDBModel = {
     content: string,
     commentatorInfo: CommentatorInfo,
     createdAt: string,
-    likeInfo: {
+    likesInfo: {
         likesCount: number
         dislikesCount: number
         myStatus: string
