@@ -74,7 +74,6 @@ postsRouter.get('/:postId/comments',
             }
         }
 
-
         const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
             Number(req.query.pageNumber),
             Number(req.query.pageSize),

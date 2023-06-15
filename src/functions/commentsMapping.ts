@@ -1,45 +1,35 @@
 import { WithId } from "mongodb";
 import { CommentViewModel } from "../models/modelsComment/comment-view";
 import { CommentDBModel } from "../models/modelsComment/comment-input";
-import { LikeModelClass } from "../models/mongoose/models";
+import {
+    likesInfoCurrentUser,
+    likesOrDisCount
+} from "../helpers/like-helpers";
 
 export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: string ): Promise<CommentViewModel[]> => {
 
     return Promise
-        .all( array.map( async( el ) => {
+        .all(array.map(async( el ) => {
 
-        let likeInfo = null;
+            const status = await likesInfoCurrentUser(el._id, userId)
 
-        if (userId) {
-            likeInfo = await LikeModelClass.findOne({
-                userId: userId,
-                postOrCommentId: el._id.toString(),
-            })
+            const countsLikeAndDis = await likesOrDisCount(el._id)
 
-            if (likeInfo) {
-                likeInfo = likeInfo.status
+            return {
+                id: el._id.toString(),
+                content: el.content,
+                commentatorInfo: {
+                    userId: el.commentatorInfo.userId,
+                    userLogin: el.commentatorInfo.userLogin
+                },
+                likesInfo: {
+                    likesCount: countsLikeAndDis.likes,
+                    dislikesCount: countsLikeAndDis.disLikes,
+                    myStatus: status
+                },
+                createdAt: el.createdAt
             }
-        }
-
-                const likeCount = await LikeModelClass.countDocuments({ postOrCommentId:  el._id.toString() , status: "Like"})
-                const disCount  = await LikeModelClass.countDocuments({ postOrCommentId:  el._id.toString() , status: "Dislike"})
-
-        return {
-            id: el._id.toString(),
-            content: el.content,
-            commentatorInfo: {
-                userId: el.commentatorInfo.userId,
-                userLogin: el.commentatorInfo.userLogin
-            },
-            likesInfo: {
-                likesCount: likeCount,
-                dislikesCount: disCount,
-                myStatus: likeInfo || "None"
-            },
-            createdAt: el.createdAt
-        }
-    })
-    )
+        }))
 }
 
 export const commentMapping = ( comment: WithId<CommentDBModel> ): CommentViewModel => {
