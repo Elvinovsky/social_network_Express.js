@@ -15,7 +15,7 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>> ): Comment
             likesInfo: {
                 likesCount: el.likesInfo.likesCount,
                 dislikesCount: el.likesInfo.dislikesCount,
-                myStatus: el.likesInfo.myStatus
+                myStatus: el.likesInfo.myStatus || "None"
             },
             createdAt: el.createdAt
         }
@@ -32,7 +32,7 @@ export const commentMapping = ( comment: WithId<CommentDBModel> ): CommentViewMo
         likesInfo: {
             likesCount: comment.likesInfo.likesCount,
             dislikesCount: comment.likesInfo.dislikesCount,
-            myStatus: comment.likesInfo.myStatus
+            myStatus: comment.likesInfo.myStatus || "None"
         },
         createdAt: comment.createdAt
     }
