@@ -1,9 +1,25 @@
 import { WithId } from "mongodb";
 import { CommentViewModel } from "../models/modelsComment/comment-view";
 import { CommentDBModel } from "../models/modelsComment/comment-input";
+import { LikeModelClass } from "../models/mongoose/models";
 
-export const commentsMapping = ( array: Array<WithId<CommentDBModel>> ): CommentViewModel[] => {
-    return array.map(( el ) => {
+export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: string ): Promise<CommentViewModel[]> => {
+
+    return Promise
+        .all( array.map( async( el ) => {
+
+        let likeInfo = null;
+
+        if (userId) {
+            likeInfo = await LikeModelClass.findOne({
+                userId: userId,
+                postOrCommentId: el._id.toString(),
+            })
+
+            if (likeInfo) {
+                likeInfo = likeInfo.status
+            }
+        }
 
         return {
             id: el._id.toString(),
@@ -15,12 +31,14 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>> ): Comment
             likesInfo: {
                 likesCount: el.likesInfo.likesCount,
                 dislikesCount: el.likesInfo.dislikesCount,
-                myStatus: el.likesInfo.myStatus || "None"
+                myStatus: likeInfo || "None"
             },
             createdAt: el.createdAt
         }
     })
+    )
 }
+
 export const commentMapping = ( comment: WithId<CommentDBModel> ): CommentViewModel => {
     return {
         id: comment._id.toString(),

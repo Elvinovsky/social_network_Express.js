@@ -1,54 +1,81 @@
-import {Response, Router} from "express";
-import {postsService} from "../domains/posts-service";
-import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
+import {
+    Response,
+    Router
+} from "express";
+import { postsService } from "../domains/posts-service";
+import { superAdminAuthentication } from "../middlewares/guard-authentication/super-admin-authentication";
 import {
     RequestInputBody,
     RequestParamsAndInputBody,
     ResponseViewBody,
     RequestParamsId,
-    RequestQuery, RequestParamsAndInputQuery
+    RequestQuery,
+    RequestParamsAndInputQuery
 } from "../types/req-res-types";
-import {PostInput} from "../models/modelsPosts/post-input";
-import {PostView} from "../models/modelsPosts/post-view";
-import {validatorInputPostBody} from "../middlewares/body-validator/check-bodyPost";
-import {postQueryRepository} from "../repositories/queryRepository/posts-query-repository"
-import {PaginatorType} from "../helpers/pagination-helpers";
-import {QueryInputParams, SearchTitleTerm} from "../models/query-input-params";
-import {CommentViewModel} from "../models/modelsComment/comment-view";
-import {validatorInputComment} from "../middlewares/body-validator/check-bodyComment";
-import {CommentInputModel} from "../models/modelsComment/comment-input";
+import { PostInput } from "../models/modelsPosts/post-input";
+import { PostView } from "../models/modelsPosts/post-view";
+import { validatorInputPostBody } from "../middlewares/body-validator/check-bodyPost";
+import { postQueryRepository } from "../repositories/queryRepository/posts-query-repository"
+import { PaginatorType } from "../helpers/pagination-helpers";
+import {
+    QueryInputParams,
+    SearchTitleTerm
+} from "../models/query-input-params";
+import { CommentViewModel } from "../models/modelsComment/comment-view";
+import { validatorInputComment } from "../middlewares/body-validator/check-bodyComment";
+import { CommentInputModel } from "../models/modelsComment/comment-input";
 import { userAuthentication } from "../middlewares/guard-authentication/user-authentication";
-import { feedbacksService } from "../compositions-root";
+import {
+    feedbacksService,
+    jwtService
+} from "../compositions-root";
+import { LikeModelClass } from "../models/mongoose/models";
 
 export const postsRouter = Router()
 
 postsRouter.get('/',
-    async (req: RequestQuery<QueryInputParams&SearchTitleTerm>,
-                   res: ResponseViewBody<PaginatorType<PostView[]>>) => {
+    async( req: RequestQuery<QueryInputParams & SearchTitleTerm>, res: ResponseViewBody<PaginatorType<PostView[]>> ) => {
 
-    const getAllPosts: PaginatorType<PostView[]> = await postQueryRepository.returnOfAllPosts(
-        req.query.searchTitleTerm,
-        Number(req.query.pageNumber),
-        Number(req.query.pageSize),
-        req.query.sortBy,
-        req.query.sortDirection)
+        const getAllPosts: PaginatorType<PostView[]> = await postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm,
+            Number(req.query.pageNumber),
+            Number(req.query.pageSize),
+            req.query.sortBy,
+            req.query.sortDirection)
         console.log(getAllPosts)
         console.log(typeof getAllPosts)
         res.send(getAllPosts)
-})
+    })
 postsRouter.get('/:id',
-    async (req: RequestParamsId<{ id: string }>,
-                   res: ResponseViewBody<PostView>) => {
-    const getByIdPost = await postsService.findPostById(req.params.id)
-    return getByIdPost === null
-        ? res.sendStatus(404)
-        : res.send(getByIdPost)
-})
+    async( req: RequestParamsId<{ id: string }>, res: ResponseViewBody<PostView> ) => {
+        const getByIdPost = await postsService.findPostById(req.params.id)
+        return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
+    })
 postsRouter.get('/:postId/comments',
-    async (req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>,
-           res: ResponseViewBody<PaginatorType<CommentViewModel[]>>) => {
-        const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(
-            req.params.postId,
+    async( req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>, res: ResponseViewBody<PaginatorType<CommentViewModel[]>> ) => {
+
+        if (req.headers.authorization) {
+            const token = (req.headers.authorization).split(' ')[1]
+            const userId = await jwtService.getUserIdByAccessToken(token)
+
+            if (userId){
+                const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
+                    Number(req.query.pageNumber),
+                    Number(req.query.pageSize),
+                    req.query.sortBy,
+                    req.query.sortDirection,
+                    userId)
+
+                if (!getCommentsByPostId) {
+                    res.sendStatus(404)
+                    return;
+                }
+                res.send(getCommentsByPostId)
+                return
+            }
+        }
+
+
+        const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
             Number(req.query.pageNumber),
             Number(req.query.pageSize),
             req.query.sortBy,
@@ -60,30 +87,39 @@ postsRouter.get('/:postId/comments',
         }
         res.send(getCommentsByPostId)
     })
-postsRouter.post('/:postId/comments',userAuthentication, validatorInputComment,
-    async (req: RequestParamsAndInputBody<{postId: string},CommentInputModel>,
-           res: ResponseViewBody<CommentViewModel>) => {
+postsRouter.post('/:postId/comments',
+    userAuthentication,
+    validatorInputComment,
+    async( req: RequestParamsAndInputBody<{
+        postId: string
+    }, CommentInputModel>, res: ResponseViewBody<CommentViewModel> ) => {
 
-    const validatorPostIdForCreateComments = await feedbacksService.findPostIdForComments(req.params.postId)
+        const validatorPostIdForCreateComments = await feedbacksService.findPostIdForComments(req.params.postId)
         if (!validatorPostIdForCreateComments) {
             res.sendStatus(404)
             return;
         }
-    const comment = await feedbacksService.createComment(req.params.postId, req.user!.id, req.body.content)
-            res.status(201).send(comment)
+        const comment = await feedbacksService.createComment(req.params.postId,
+            req.user!.id,
+            req.body.content)
+        res.status(201)
+           .send(comment)
     })
-postsRouter.post('/', validatorInputPostBody,
-    async (req: RequestInputBody<PostInput>,
-           res: ResponseViewBody<PostView>) => {
+postsRouter.post('/',
+    validatorInputPostBody,
+    async( req: RequestInputBody<PostInput>, res: ResponseViewBody<PostView> ) => {
 
-        const createdNewPost = await postsService.createPost
-        (req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
-        res.status(201).send(createdNewPost)
+        const createdNewPost = await postsService.createPost(req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.body.blogId)
+        res.status(201)
+           .send(createdNewPost)
         return;
     })
-postsRouter.put('/:id', validatorInputPostBody,
-    async (req: RequestParamsAndInputBody<{ id: string }, PostInput>,
-           res: ResponseViewBody<{}>) => {
+postsRouter.put('/:id',
+    validatorInputPostBody,
+    async( req: RequestParamsAndInputBody<{ id: string }, PostInput>, res: ResponseViewBody<{}> ) => {
 
         const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)
         if (!validatorPostByIdForUpdate) {
@@ -91,16 +127,19 @@ postsRouter.put('/:id', validatorInputPostBody,
             return;
         }
         const postForUpdate = await postsService
-            .updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content)
+            .updatePostById(req.params.id,
+                req.body.title,
+                req.body.shortDescription,
+                req.body.content)
 
         if (postForUpdate) {
             res.sendStatus(204)
             return;
         }
     })
-postsRouter.delete('/:id', superAdminAuthentication,
-    async (req: RequestParamsId<{ id: string }>,
-           res: Response) => {
+postsRouter.delete('/:id',
+    superAdminAuthentication,
+    async( req: RequestParamsId<{ id: string }>, res: Response ) => {
         const foundPostDelete = await postsService.postByIdDelete(req.params.id)
         if (!foundPostDelete) {
             res.sendStatus(404)

@@ -7,7 +7,10 @@ import {
     getDirection, pagesCountOfBlogs,
     PaginatorType, DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
-import {WithId} from "mongodb";
+import {
+    ObjectId,
+    WithId
+} from "mongodb";
 import {CommentViewModel} from "../../models/modelsComment/comment-view";
 import {commentsMapping} from "../../functions/commentsMapping";
 import {CommentDBModel} from "../../models/modelsComment/comment-input";
@@ -53,9 +56,10 @@ export const postQueryRepository = {
      pageSize: number,
      sortBy?: string,
      sortDirection?: string,
-    ):Promise<PaginatorType<CommentViewModel[]> | null> {
+     userId?: string
+     ):Promise<PaginatorType<CommentViewModel[]> | null> {
 
-        const postIdForComment = await PostModelClass.findOne({postId: postId}) //express validator .custom
+        const postIdForComment = await PostModelClass.findOne({_id: new ObjectId(postId)}) //express validator .custom
         if (!postIdForComment){
             return null
         }
@@ -71,7 +75,7 @@ export const postQueryRepository = {
             page: getPageNumber(pageNumber),
             pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
-            items: commentsMapping(foundComments)
+            items: await commentsMapping(foundComments, userId)
         }
     }
 }
