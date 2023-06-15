@@ -8,26 +8,40 @@ import {
 } from "../models/modelsComment/comment-input";
 import { PostDBModel } from "../models/modelsPosts/post-input";
 import { userMapping } from "../functions/usersMapping";
+import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 
 export class FeedbackService {
     async getComment ( id: string ): Promise<CommentViewModel | null> {
         return await feedBacksRepository.getCommentById(id)
     }
+
     async findUserForComment ( userId: string ): Promise<UserViewModel | null> {
         const user = await usersRepository.findUserForComment(userId)
         if (!user) return null
         return userMapping(user)
     }
+
     async findPostIdForComments ( postId: string ): Promise<PostDBModel | null> {
         return await feedBacksRepository.searchPostIdForComments(postId)
     }
+    async likeInfoByUser ( userId: string, postOrCommentId: string ) {
+        if (userId) {
+            const likeInfo = await likesInfoRepo.getLikeInfo(userId,
+                postOrCommentId)
+
+            return likeInfo
+        }
+        return null // todo
+    }
+
     async createComment ( postId: string, userId: string, content: string, ): Promise<CommentViewModel> {
         const outputUserLogin: UserViewModel | null = await this.findUserForComment(userId)
 
         const newComment: CommentDBModel = {
             postId: postId,
             content: content,
-            commentatorInfo: new CommentatorInfo(userId, outputUserLogin!.login),
+            commentatorInfo: new CommentatorInfo(userId,
+                outputUserLogin!.login),
             createdAt: new Date().toISOString(),
             likesInfo: {
                 likesCount: 0,
@@ -38,10 +52,12 @@ export class FeedbackService {
 
         return await feedBacksRepository.addNewComment(newComment)
     }
+
     async updateCommentById ( id: string, content: string ): Promise<boolean> {
         return feedBacksRepository.updateCommentById(id,
             content)
     }
+
     async deletedCountComment ( id: string ): Promise<boolean> {
         return await feedBacksRepository.deleteComment(id)
     }

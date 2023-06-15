@@ -6,6 +6,7 @@ export const likesInfoRepo = {
         await LikeModelClass.deleteMany({})
     },
     async getLikeInfo ( userId: string, postOrCommentId: string ) {
+
         return LikeModelClass.findOne({
             userId: userId,
             postOrCommentId: postOrCommentId
