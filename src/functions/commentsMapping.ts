@@ -21,6 +21,9 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: 
             }
         }
 
+                const likeCount = await LikeModelClass.countDocuments({ postOrCommentId:  el._id.toString() , status: "Like"})
+                const disCount  = await LikeModelClass.countDocuments({ postOrCommentId:  el._id.toString() , status: "Dislike"})
+
         return {
             id: el._id.toString(),
             content: el.content,
@@ -29,8 +32,8 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: 
                 userLogin: el.commentatorInfo.userLogin
             },
             likesInfo: {
-                likesCount: el.likesInfo.likesCount,
-                dislikesCount: el.likesInfo.dislikesCount,
+                likesCount: likeCount,
+                dislikesCount: disCount,
                 myStatus: likeInfo || "None"
             },
             createdAt: el.createdAt
