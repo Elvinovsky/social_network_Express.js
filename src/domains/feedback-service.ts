@@ -11,10 +11,13 @@ import { userMapping } from "../functions/usersMapping";
 import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 import { ObjectId } from "mongodb";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
+import { LikeModelClass } from "../models/mongoose/models";
+import mongoose from "mongoose";
 
 export class FeedbackService {
     async getComment ( id: string, userId?: string ): Promise<CommentViewModel | null> {
-        return await feedBacksRepository.getCommentById(id, userId)
+        return await feedBacksRepository.getCommentById(id,
+            userId)
     }
 
     async findUserForComment ( userId: string ): Promise<UserViewModel | null> {
@@ -50,7 +53,40 @@ export class FeedbackService {
         return await feedBacksRepository.deleteComment(id)
     }
 
-    async likesInfoCurrentUser ( commentOrPostId: string | ObjectId, userId?: string, ):Promise<string> {
+    async createOrUpdateLike ( postOrCommentId: string, userId: string, userLogin: string, statusType: string ) {
+       try {
+            const isAlreadyLiked: LikeDBInfo | null = await likesInfoRepo.getLikeInfo(userId,
+                postOrCommentId)
+
+            //если пользователь не ставил ранне оценку коментарию или посту
+            if (!isAlreadyLiked) {
+                const newLikeInfo = await likesInfoRepo.addLikeInfo(userId,
+                    userLogin,
+                    postOrCommentId,
+                    statusType)
+
+                return newLikeInfo
+            }
+
+            // если отправленный статус совпадает с существующим в БД
+            if (isAlreadyLiked.status === statusType) {
+                return true
+            }
+
+            // если отправленный статус не совпадает с существующий статусом в БД
+            const changeLikeInfo = await likesInfoRepo.updateLikeInfo(userId,
+                postOrCommentId,
+                statusType)
+
+           return changeLikeInfo
+
+        } catch (error) {
+           console.log("FeedbackService.createOrUpdateLike", error)
+           return false
+       }
+    }
+
+    async likesInfoCurrentUser ( commentOrPostId: string | ObjectId, userId ?: string, ): Promise<string> {
         if (!userId) {
             return "None"
         }

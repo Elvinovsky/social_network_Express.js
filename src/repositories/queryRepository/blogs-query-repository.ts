@@ -71,7 +71,7 @@ export const blogsQueryRepository = {
             page: getPageNumber(pageNumber),
             pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
-            items: postsMapping(foundBlogs)
+            items: await postsMapping(foundBlogs)
         }
     },
 }

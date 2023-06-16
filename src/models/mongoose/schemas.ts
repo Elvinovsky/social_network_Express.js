@@ -61,9 +61,10 @@ export const attemptSchema = new mongoose.Schema<RequestAttempt>({
     date: {type: String, required: true}
 })
 
-export const likesSchema = new mongoose.Schema<LikeDBInfo>({
+export const likeSchema = new mongoose.Schema<LikeDBInfo>({
     status: { type: String, required: true },
     userId: {type: String, required: true},
+    userLogin: {type: String, required: true},
     postOrCommentId: {type: String, required: true},
     createdAt: { type: Date, required: true }
 })

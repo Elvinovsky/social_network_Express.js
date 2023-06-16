@@ -97,6 +97,7 @@ feedBacksRouter.put('/:commentId/like-status',
         try {
             const statusType = req.body.likeStatus
             const userId = req.user!.id
+            const userLogin = req.user!.login
             const commentId = req.params.commentId
 
             const comment = await feedbacksService.getComment(commentId)
@@ -105,39 +106,13 @@ feedBacksRouter.put('/:commentId/like-status',
                 return
             }
 
-            const isAlreadyLiked = await LikeModelClass.findOne({
-                userId: userId,
-                postOrCommentId: commentId
-            })
-
-            //если пользователь не ставил ранне оценку коментарию
-            if (!isAlreadyLiked) {
-                const newLikeInfo = new LikeModelClass({
-                    status: statusType,
-                    userId,
-                    postOrCommentId: commentId,
-                    createdAt: new Date()
-                })
-                await newLikeInfo.save()
-
-                res.sendStatus(204)
-                return
-            }
-            // если отправленный статус "None"
-            if (isAlreadyLiked.status === statusType) {
-                res.sendStatus(204)
-                return
-            }
-            // если отправленный статус не совпадает с существующий статусом в БД
-            const changeLikeInfo = await LikeModelClass.updateOne({
-                    userId: userId,
-                    postOrCommentId: commentId
-                },
-                { $set: { status: statusType } })
-
-            res.sendStatus(204)
+           const result = await feedbacksService.createOrUpdateLike(commentId, userId, userLogin, statusType)
+           if(result) {
+               res.sendStatus(204)
+               return
+           }
+            res.sendStatus(500)
             return
-
 
         } catch (error) {
             console.log(error)

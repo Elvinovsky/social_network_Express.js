@@ -38,12 +38,4 @@ export type PostDBModel = {
     blogId:	string,
     blogName: string,
     createdAt: string,
-    extendedLikesInfo: {
-        likesCount: number,
-        dislikesCount: number,
-        myStatus: string
-        newestLikes: [{
-            addedAt: string, userId: string | null, login: string | null
-        }]
-    }
 }

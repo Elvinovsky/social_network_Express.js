@@ -1,3 +1,5 @@
+import { LikeInfoView } from "../modelsLike/like-view";
+
 export type PostView = {
     id: string,
     title: string,
@@ -10,8 +12,6 @@ export type PostView = {
         likesCount: number,
         dislikesCount: number,
         myStatus: string
-        newestLikes: [{
-            addedAt: string, userId: string | null, login: string | null
-        }]
+        newestLikes: LikeInfoView[]
     }
 }

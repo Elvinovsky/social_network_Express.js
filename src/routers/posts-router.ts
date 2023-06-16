@@ -1,4 +1,5 @@
 import {
+    Request,
     Response,
     Router
 } from "express";
@@ -22,7 +23,10 @@ import {
     SearchTitleTerm
 } from "../models/query-input-params";
 import { CommentViewModel } from "../models/modelsComment/comment-view";
-import { validatorInputComment } from "../middlewares/body-validator/check-bodyComment";
+import {
+    checkInputLikeValue,
+    validatorInputComment
+} from "../middlewares/body-validator/check-bodyComment";
 import { CommentInputModel } from "../models/modelsComment/comment-input";
 import { userAuthentication } from "../middlewares/guard-authentication/user-authentication";
 import {
@@ -31,6 +35,7 @@ import {
 } from "../compositions-root";
 import { LikeModelClass } from "../models/mongoose/models";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";
+import { checkForErrors } from "../middlewares/check-for-errors";
 
 export const postsRouter = Router()
 
@@ -118,6 +123,37 @@ postsRouter.put('/:id',
             return;
         }
     })
+postsRouter.put('/:id/like-status',
+    userAuthentication,
+    checkInputLikeValue,
+    checkForErrors,
+    async( req: Request, res: Response) => {
+        try {
+            const statusType = req.body.likeStatus
+            const userId = req.user!.id
+            const userLogin = req.user!.login
+            const postId = req.params.id
+
+            const validatorPostByIdForUpdate = await postsService.findPostById(postId)
+            if (!validatorPostByIdForUpdate) {
+                res.sendStatus(404)
+                return;
+            }
+
+            const result = await feedbacksService.createOrUpdateLike(postId, userId, userLogin, statusType)
+            if(result) {
+                res.sendStatus(204)
+                return
+            }
+            res.sendStatus(500)
+            return
+
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500)
+        }
+    })
+
 postsRouter.delete('/:id',
     superAdminAuthentication,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {

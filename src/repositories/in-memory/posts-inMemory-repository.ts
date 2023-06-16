@@ -1,3 +1,4 @@
+/*
 import {inMemory} from "../../database/in-memory";
 import {PostView} from "../../models/modelsPosts/post-view";
 import {BlogView} from "../../models/modelsBlogs/blog-view";
@@ -11,7 +12,7 @@ export const postsRepository = {
        return inMemory.allPosts;
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostView> {
+   /* async addNewPost(title: string, shortDescription: string, content: string, blogId: string): Promise <PostView> {
         const outputBlogName: string = this.findBlogIdForPost.name
         const createNewPost: PostView = {
             id: (+(new Date())).toString(),
@@ -59,4 +60,4 @@ export const postsRepository = {
         }
         return false;
     }
-}
+ */
