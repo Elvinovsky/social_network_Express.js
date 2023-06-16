@@ -32,7 +32,12 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: 
         }))
 }
 
-export const commentMapping = ( comment: WithId<CommentDBModel> ): CommentViewModel => {
+export const commentMapping = async ( comment: WithId<CommentDBModel>, userId?: string ): Promise<CommentViewModel> => {
+
+    const status = await feedbacksService.likesInfoCurrentUser(comment._id, userId)
+
+    const countsLikeAndDis = await likesOrDisCount(comment._id)
+
     return {
         id: comment._id.toString(),
         content: comment.content,
@@ -41,10 +46,9 @@ export const commentMapping = ( comment: WithId<CommentDBModel> ): CommentViewMo
             userLogin: comment.commentatorInfo.userLogin
         },
         likesInfo: {
-            likesCount: comment.likesInfo.likesCount,
-            dislikesCount: comment.likesInfo.dislikesCount,
-            myStatus: comment.likesInfo.myStatus || "None"
-        },
+            likesCount:countsLikeAndDis.likes,
+            dislikesCount: countsLikeAndDis.disLikes,
+            myStatus: status},
         createdAt: comment.createdAt
     }
 }

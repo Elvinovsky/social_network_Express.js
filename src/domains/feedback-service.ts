@@ -13,8 +13,8 @@ import { ObjectId } from "mongodb";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
 
 export class FeedbackService {
-    async getComment ( id: string ): Promise<CommentViewModel | null> {
-        return await feedBacksRepository.getCommentById(id)
+    async getComment ( id: string, userId?: string ): Promise<CommentViewModel | null> {
+        return await feedBacksRepository.getCommentById(id, userId)
     }
 
     async findUserForComment ( userId: string ): Promise<UserViewModel | null> {
@@ -36,11 +36,6 @@ export class FeedbackService {
             commentatorInfo: new CommentatorInfo(userId,
                 outputUserLogin!.login),
             createdAt: new Date().toISOString(),
-            likesInfo: {
-                likesCount: 0,
-                dislikesCount: 0,
-                myStatus: "None"
-            }
         }
 
         return await feedBacksRepository.addNewComment(newComment)

@@ -36,15 +36,12 @@ feedBacksRouter.get('/:id',
     optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {
 
-        const comment = await feedbacksService.getComment(req.params.id)
+        const comment = await feedbacksService.getComment(req.params.id, req.user?.id,)
         if (!comment) {
             res.sendStatus(404)
             return;
         }
 
-        const likeStatus = await feedbacksService.likesInfoCurrentUser(req.params.id, req.user?.id,)
-
-        comment.likesInfo.myStatus = likeStatus
         res.send(comment)
         return
 

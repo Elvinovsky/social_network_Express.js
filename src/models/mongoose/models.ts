@@ -3,7 +3,7 @@ import {
     attemptSchema,
     blogSchema,
     commentSchema,
-    likeSchema,
+    likesSchema,
     postSchema,
     RequestAttempt,
     sessionSchema,
@@ -29,4 +29,4 @@ export const CommentModelClass = mongoose.model<CommentDBModel>('comments', comm
 
 export const AttemptModelClass = mongoose.model<RequestAttempt>('attempt', attemptSchema)
 
-export const LikeModelClass = mongoose.model<LikeDBInfo>('likes', likeSchema)
+export const LikeModelClass = mongoose.model<LikeDBInfo>('likes', likesSchema)

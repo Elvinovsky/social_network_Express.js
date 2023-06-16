@@ -21,24 +21,13 @@ export const feedBacksRepository = {
     async searchPostIdForComments ( postId: string ): Promise<PostDBModel | null> {
         return await PostModelClass.findOne({ _id: new ObjectId(postId) })
     },
-    async getCommentById ( id: string ): Promise<CommentViewModel | null> {
-        const likeCount = await LikeModelClass.countDocuments({ postOrCommentId: id , status: "Like"})
-        const disCount  = await LikeModelClass.countDocuments({ postOrCommentId: id , status: "Dislike"})
-
-        const comment = await CommentModelClass.findOneAndUpdate(
-            { _id: new ObjectId(id) },
-            {
-                likesInfo: {
-                    likesCount: Number(likeCount),
-                    dislikesCount: Number(disCount)
-                }
-            }, {
-                returnDocument: "after"
-            })
+    async getCommentById ( id: string, userId?: string ): Promise<CommentViewModel | null> {
+        const comment = await CommentModelClass.findOne(
+            { _id: new ObjectId(id)})
         if (!comment) {
             return null
         }
-        return commentMapping(comment)
+        return commentMapping(comment, userId)
     },
     async addNewComment ( comment: CommentDBModel ): Promise<CommentViewModel> {
         const result: WithId<CommentDBModel> = await CommentModelClass.create(comment)

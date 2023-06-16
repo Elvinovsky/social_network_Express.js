@@ -13,7 +13,7 @@ import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 
 export class TestDeleteAllDBController {
 
-    constructor (protected devicesRepository: DevicesSessionsRepository) {
+    constructor ( protected devicesRepository: DevicesSessionsRepository ) {
     }
 
     async delete ( req: Request, res: Response ) {
