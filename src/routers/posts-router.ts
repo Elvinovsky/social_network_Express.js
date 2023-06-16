@@ -56,22 +56,25 @@ postsRouter.get('/:id',
         const getByIdPost = await postsService.findPostById(req.params.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
-postsRouter.get('/:postId/comments', optionalUserAuth,
-    async( req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>, res: ResponseViewBody<PaginatorType<CommentViewModel[]>> ) => {
+postsRouter.get('/:postId/comments',
+    optionalUserAuth,
+    async( req: RequestParamsAndInputQuery<{
+        postId: string
+    }, QueryInputParams>, res: ResponseViewBody<PaginatorType<CommentViewModel[]>> ) => {
 
-                const getCommentsByPostId = await postQueryRepository.getCommentsByPostId(req.params.postId,
-                    Number(req.query.pageNumber),
-                    Number(req.query.pageSize),
-                    req.query.sortBy,
-                    req.query.sortDirection,
-                    req.user?.id)
+        const getCommentsByPostId = await postQueryRepository.getCommentsByPostId(req.params.postId,
+            Number(req.query.pageNumber),
+            Number(req.query.pageSize),
+            req.query.sortBy,
+            req.query.sortDirection,
+            req.user?.id)
 
-                if (!getCommentsByPostId) {
-                    res.sendStatus(404)
-                    return;
-                }
-                res.send(getCommentsByPostId)
-                return
+        if (!getCommentsByPostId) {
+            res.sendStatus(404)
+            return;
+        }
+        res.send(getCommentsByPostId)
+        return
     })
 postsRouter.post('/:postId/comments',
     userAuthentication,
@@ -127,7 +130,7 @@ postsRouter.put('/:id/like-status',
     userAuthentication,
     checkInputLikeValue,
     checkForErrors,
-    async( req: Request, res: Response) => {
+    async( req: Request, res: Response ) => {
         try {
             const statusType = req.body.likeStatus
             const userId = req.user!.id
@@ -140,8 +143,11 @@ postsRouter.put('/:id/like-status',
                 return;
             }
 
-            const result = await feedbacksService.createOrUpdateLike(postId, userId, userLogin, statusType)
-            if(result) {
+            const result = await feedbacksService.createOrUpdateLike(postId,
+                userId,
+                userLogin,
+                statusType)
+            if (result) {
                 res.sendStatus(204)
                 return
             }
