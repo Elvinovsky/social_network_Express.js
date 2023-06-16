@@ -27,42 +27,25 @@ import { checkForErrors } from "../middlewares/check-for-errors";
 import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { LikeModelClass } from "../models/mongoose/models";
 import { ObjectId } from "mongodb";
+import { optionalUserAuth } from "../middlewares/optional-user-authentication";
 
 
 export const feedBacksRouter = Router()
 
 feedBacksRouter.get('/:id',
+    optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {
-        const comment = await feedbacksService.getComment(req.params.id)
-        if (req.headers.authorization) {
 
-            const token = (req.headers.authorization).split(' ')[1]
-
-            const userId = await jwtService.getUserIdByAccessToken(token)
-
-            const likeInfo = await LikeModelClass.findOne({
-                userId: userId,
-                postOrCommentId: req.params.id
-            })
-
-            if (comment && likeInfo) {
-                comment.likesInfo.myStatus = likeInfo.status
-                res.send(comment)
-                return
-            } else if (comment) {
-                res.send(comment)
-                return
-            } else{
-                res.sendStatus(404)
-                return;
-            }
-        } else if (comment) {
-            res.send(comment)
-            return
-        } else{
+        const comment = await feedbacksService.getComment(req.params.id, req.user?.id,)
+        if (!comment) {
             res.sendStatus(404)
             return;
         }
+
+        res.send(comment)
+        return
+
+
     })
 feedBacksRouter.put('/:id',
     validatorInputComment,
@@ -114,6 +97,7 @@ feedBacksRouter.put('/:commentId/like-status',
         try {
             const statusType = req.body.likeStatus
             const userId = req.user!.id
+            const userLogin = req.user!.login
             const commentId = req.params.commentId
 
             const comment = await feedbacksService.getComment(commentId)
@@ -122,39 +106,13 @@ feedBacksRouter.put('/:commentId/like-status',
                 return
             }
 
-            const isAlreadyLiked = await LikeModelClass.findOne({
-                userId: userId,
-                postOrCommentId: commentId
-            })
-
-            //если пользователь не ставил ранне оценку коментарию
-            if (!isAlreadyLiked) {
-                const newLikeInfo = new LikeModelClass({
-                    status: statusType,
-                    userId,
-                    postOrCommentId: commentId,
-                    createdAt: new Date()
-                })
-                await newLikeInfo.save()
-
-                res.sendStatus(204)
-                return
-            }
-            // если отправленный статус "None"
-            if (isAlreadyLiked.status === statusType) {
-                res.sendStatus(204)
-                return
-            }
-            // если отправленный статус не совпадает с существующий статусом в БД
-            const changeLikeInfo = await LikeModelClass.updateOne({
-                    userId: userId,
-                    postOrCommentId: commentId
-                },
-                { $set: { status: statusType } })
-
-            res.sendStatus(204)
+           const result = await feedbacksService.createOrUpdateLike(commentId, userId, userLogin, statusType)
+           if(result) {
+               res.sendStatus(204)
+               return
+           }
+            res.sendStatus(500)
             return
-
 
         } catch (error) {
             console.log(error)

@@ -1,4 +1,5 @@
 import {
+    Request,
     Response,
     Router
 } from "express";
@@ -22,7 +23,10 @@ import {
     SearchTitleTerm
 } from "../models/query-input-params";
 import { CommentViewModel } from "../models/modelsComment/comment-view";
-import { validatorInputComment } from "../middlewares/body-validator/check-bodyComment";
+import {
+    checkInputLikeValue,
+    validatorInputComment
+} from "../middlewares/body-validator/check-bodyComment";
 import { CommentInputModel } from "../models/modelsComment/comment-input";
 import { userAuthentication } from "../middlewares/guard-authentication/user-authentication";
 import {
@@ -30,6 +34,8 @@ import {
     jwtService
 } from "../compositions-root";
 import { LikeModelClass } from "../models/mongoose/models";
+import { optionalUserAuth } from "../middlewares/optional-user-authentication";
+import { checkForErrors } from "../middlewares/check-for-errors";
 
 export const postsRouter = Router()
 
@@ -50,20 +56,15 @@ postsRouter.get('/:id',
         const getByIdPost = await postsService.findPostById(req.params.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
-postsRouter.get('/:postId/comments',
+postsRouter.get('/:postId/comments', optionalUserAuth,
     async( req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>, res: ResponseViewBody<PaginatorType<CommentViewModel[]>> ) => {
 
-        if (req.headers.authorization) {
-            const token = (req.headers.authorization).split(' ')[1]
-            const userId = await jwtService.getUserIdByAccessToken(token)
-
-            if (userId){
-                const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
+                const getCommentsByPostId = await postQueryRepository.getCommentsByPostId(req.params.postId,
                     Number(req.query.pageNumber),
                     Number(req.query.pageSize),
                     req.query.sortBy,
                     req.query.sortDirection,
-                    userId)
+                    req.user?.id)
 
                 if (!getCommentsByPostId) {
                     res.sendStatus(404)
@@ -71,20 +72,6 @@ postsRouter.get('/:postId/comments',
                 }
                 res.send(getCommentsByPostId)
                 return
-            }
-        }
-
-        const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
-            Number(req.query.pageNumber),
-            Number(req.query.pageSize),
-            req.query.sortBy,
-            req.query.sortDirection,)
-
-        if (!getCommentsByPostId) {
-            res.sendStatus(404)
-            return;
-        }
-        res.send(getCommentsByPostId)
     })
 postsRouter.post('/:postId/comments',
     userAuthentication,
@@ -136,6 +123,37 @@ postsRouter.put('/:id',
             return;
         }
     })
+postsRouter.put('/:id/like-status',
+    userAuthentication,
+    checkInputLikeValue,
+    checkForErrors,
+    async( req: Request, res: Response) => {
+        try {
+            const statusType = req.body.likeStatus
+            const userId = req.user!.id
+            const userLogin = req.user!.login
+            const postId = req.params.id
+
+            const validatorPostByIdForUpdate = await postsService.findPostById(postId)
+            if (!validatorPostByIdForUpdate) {
+                res.sendStatus(404)
+                return;
+            }
+
+            const result = await feedbacksService.createOrUpdateLike(postId, userId, userLogin, statusType)
+            if(result) {
+                res.sendStatus(204)
+                return
+            }
+            res.sendStatus(500)
+            return
+
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500)
+        }
+    })
+
 postsRouter.delete('/:id',
     superAdminAuthentication,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {

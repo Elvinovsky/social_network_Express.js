@@ -1,8 +1,7 @@
 import {BlogView} from "../models/modelsBlogs/blog-view";
-import {PostView} from "../models/modelsPosts/post-view";
 
 
-export const inMemory: {allBlogs:  BlogView[], allPosts: PostView[]} = {
+export const inMemory: {allBlogs:  BlogView[], allPosts: any} = {
     allBlogs: [{
         id:	"12",
         name: "IT",
@@ -18,6 +17,17 @@ export const inMemory: {allBlogs:  BlogView[], allPosts: PostView[]} = {
         content: "Предисловие",
         blogId:	'1',
         blogName: "IT",
-        createdAt: "2023-02-28T20:49:21.728Z"
+        createdAt: "2023-02-28T20:49:21.728Z",
+        extendedLikesInfo: {
+            likesCount: 9,
+            dislikesCount: 7,
+            myStatus: "None",
+            newestLikes: {
+                addedAt: "new Date().toString()",
+                userId: "kjjhklkjkj",
+                userLogin: "sheet"
+            },
+        }
     }]
 };
+

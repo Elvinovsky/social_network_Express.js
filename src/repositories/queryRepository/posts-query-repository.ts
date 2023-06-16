@@ -29,6 +29,7 @@ export const postQueryRepository = {
      pageSize?: number,
      sortBy?: string,
      sortDirection?: string,
+     userId?: string
     ): Promise<PaginatorType<PostView[]>> {
 
         const filter: mongoose.FilterQuery<PostDBModel> = {}
@@ -47,10 +48,10 @@ export const postQueryRepository = {
             page: getPageNumber(pageNumber),
             pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
-            items: postsMapping(foundPosts)
+            items: await postsMapping(foundPosts, userId)
             }
     },
-    async searchCommentsByPostId
+    async getCommentsByPostId
     (postId: string,
      pageNumber: number,
      pageSize: number,

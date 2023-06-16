@@ -24,7 +24,7 @@ export const postSchema = new mongoose.Schema<WithId<PostDBModel>>({
     content: {type: String, required: true},
     blogId: {type: String, required: true},
     blogName: {type: String, required: true},
-    createdAt: {type: String, required: true}
+    createdAt: {type: String, required: true},
 })
 
 export const userSchema = new mongoose.Schema<WithId<UserAccountDBModel>>({
@@ -50,11 +50,6 @@ export const commentSchema = new mongoose.Schema<CommentDBModel>({
     content: {type: String, required: true},
     commentatorInfo: {type: Object, required: true},
     createdAt: {type: String, required: true},
-    likesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
-        myStatus: String
-    }
 })
 
 export type RequestAttempt = {
@@ -69,6 +64,7 @@ export const attemptSchema = new mongoose.Schema<RequestAttempt>({
 export const likeSchema = new mongoose.Schema<LikeDBInfo>({
     status: { type: String, required: true },
     userId: {type: String, required: true},
+    userLogin: {type: String, required: true},
     postOrCommentId: {type: String, required: true},
     createdAt: { type: Date, required: true }
 })

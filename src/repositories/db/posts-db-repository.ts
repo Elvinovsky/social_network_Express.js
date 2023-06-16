@@ -25,15 +25,8 @@ export const postsRepository = {
     //создание и добавление нового поста в базу данных.
     async addNewPost(newPost: PostDBModel): Promise <PostView> {
        const result = await PostModelClass.create(newPost)
-        return {
-            id: result._id.toString(),
-            title: newPost.title,
-            shortDescription: newPost.shortDescription,
-            content: newPost.content,
-            blogId:	newPost.blogId,
-            blogName: newPost.blogName,
-            createdAt: newPost.createdAt
-        }
+
+        return postMapping(result)
     },
     // обновление поста по ID.
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {

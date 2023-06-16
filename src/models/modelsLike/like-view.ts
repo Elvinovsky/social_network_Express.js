@@ -1,8 +1,5 @@
-export type LikesInfoView = {
-    likesCount: number
-
-    dislikesCount: number
-
-    myStatus: string
-
+export type LikeInfoView = {
+    addedAt : string,
+    userId : string,
+    login : string
 }
