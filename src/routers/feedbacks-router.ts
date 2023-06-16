@@ -27,42 +27,28 @@ import { checkForErrors } from "../middlewares/check-for-errors";
 import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { LikeModelClass } from "../models/mongoose/models";
 import { ObjectId } from "mongodb";
+import { optionalUserAuth } from "../middlewares/optional-user-authentication";
 
 
 export const feedBacksRouter = Router()
 
 feedBacksRouter.get('/:id',
+    optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {
+
         const comment = await feedbacksService.getComment(req.params.id)
-        if (req.headers.authorization) {
-
-            const token = (req.headers.authorization).split(' ')[1]
-
-            const userId = await jwtService.getUserIdByAccessToken(token)
-
-            const likeInfo = await LikeModelClass.findOne({
-                userId: userId,
-                postOrCommentId: req.params.id
-            })
-
-            if (comment && likeInfo) {
-                comment.likesInfo.myStatus = likeInfo.status
-                res.send(comment)
-                return
-            } else if (comment) {
-                res.send(comment)
-                return
-            } else{
-                res.sendStatus(404)
-                return;
-            }
-        } else if (comment) {
-            res.send(comment)
-            return
-        } else{
+        if (!comment) {
             res.sendStatus(404)
             return;
         }
+
+        const likeStatus = await feedbacksService.likesInfoCurrentUser(req.params.id, req.user?.id,)
+
+        comment.likesInfo.myStatus = likeStatus
+        res.send(comment)
+        return
+
+
     })
 feedBacksRouter.put('/:id',
     validatorInputComment,

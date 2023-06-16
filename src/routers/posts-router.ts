@@ -30,6 +30,7 @@ import {
     jwtService
 } from "../compositions-root";
 import { LikeModelClass } from "../models/mongoose/models";
+import { optionalUserAuth } from "../middlewares/optional-user-authentication";
 
 export const postsRouter = Router()
 
@@ -50,20 +51,15 @@ postsRouter.get('/:id',
         const getByIdPost = await postsService.findPostById(req.params.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
-postsRouter.get('/:postId/comments',
+postsRouter.get('/:postId/comments', optionalUserAuth,
     async( req: RequestParamsAndInputQuery<{ postId: string }, QueryInputParams>, res: ResponseViewBody<PaginatorType<CommentViewModel[]>> ) => {
 
-        if (req.headers.authorization) {
-            const token = (req.headers.authorization).split(' ')[1]
-            const userId = await jwtService.getUserIdByAccessToken(token)
-
-            if (userId){
-                const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
+                const getCommentsByPostId = await postQueryRepository.getCommentsByPostId(req.params.postId,
                     Number(req.query.pageNumber),
                     Number(req.query.pageSize),
                     req.query.sortBy,
                     req.query.sortDirection,
-                    userId)
+                    req.user?.id)
 
                 if (!getCommentsByPostId) {
                     res.sendStatus(404)
@@ -71,20 +67,6 @@ postsRouter.get('/:postId/comments',
                 }
                 res.send(getCommentsByPostId)
                 return
-            }
-        }
-
-        const getCommentsByPostId = await postQueryRepository.searchCommentsByPostId(req.params.postId,
-            Number(req.query.pageNumber),
-            Number(req.query.pageSize),
-            req.query.sortBy,
-            req.query.sortDirection,)
-
-        if (!getCommentsByPostId) {
-            res.sendStatus(404)
-            return;
-        }
-        res.send(getCommentsByPostId)
     })
 postsRouter.post('/:postId/comments',
     userAuthentication,

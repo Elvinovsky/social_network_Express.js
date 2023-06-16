@@ -50,7 +50,7 @@ export const postQueryRepository = {
             items: postsMapping(foundPosts)
             }
     },
-    async searchCommentsByPostId
+    async getCommentsByPostId
     (postId: string,
      pageNumber: number,
      pageSize: number,

@@ -8,7 +8,7 @@ import { usersRepository } from "../repositories/db/users-db-repository";
 import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
-import { LikeModelClass } from "../models/mongoose/models";
+import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 
 
 export class TestDeleteAllDBController {
@@ -23,7 +23,7 @@ export class TestDeleteAllDBController {
         await feedBacksRepository.testingDeleteAllComments()
         await this.devicesRepository.testingDeleteAllSessions()
         await attemptsRepository.testingDeleteAttempts()
-        await LikeModelClass.deleteMany({}) // todo realize repo
+        await likesInfoRepo.testDeleteDb()
         res.sendStatus(204)
         return;
     }
