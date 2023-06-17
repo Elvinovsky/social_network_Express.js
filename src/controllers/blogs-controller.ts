@@ -50,7 +50,9 @@ export class BlogsController {
             Number(req.query.pageNumber),
             Number(req.query.pageSize),
             req.query.sortBy,
-            req.query.sortDirection,)
+            req.query.sortDirection,
+            req.user?.id
+            )
 
         if (!getByBlogIdPosts) {
             res.sendStatus(404)

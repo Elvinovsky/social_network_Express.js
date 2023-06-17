@@ -53,6 +53,7 @@ export const blogsQueryRepository = {
      pageSize: number,
      sortBy?: string,
      sortDirection?: string,
+     userId?: string
     ):Promise<PaginatorType<PostView[]> | null> {
 
         const blogIdForPost = await PostModelClass.findOne({blogId: blogId}) //express validator .custom
@@ -71,7 +72,7 @@ export const blogsQueryRepository = {
             page: getPageNumber(pageNumber),
             pageSize: getPageSize(pageSize),
             totalCount: calculateOfFiles,
-            items: await postsMapping(foundBlogs)
+            items: await postsMapping(foundBlogs, userId)
         }
     },
 }
