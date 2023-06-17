@@ -36,6 +36,7 @@ import {
 import { LikeModelClass } from "../models/mongoose/models";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";
 import { checkForErrors } from "../middlewares/check-for-errors";
+import { postsRepository } from "../repositories/db/posts-db-repository";
 
 export const postsRouter = Router()
 
@@ -54,7 +55,7 @@ postsRouter.get('/',
 postsRouter.get('/:id',
     optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: ResponseViewBody<PostView> ) => {
-        const getByIdPost = await postsService.findPostById(req.params.id,req.user?.id)
+        const getByIdPost = await postsRepository.getPostById(req.params.id,req.user?.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
 postsRouter.get('/:postId/comments',
@@ -128,7 +129,7 @@ postsRouter.put('/:id',
             return;
         }
     })
-postsRouter.put('/:id/like-status',
+postsRouter.put('/:postId/like-status',
     userAuthentication,
     checkInputLikeValue,
     checkForErrors,
@@ -137,7 +138,7 @@ postsRouter.put('/:id/like-status',
             const statusType = req.body.likeStatus
             const userId = req.user!.id
             const userLogin = req.user!.login
-            const postId = req.params.id
+            const postId = req.params.postId
 
             const validatorPostByIdForUpdate = await postsService.findPostById(postId)
             if (!validatorPostByIdForUpdate) {

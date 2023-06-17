@@ -10,9 +10,11 @@ class PostsService {
         return await postsRepository.findBlogIdForPost(blogId)
     }
 
-    async findPostById ( id: string, userId?: string ): Promise<PostView | null> {
-        return await postsRepository.findPostById(id, userId)
+    async findPostById ( id: string): Promise<boolean> {
+        return await postsRepository.findPostById(id)
     }
+
+
 
     async createPost ( title: string, shortDescription: string, content: string, blogId: string ): Promise<PostView> {
 

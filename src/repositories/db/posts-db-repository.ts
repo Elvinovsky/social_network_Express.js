@@ -17,13 +17,20 @@ export const postsRepository = {
     async testingDeleteAllPosts (): Promise<DeleteResult> {
         return PostModelClass.deleteMany({})
     }, //поиск поста по ID.
-    async findPostById ( id: string, userId?: string ): Promise<PostView | null> {
+    async getPostById ( id: string, userId?: string ): Promise<PostView | null> {
         const post = await PostModelClass.findOne({ _id: new ObjectId(id) })
         if (!post) {
             return null
         }
         return postMapping(post,
             userId)
+    },
+    async findPostById ( id: string ): Promise<boolean> {
+            const post = await PostModelClass.findOne({ _id: new ObjectId(id) })
+        if (post) {
+            return true
+        }
+        return false
     }, //создание и добавление нового поста в базу данных.
     async addNewPost ( post: PostDBModel ): Promise<PostView> {
         const newPost = new PostModelClass(post)
