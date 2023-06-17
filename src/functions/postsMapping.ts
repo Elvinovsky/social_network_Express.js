@@ -26,7 +26,7 @@ export const postsMapping = async ( array: Array<WithId<PostDBModel>>, userId?: 
                                .reverse()
                                .map(async lastLikes => {
                                    return {
-                                       addedAt: lastLikes.createdAt.toString(),
+                                       addedAt: lastLikes.createdAt.toISOString(),
                                        userId: lastLikes.userId,
                                        login: lastLikes.userLogin
                                    }
@@ -67,7 +67,7 @@ export const postMapping = async ( post: WithId<PostDBModel>, userId?: string ):
         return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
     }).reverse().map(async lastLikes => {
                                return {
-                                   addedAt: lastLikes.createdAt.toString(),
+                                   addedAt: lastLikes.createdAt.toISOString(),
                                    userId: lastLikes.userId,
                                    login: lastLikes.userLogin
                                }

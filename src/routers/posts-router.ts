@@ -49,8 +49,6 @@ postsRouter.get('/',
             req.query.sortBy,
             req.query.sortDirection,
             req.user?.id)
-        console.log(getAllPosts)
-        console.log(typeof getAllPosts)
         res.send(getAllPosts)
     })
 postsRouter.get('/:id',
