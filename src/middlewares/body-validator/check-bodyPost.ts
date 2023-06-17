@@ -2,6 +2,7 @@ import { body } from 'express-validator'
 import {postsRepository} from "../../repositories/db/posts-db-repository";
 import {superAdminAuthentication} from "../guard-authentication/super-admin-authentication";
 import {checkForErrors} from "../check-for-errors";
+import { optionalUserAuth } from "../optional-user-authentication";
 
 
 const checksTitle =  body('title', )
@@ -38,6 +39,7 @@ const checksBlogId =  body('blogId')
     });
 
  export const validatorInputPostBody = [
+
        superAdminAuthentication,
        checksTitle,
        checksShortDescription,

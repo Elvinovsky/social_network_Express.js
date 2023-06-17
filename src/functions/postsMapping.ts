@@ -24,11 +24,11 @@ export const postsMapping = async ( array: Array<WithId<PostDBModel>>, userId?: 
             return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
         })
                                .reverse()
-                               .map(async like => {
+                               .map(async lastLikes => {
                                    return {
-                                       addedAt: like.createdAt.toString(),
-                                       userId: like.userId,
-                                       login: like.userLogin
+                                       addedAt: lastLikes.createdAt.toString(),
+                                       userId: lastLikes.userId,
+                                       login: lastLikes.userLogin
                                    }
                                })
                                .slice(0,

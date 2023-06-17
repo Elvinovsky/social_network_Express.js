@@ -40,20 +40,23 @@ import { checkForErrors } from "../middlewares/check-for-errors";
 export const postsRouter = Router()
 
 postsRouter.get('/',
+    optionalUserAuth,
     async( req: RequestQuery<QueryInputParams & SearchTitleTerm>, res: ResponseViewBody<PaginatorType<PostView[]>> ) => {
 
         const getAllPosts: PaginatorType<PostView[]> = await postQueryRepository.returnOfAllPosts(req.query.searchTitleTerm,
             Number(req.query.pageNumber),
             Number(req.query.pageSize),
             req.query.sortBy,
-            req.query.sortDirection)
+            req.query.sortDirection,
+            req.user?.id)
         console.log(getAllPosts)
         console.log(typeof getAllPosts)
         res.send(getAllPosts)
     })
 postsRouter.get('/:id',
+    optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: ResponseViewBody<PostView> ) => {
-        const getByIdPost = await postsService.findPostById(req.params.id)
+        const getByIdPost = await postsService.findPostById(req.params.id,req.user?.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
 postsRouter.get('/:postId/comments',
