@@ -9,10 +9,11 @@ import {
 } from "../../models/mongoose/models";
 
 
+
 export const postsRepository = {
     // тестовое удаление базы данных Постов
     async testingDeleteAllPosts(): Promise<DeleteResult> {
-        return await PostModelClass.deleteMany({})
+        return PostModelClass.deleteMany({})
     },
     //поиск поста по ID.
     async findPostById(id: string): Promise <PostView | null> {
@@ -23,10 +24,10 @@ export const postsRepository = {
         return postMapping(post)
     },
     //создание и добавление нового поста в базу данных.
-    async addNewPost(newPost: PostDBModel): Promise <PostView> {
-       const result = await PostModelClass.create(newPost)
-
-        return postMapping(result)
+    async addNewPost(post: PostDBModel): Promise <PostView> {
+       const newPost = new PostModelClass(post)
+        await newPost.save()
+        return postMapping(newPost)
     },
     // обновление поста по ID.
     async updatePostById(id: string, title: string, shortDescription: string, content: string,): Promise <boolean> {

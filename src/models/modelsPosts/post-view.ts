@@ -12,6 +12,6 @@ export type PostView = {
         likesCount: number,
         dislikesCount: number,
         myStatus: string
-        newestLikes: LikeInfoView[]
+        newestLikes: LikeInfoView[] | null
     }
 }

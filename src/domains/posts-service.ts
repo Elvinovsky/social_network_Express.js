@@ -15,6 +15,7 @@ class PostsService {
     }
 
     async createPost ( title: string, shortDescription: string, content: string, blogId: string ): Promise<PostView> {
+
         const outputBlogName: string = postsRepository.findBlogIdForPost.name
         const newPost: PostDBModel = {
             title: title,

@@ -59,22 +59,19 @@ export const postMapping = async ( post: WithId<PostDBModel>, userId?: string ):
     const countsLikeAndDis = await likesOrDisCount(post._id)
 
     const likes: LikeDBInfo[] = await LikeModelClass.find({
-        postOrCommentId: post,
+        postOrCommentId: post._id.toString(),
         status: "Like"
     })
 
-    const lastLikes: Promise<LikeInfoView[]> = Promise.all(likes.sort( function ( a, b ) {
+    const lastLikes: LikeInfoView[] = await Promise.all(likes.sort( function ( a, b ) {
         return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
-    })
-                           .reverse()
-                           .map(async likes => {
+    }).reverse().map(async lastLikes => {
                                return {
-                                   addedAt: likes.createdAt.toString(),
-                                   userId: likes.userId,
-                                   login: likes.userLogin
+                                   addedAt: lastLikes.createdAt.toString(),
+                                   userId: lastLikes.userId,
+                                   login: lastLikes.userLogin
                                }
-                           })
-                           .slice(0,
+                           }).slice(0,
                                3))
 
     return {
@@ -89,7 +86,7 @@ export const postMapping = async ( post: WithId<PostDBModel>, userId?: string ):
             likesCount: countsLikeAndDis.likes,
             dislikesCount: countsLikeAndDis.disLikes,
             myStatus: status,
-            newestLikes: await lastLikes
+            newestLikes: lastLikes
         }
     }
 }

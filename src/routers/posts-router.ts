@@ -102,6 +102,7 @@ postsRouter.post('/',
             req.body.shortDescription,
             req.body.content,
             req.body.blogId)
+
         res.status(201)
            .send(createdNewPost)
         return;
