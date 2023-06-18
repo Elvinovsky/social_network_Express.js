@@ -85,19 +85,4 @@ export class FeedbackService {
            return false
        }
     }
-
-    async likesInfoCurrentUser ( commentOrPostId: string | ObjectId, userId ?: string, ): Promise<string> {
-        if (!userId) {
-            return "None"
-        }
-        if (typeof commentOrPostId === "string") {
-            const likeInfo: LikeDBInfo | null = await likesInfoRepo.getLikeInfo(userId,
-                commentOrPostId)
-            return likeInfo ? likeInfo.status : "None"
-        }
-
-        const likeInfo: LikeDBInfo | null = await likesInfoRepo.getLikeInfo(userId,
-            commentOrPostId.toString())
-        return likeInfo ? likeInfo.status : "None"
-    }
 }

@@ -10,7 +10,7 @@ export const blogsRouter = Router ()
 
 blogsRouter.get('/',blogsControllerInstance.getBlogs.bind(blogsControllerInstance))
 blogsRouter.get('/:id', blogsControllerInstance.getBlog.bind(blogsControllerInstance))
-blogsRouter.get('/:blogId/posts', optionalUserAuth,blogsControllerInstance.getPostsByBlog.bind(blogsControllerInstance))
+blogsRouter.get('/:blogId/posts', optionalUserAuth, blogsControllerInstance.getPostsByBlog.bind(blogsControllerInstance))
 blogsRouter.post('/:blogId/posts', validatorInputBlogPostBody, blogsControllerInstance.createPostForBlog.bind(blogsControllerInstance))
 blogsRouter.post('/', validatorBlogInputBody, blogsControllerInstance.createBlog.bind(blogsControllerInstance))
 blogsRouter.put('/:id', validatorBlogInputBody, blogsControllerInstance.updateBlog.bind(blogsControllerInstance))

@@ -4,14 +4,14 @@ import { CommentDBModel } from "../models/modelsComment/comment-input";
 import {
     likesOrDisCount
 } from "../helpers/like-helpers";
-import { feedbacksService } from "../compositions-root";
+import { likesQueryRepo } from "../compositions-root";
 
 export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: string ): Promise<CommentViewModel[]> => {
 
     return Promise
         .all(array.map(async( el ) => {
 
-            const status = await feedbacksService.likesInfoCurrentUser(el._id, userId)
+            const status = await likesQueryRepo.getLikeStatusCurrentUser(el._id, userId)
 
             const countsLikeAndDis = await likesOrDisCount(el._id)
 
@@ -34,7 +34,7 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: 
 
 export const commentMapping = async ( comment: WithId<CommentDBModel>, userId?: string ): Promise<CommentViewModel> => {
 
-    const status = await feedbacksService.likesInfoCurrentUser(comment._id, userId)
+    const status = await likesQueryRepo.getLikeStatusCurrentUser(comment._id, userId)
 
     const countsLikeAndDis = await likesOrDisCount(comment._id)
 

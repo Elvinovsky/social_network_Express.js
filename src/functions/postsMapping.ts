@@ -1,38 +1,25 @@
 import { PostView } from "../models/modelsPosts/post-view";
 import { WithId } from "mongodb";
 import { PostDBModel } from "../models/modelsPosts/post-input";
-import { feedbacksService } from "../compositions-root";
 import { likesOrDisCount } from "../helpers/like-helpers";
 import { LikeInfoView } from "../models/modelsLike/like-view";
 import { LikeModelClass } from "../models/mongoose/models";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
+import { likesQueryRepo } from "../compositions-root";
+
 
 export const postsMapping = async ( array: Array<WithId<PostDBModel>>, userId?: string):Promise<PostView[]> => {
     return Promise
         .all( array.map(async ( el ) => {
-        const status = await feedbacksService.likesInfoCurrentUser(el._id,
+
+        const status = await likesQueryRepo.getLikeStatusCurrentUser(el._id,
             userId)
 
         const countsLikeAndDis = await likesOrDisCount(el._id)
 
-        const likes: LikeDBInfo[] = await LikeModelClass.find({
-            postOrCommentId: el._id.toString(),
-            status: "Like"
-        })
 
-        const lastLikes:Promise<LikeInfoView[]> = Promise.all(likes.sort(function ( a, b ) {
-            return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
-        })
-                               .reverse()
-                               .map(async lastLikes => {
-                                   return {
-                                       addedAt: lastLikes.createdAt.toISOString(),
-                                       userId: lastLikes.userId,
-                                       login: lastLikes.userLogin
-                                   }
-                               })
-                               .slice(0,
-                                   3))
+
+        const lastLikes: LikeInfoView[] =  await likesQueryRepo.getLastLikes(el._id)
 
 
         return {
@@ -47,13 +34,13 @@ export const postsMapping = async ( array: Array<WithId<PostDBModel>>, userId?: 
                 likesCount: countsLikeAndDis.likes,
                 dislikesCount: countsLikeAndDis.disLikes,
                 myStatus: status,
-                newestLikes: await lastLikes
+                newestLikes: lastLikes
             }
         }
     }))
 }
 export const postMapping = async ( post: WithId<PostDBModel>, userId?: string ): Promise<PostView> => {
-    const status = await feedbacksService.likesInfoCurrentUser(post._id,
+    const status = await likesQueryRepo.getLikeStatusCurrentUser(post._id,
         userId)
 
     const countsLikeAndDis = await likesOrDisCount(post._id)
