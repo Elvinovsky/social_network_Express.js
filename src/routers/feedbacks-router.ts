@@ -36,7 +36,8 @@ feedBacksRouter.get('/:id',
     optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: Response ) => {
 
-        const comment = await feedbacksService.getComment(req.params.id, req.user?.id,)
+        const comment = await feedbacksService.getComment(req.params.id,
+            req.user?.id,)
         if (!comment) {
             res.sendStatus(404)
             return;
@@ -106,11 +107,14 @@ feedBacksRouter.put('/:commentId/like-status',
                 return
             }
 
-           const result = await feedbacksService.createOrUpdateLike(commentId, userId, userLogin, statusType)
-           if(result) {
-               res.sendStatus(204)
-               return
-           }
+            const result = await feedbacksService.createOrUpdateLike(commentId,
+                userId,
+                userLogin,
+                statusType)
+            if (result) {
+                res.sendStatus(204)
+                return
+            }
             res.sendStatus(500)
             return
 
