@@ -33,4 +33,5 @@ export class BlogsService {
         return blogsRepository.searchBlogByIdDelete(id)
     }
 }
+
 export const blogsService = new BlogsService()
