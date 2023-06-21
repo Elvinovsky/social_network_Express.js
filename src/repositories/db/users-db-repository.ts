@@ -25,17 +25,22 @@ export const usersRepository = {
         return updateResult.matchedCount === 1
     },
     async updatePasswordHash (passwordHash: string, code: string):Promise<boolean | null> {
-        const isOneUser = await UserModelClass. find( // todo вынести в сервис
-            {"emailConfirmation.confirmationCode": code}
-        )
-        if (isOneUser.length !== 1) { // проверяем код подверждения на совпадения, чтобы не сменить пароль другому юзеру
-            return null
-        }
+
         const updateResult = await UserModelClass.updateOne(
             {"emailConfirmation.confirmationCode": code},
             {$set: { passwordHash: passwordHash}}
         )
         return updateResult.matchedCount === 1
+    },
+    // проверяем код подверждения на совпадения, чтобы не сменить пароль другому юзеру
+    async getUsersByConfirmationCode(code: string) {
+        const isOneUser = await UserModelClass. find(
+            {"emailConfirmation.confirmationCode": code}
+        )
+        if (isOneUser.length !== 1) {
+            return false
+        }
+        return true
     },
     async updateConfirmationCodeByEmail ( email: string, code: string ): Promise<boolean> {
         const updateResult = await UserModelClass.updateOne({ email },

@@ -53,9 +53,11 @@ export class UsersService  {
     }
     async passwordRecovery ( password: string, code: string ):Promise <boolean | null> {
         const isConfirmed = await this.confirmCode(code)
-        if (!isConfirmed) {
+        const isOneUser = await usersRepository.getUsersByConfirmationCode(code)
+        if (!isConfirmed && isOneUser) {
             return null
         }
+
         const hash = await this._generateHash(password)
         const isRestored = await usersRepository.updatePasswordHash(hash, code)
         return isRestored
