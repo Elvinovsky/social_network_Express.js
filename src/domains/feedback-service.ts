@@ -1,5 +1,4 @@
 import { CommentViewModel } from "../models/modelsComment/comment-view";
-import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { usersRepository } from "../repositories/db/users-db-repository";
 import { UserViewModel } from "../models/modelsUsersLogin/user-view";
 import {
@@ -13,10 +12,14 @@ import { ObjectId } from "mongodb";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
 import { LikeModelClass } from "../models/mongoose/models";
 import mongoose from "mongoose";
+import { feedBacksRepository } from "../compositions-root";
+import { FeedbacksDbRepository } from "../repositories/db/feedbacks-db-repository";
 
 export class FeedbackService {
+    constructor (protected feedBacksRepository: FeedbacksDbRepository) {
+    }
     async getComment ( id: string, userId?: string ): Promise<CommentViewModel | null> {
-        return await feedBacksRepository.getCommentById(id,
+        return await this.feedBacksRepository.getCommentById(id,
             userId)
     }
 

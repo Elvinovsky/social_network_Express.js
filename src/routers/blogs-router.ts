@@ -2,8 +2,8 @@ import {Router} from "express";
 import {superAdminAuthentication} from "../middlewares/guard-authentication/super-admin-authentication";
 import {validatorBlogInputBody} from "../middlewares/body-validator/check-bodyBlog";
 import {validatorInputBlogPostBody} from "../middlewares/body-validator/check-bodyPost";
-import { blogsControllerInstance } from "../controllers/blogs-controller";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";
+import { blogsControllerInstance } from "../compositions-root";
 
 
 export const blogsRouter = Router ()

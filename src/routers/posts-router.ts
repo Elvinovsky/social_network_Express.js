@@ -3,7 +3,6 @@ import {
     Response,
     Router
 } from "express";
-import { postsService } from "../domains/posts-service";
 import { superAdminAuthentication } from "../middlewares/guard-authentication/super-admin-authentication";
 import {
     RequestInputBody,
@@ -31,7 +30,8 @@ import { CommentInputModel } from "../models/modelsComment/comment-input";
 import { userAuthentication } from "../middlewares/guard-authentication/user-authentication";
 import {
     feedbacksService,
-    jwtService
+    jwtService,
+    postsService
 } from "../compositions-root";
 import { LikeModelClass } from "../models/mongoose/models";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";

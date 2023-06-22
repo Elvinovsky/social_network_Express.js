@@ -10,7 +10,6 @@ import {
 } from "../types/req-res-types";
 import { validatorBlogInputBody } from "../middlewares/body-validator/check-bodyBlog";
 import { BlogInput } from "../models/modelsBlogs/blog-input";
-import { blogsService } from "../domains/blogs-service";
 import { blogsRouter } from "./blogs-router";
 import {
     checkInputLikeValue,
@@ -24,7 +23,6 @@ import {
     jwtService
 } from "../compositions-root";
 import { checkForErrors } from "../middlewares/check-for-errors";
-import { feedBacksRepository } from "../repositories/db/feedbacks-db-repository";
 import { LikeModelClass } from "../models/mongoose/models";
 import { ObjectId } from "mongodb";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";

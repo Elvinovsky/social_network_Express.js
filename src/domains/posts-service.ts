@@ -4,7 +4,7 @@ import { BlogDBModel } from "../models/modelsBlogs/blog-input";
 import { WithId } from "mongodb";
 import { PostDBModel } from "../models/modelsPosts/post-input";
 
-class PostsService {
+export class PostsService {
 
     async searchBlogIdForPost ( blogId: string ): Promise<WithId<BlogDBModel> | null> {
         return await postsRepository.findBlogIdForPost(blogId)
@@ -13,8 +13,6 @@ class PostsService {
     async findPostById ( id: string): Promise<boolean> {
         return await postsRepository.findPostById(id)
     }
-
-
 
     async createPost ( title: string, shortDescription: string, content: string, blogId: string ): Promise<PostView> {
 
@@ -41,4 +39,3 @@ class PostsService {
         return await postsRepository.postByIdDelete(id)
     }
 }
-export const postsService = new PostsService()

@@ -19,7 +19,7 @@ import {
 } from "../../models/mongoose/models";
 import mongoose from "mongoose";
 
-export const blogsQueryRepository = {
+export class BlogsQueryRepo {
 
     async returnOfAllBlogs
     (searchNameTerm?: string,
@@ -35,18 +35,18 @@ export const blogsQueryRepository = {
         }
         const calculateOfFiles = await BlogModelClass.countDocuments(filter)
         const foundBlogs: WithId<BlogDBModel>[] = await BlogModelClass
-                .find(filter)
-                .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
-                .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
-                .limit(getPageSize(pageSize))
+            .find(filter)
+            .sort({[getSortBy(sortBy)]: getDirection(sortDirection), [DEFAULT_PAGE_SortBy]: getDirection(sortDirection)})
+            .skip(getSkip(getPageNumber(pageNumber), getPageSize(pageSize)))
+            .limit(getPageSize(pageSize))
         return {
-                pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
-                page: getPageNumber(pageNumber),
-                pageSize: getPageSize(pageSize),
-                totalCount: calculateOfFiles,
-                items: blogsMapping(foundBlogs)
-            }
-    },
+            pagesCount: pagesCountOfBlogs(calculateOfFiles, pageSize),
+            page: getPageNumber(pageNumber),
+            pageSize: getPageSize(pageSize),
+            totalCount: calculateOfFiles,
+            items: blogsMapping(foundBlogs)
+        }
+    }
     async searchPostByBlogId
     (blogId: string,
      pageNumber: number,
@@ -74,5 +74,6 @@ export const blogsQueryRepository = {
             totalCount: calculateOfFiles,
             items: await postsMapping(foundBlogs, userId)
         }
-    },
+    }
 }
+
