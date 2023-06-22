@@ -55,7 +55,8 @@ postsRouter.get('/',
 postsRouter.get('/:id',
     optionalUserAuth,
     async( req: RequestParamsId<{ id: string }>, res: ResponseViewBody<PostView> ) => {
-        const getByIdPost = await postsRepository.getPostById(req.params.id,req.user?.id)
+        const getByIdPost = await postsRepository.getPostById(req.params.id,
+            req.user?.id)
         return getByIdPost === null ? res.sendStatus(404) : res.send(getByIdPost)
     })
 postsRouter.get('/:postId/comments',

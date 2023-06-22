@@ -34,17 +34,17 @@ export class LikesQueryRepo {
 
         return Promise
             .all(likesArr.sort(function ( a, b ) {
-            return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
-        })
-                                   .reverse()
-                                   .map(async lastLikes => {
-                                       return {
-                                           addedAt: lastLikes.createdAt.toISOString(),
-                                           userId: lastLikes.userId,
-                                           login: lastLikes.userLogin
-                                       }
-                                   })
-                                   .slice(0,
-                                       3))
+                return (a.createdAt < b.createdAt) ? -1 : ((a.createdAt > b.createdAt) ? 1 : 0);
+            })
+                         .reverse()
+                         .map(async lastLikes => {
+                             return {
+                                 addedAt: lastLikes.createdAt.toISOString(),
+                                 userId: lastLikes.userId,
+                                 login: lastLikes.userLogin
+                             }
+                         })
+                         .slice(0,
+                             3))
     }
 }
