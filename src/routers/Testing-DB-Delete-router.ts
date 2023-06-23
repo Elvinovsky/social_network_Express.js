@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { deleteAllDBController } from "../compositions-root";
+import {
+    deleteAllDBController
+} from "../compositions-root";
 
 export const deleteAllDataRouter = Router();
 

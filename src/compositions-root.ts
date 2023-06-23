@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { DevicesSessionsRepository } from "./repositories/db/devices-sessions-repository";
 import { JwtService } from "./application/jwt-service";
 import { DevicesService } from "./domains/devices-service";
@@ -13,6 +14,7 @@ import { BlogsQueryRepo } from "./repositories/queryRepository/blogs-query-repos
 import { BlogsController } from "./controllers/blogs-controller";
 import { BlogsService } from "./domains/blogs-service";
 import { EmailsManager } from "./adapter/emails-manager";
+import { Container } from "inversify";
 
 
 
@@ -38,3 +40,24 @@ export const blogsControllerInstance = new BlogsController(blogsQueryRepo, blogs
 export const authController = new AuthController(jwtService, devicesService, devicesRepository, usersService )
 export const devicesController = new DevicesController(devicesRepository, devicesService)
 export const deleteAllDBController = new TestDeleteAllDBController(devicesRepository, feedBacksRepository )
+
+export const container = new Container()
+container.bind(DevicesSessionsRepository).toSelf()
+container.bind(FeedbacksDbRepository).toSelf()
+
+container.bind(BlogsQueryRepo).toSelf()
+container.bind(LikesQueryRepo).toSelf()
+
+container.bind(EmailsManager).toSelf()
+container.bind(BlogsService).toSelf()
+container.bind(PostsService).toSelf()
+container.bind(JwtService).toSelf()
+container.bind(UsersService).toSelf()
+container.bind(FeedbackService).toSelf()
+container.bind(DevicesService).toSelf()
+
+container.bind(BlogsController).toSelf()
+container.bind(AuthController).toSelf()
+container.bind(DevicesController).toSelf()
+container.bind(TestDeleteAllDBController).toSelf()
+

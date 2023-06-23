@@ -8,14 +8,17 @@ import { usersRepository } from "../repositories/db/users-db-repository";
 import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 import { attemptsRepository } from "../repositories/db/attempts-db-repository";
 import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
-
 import { FeedbacksDbRepository } from "../repositories/db/feedbacks-db-repository";
+import {
+    inject,
+    injectable
+} from "inversify";
 
-
+@injectable()
 export class TestDeleteAllDBController {
 
-    constructor ( protected devicesRepository: DevicesSessionsRepository,
-                  protected feedBacksRepository: FeedbacksDbRepository ) {
+    constructor ( @inject(DevicesSessionsRepository) protected devicesRepository: DevicesSessionsRepository,
+                  @inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository ) {
     }
 
     async delete ( req: Request, res: Response ) {
