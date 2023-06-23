@@ -12,6 +12,7 @@ import { FeedbacksDbRepository } from "./repositories/db/feedbacks-db-repository
 import { BlogsQueryRepo } from "./repositories/queryRepository/blogs-query-repository";
 import { BlogsController } from "./controllers/blogs-controller";
 import { BlogsService } from "./domains/blogs-service";
+import { EmailsManager } from "./adapter/emails-manager";
 
 
 
@@ -23,12 +24,14 @@ export const blogsQueryRepo = new BlogsQueryRepo()
 export const likesQueryRepo = new LikesQueryRepo()
 
 
+export const emailsManager = new EmailsManager()
 export const blogsService = new BlogsService()
 export const postsService = new PostsService()
 export const jwtService = new JwtService()
-export const usersService = new UsersService()
+export const usersService = new UsersService(emailsManager)
 export const feedbacksService = new FeedbackService(feedBacksRepository)
 export const devicesService = new DevicesService(devicesRepository)
+
 
 
 export const blogsControllerInstance = new BlogsController(blogsQueryRepo, blogsService, postsService)

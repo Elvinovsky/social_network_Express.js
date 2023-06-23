@@ -6,8 +6,7 @@ import {
 } from "../helpers/email-helpers";
 
 dotenv.config()
-
-export const emailsManager = {
+export class EmailsManager {
     async sendEmailConformationMessage ( email: string, newCode: string ): Promise<void> {
         const transporter = createTransport({
             host: "smtp.mail.ru",
@@ -37,14 +36,14 @@ export const emailsManager = {
 
         // send mail
         try {
-             await sendMailPromise(transporter,
+            await sendMailPromise(transporter,
                 mailOptions);
             // обработка успешного результата
         } catch (err) {
             // обработка ошибки
             console.error(err);
         }
-    },
+    }
 
     async sendEmailPasswordRecovery ( email: string, newCode: string ): Promise<void> {
         const transporter = createTransport({
@@ -75,7 +74,7 @@ export const emailsManager = {
 
         // send mail
         try {
-             await sendMailPromise(transporter,
+            await sendMailPromise(transporter,
                 mailOptions);
             // обработка успешного результата
         } catch (err) {

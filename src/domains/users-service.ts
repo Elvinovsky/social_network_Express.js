@@ -5,10 +5,13 @@ import { WithId } from "mongodb";
 import { UserViewModel } from "../models/modelsUsersLogin/user-view";
 import add from 'date-fns/add'
 import { v4 as uuidv4 } from 'uuid'
-import { emailsManager } from "../adapter/emails-manager";
 import { userMapping } from "../functions/usersMapping";
+import { emailsManager } from "../compositions-root";
+import { EmailsManager } from "../adapter/emails-manager";
 
 export class UsersService  {
+    constructor (protected emailsManager: EmailsManager) {
+    }
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserAccountDBModel = {
@@ -82,7 +85,7 @@ export class UsersService  {
         }
 
         try {
-            await emailsManager.sendEmailConformationMessage(email,
+            await this.emailsManager.sendEmailConformationMessage(email,
                 newCode)
         } catch (error) {
             const user = await usersRepository.findByLoginOrEmail(email)
@@ -102,7 +105,7 @@ export class UsersService  {
         }
 
         try {
-            await emailsManager.sendEmailPasswordRecovery(email,
+            await this.emailsManager.sendEmailPasswordRecovery(email,
                 newCode)
         } catch (error) {
             const user = await usersRepository.findByLoginOrEmail(email)
