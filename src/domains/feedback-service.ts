@@ -14,9 +14,10 @@ import { LikeModelClass } from "../models/mongoose/models";
 import mongoose from "mongoose";
 import { feedBacksRepository } from "../compositions-root";
 import { FeedbacksDbRepository } from "../repositories/db/feedbacks-db-repository";
+import { inject } from "inversify";
 
 export class FeedbackService {
-    constructor (protected feedBacksRepository: FeedbacksDbRepository) {
+    constructor (@inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository) {
     }
     async getComment ( id: string, userId?: string ): Promise<CommentViewModel | null> {
         return await this.feedBacksRepository.getCommentById(id,

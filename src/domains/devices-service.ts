@@ -4,9 +4,14 @@ import add from "date-fns/add";
 import {
     DevicesSessionsRepository
 } from "../repositories/db/devices-sessions-repository";
+import {
+    inject,
+    injectable
+} from "inversify";
 
+@injectable()
 export class DevicesService {
-    constructor (protected devicesSessionsRepository: DevicesSessionsRepository) {
+    constructor (@inject(DevicesSessionsRepository) protected devicesSessionsRepository: DevicesSessionsRepository) {
     }
 
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {

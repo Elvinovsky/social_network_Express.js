@@ -3,28 +3,29 @@ import { superAdminAuthentication } from "../middlewares/guard-authentication/su
 import { validatorBlogInputBody } from "../middlewares/body-validator/check-bodyBlog";
 import { validatorInputBlogPostBody } from "../middlewares/body-validator/check-bodyPost";
 import { optionalUserAuth } from "../middlewares/optional-user-authentication";
-import { blogsControllerInstance } from "../compositions-root";
+import { container } from "../compositions-root";
+import { BlogsController } from "../controllers/blogs-controller";
 
-
+const blogsController = container.resolve(BlogsController)
 export const blogsRouter = Router()
 
 blogsRouter.get('/',
-    blogsControllerInstance.getBlogs.bind(blogsControllerInstance))
+    blogsController.getBlogs.bind(blogsController))
 blogsRouter.get('/:id',
-    blogsControllerInstance.getBlog.bind(blogsControllerInstance))
+    blogsController.getBlog.bind(blogsController))
 blogsRouter.get('/:blogId/posts',
     optionalUserAuth,
-    blogsControllerInstance.getPostsByBlog.bind(blogsControllerInstance))
+    blogsController.getPostsByBlog.bind(blogsController))
 blogsRouter.post('/:blogId/posts',
     validatorInputBlogPostBody,
-    blogsControllerInstance.createPostForBlog.bind(blogsControllerInstance))
+    blogsController.createPostForBlog.bind(blogsController))
 blogsRouter.post('/',
     validatorBlogInputBody,
-    blogsControllerInstance.createBlog.bind(blogsControllerInstance))
+    blogsController.createBlog.bind(blogsController))
 blogsRouter.put('/:id',
     validatorBlogInputBody,
-    blogsControllerInstance.updateBlog.bind(blogsControllerInstance))
+    blogsController.updateBlog.bind(blogsController))
 blogsRouter.delete('/:id',
     superAdminAuthentication,
-    blogsControllerInstance.deleteBlog.bind(blogsControllerInstance))
+    blogsController.deleteBlog.bind(blogsController))
 

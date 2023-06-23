@@ -21,13 +21,17 @@ import {
 import { usersQueryRepository } from "../repositories/queryRepository/users-query-repository";
 import { DevicesService } from "../domains/devices-service";
 import { JwtService } from "../application/jwt-service";
+import {
+    inject,
+    injectable
+} from "inversify";
 
-
+@injectable()
 export class AuthController {
-    constructor ( protected jwtService: JwtService,
-                  protected devicesService: DevicesService,
-                  protected devicesSessionsRepository: DevicesSessionsRepository,
-                  protected usersService: UsersService) { }
+    constructor ( @inject(JwtService) protected jwtService: JwtService,
+                  @inject(DevicesService) protected devicesService: DevicesService,
+                  @inject(DevicesSessionsRepository) protected devicesSessionsRepository: DevicesSessionsRepository,
+                  @inject(UsersService) protected usersService: UsersService) { }
 
     async createLogin ( req: Request, res: Response ) {
         const user = await this.usersService.checkCredentials(req.body.loginOrEmail,

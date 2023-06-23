@@ -6,11 +6,15 @@ import {
     DevicesService
 } from "../domains/devices-service";
 import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
-
+import {
+    inject,
+    injectable
+} from "inversify";
+@injectable()
 export class DevicesController {
 
-    constructor (protected devicesRepository: DevicesSessionsRepository,
-                 protected devicesService: DevicesService) {
+    constructor (@inject(DevicesSessionsRepository) protected devicesRepository: DevicesSessionsRepository,
+                 @inject(DevicesService) protected devicesService: DevicesService) {
     }
 
     async getDevices ( req: Request, res: Response ) {

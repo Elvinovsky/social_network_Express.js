@@ -4,8 +4,11 @@ import {
     sendMailPromise,
     transporterVerify
 } from "../helpers/email-helpers";
+import { injectable } from "inversify";
 
 dotenv.config()
+
+@injectable()
 export class EmailsManager {
     async sendEmailConformationMessage ( email: string, newCode: string ): Promise<void> {
         const transporter = createTransport({

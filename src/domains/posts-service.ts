@@ -3,7 +3,9 @@ import { postsRepository } from "../repositories/db/posts-db-repository";
 import { BlogDBModel } from "../models/modelsBlogs/blog-input";
 import { WithId } from "mongodb";
 import { PostDBModel } from "../models/modelsPosts/post-input";
+import { injectable } from "inversify";
 
+@injectable()
 export class PostsService {
 
     async searchBlogIdForPost ( blogId: string ): Promise<WithId<BlogDBModel> | null> {

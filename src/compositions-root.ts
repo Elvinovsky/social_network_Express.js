@@ -36,10 +36,10 @@ export const devicesService = new DevicesService(devicesRepository)
 
 
 
-export const blogsControllerInstance = new BlogsController(blogsQueryRepo, blogsService, postsService)
-export const authController = new AuthController(jwtService, devicesService, devicesRepository, usersService )
-export const devicesController = new DevicesController(devicesRepository, devicesService)
-export const deleteAllDBController = new TestDeleteAllDBController(devicesRepository, feedBacksRepository )
+//export const blogsControllerInstance = new BlogsController(blogsQueryRepo, blogsService, postsService)
+//export const authController = new AuthController(jwtService, devicesService, devicesRepository, usersService )
+//export const devicesController = new DevicesController(devicesRepository, devicesService)
+//export const deleteAllDBController = new TestDeleteAllDBController(devicesRepository, feedBacksRepository )
 
 export const container = new Container()
 container.bind(DevicesSessionsRepository).toSelf()

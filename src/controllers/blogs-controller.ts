@@ -23,11 +23,17 @@ import { BlogInput } from "../models/modelsBlogs/blog-input";
 
 import { BlogsQueryRepo } from "../repositories/queryRepository/blogs-query-repository";
 import { PostsService } from "../domains/posts-service";
+import {
+    inject,
+    injectable
+} from "inversify";
 
+@injectable()
 export class BlogsController {
-    constructor (protected blogsQueryRepo: BlogsQueryRepo,
-    protected blogsService: BlogsService,
-    protected postsService: PostsService) {
+    constructor (
+        @inject(BlogsQueryRepo)protected blogsQueryRepo: BlogsQueryRepo,
+        @inject(BlogsService)protected blogsService: BlogsService,
+        @inject(PostsService)protected postsService: PostsService) {
     }
     async getBlogs(req: RequestQuery<QueryInputParams&SearchNameTerm>,
                    res: Response) {

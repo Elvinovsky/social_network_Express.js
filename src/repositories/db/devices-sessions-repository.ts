@@ -9,7 +9,9 @@ import {
 import { DeviceView } from "../../models/modelsDevice/device-view";
 import { SessionModelClass } from "../../models/mongoose/models";
 import mongoose from "mongoose";
+import { injectable } from "inversify";
 
+@injectable()
 export class DevicesSessionsRepository {
     async testingDeleteAllSessions (): Promise<DeleteResult> {
         return await SessionModelClass.deleteMany({})

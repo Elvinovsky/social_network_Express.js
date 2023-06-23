@@ -13,7 +13,9 @@ import {
     PostModelClass
 } from "../../models/mongoose/models";
 import { LikeDBInfo } from "../../models/modelsLike/like-input";
+import { injectable } from "inversify";
 
+@injectable()
 export class FeedbacksDbRepository {
     async testingDeleteAllComments (): Promise<DeleteResult> {
         return await CommentModelClass.deleteMany({})

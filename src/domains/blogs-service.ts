@@ -1,9 +1,11 @@
 import { blogsRepository } from "../repositories/db/blogs-db-repository";
 import { BlogView } from "../models/modelsBlogs/blog-view";
 import { BlogDBModel } from "../models/modelsBlogs/blog-input";
+import { injectable } from "inversify";
 
 //transaction script
 
+@injectable()
 export class BlogsService {
     async findBlogById ( id: string ): Promise<BlogView | null> {
 

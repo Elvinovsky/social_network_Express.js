@@ -17,8 +17,7 @@ import {
 @injectable()
 export class TestDeleteAllDBController {
 
-    constructor ( @inject(DevicesSessionsRepository) protected devicesRepository: DevicesSessionsRepository,
-                  @inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository ) {
+    constructor ( @inject(DevicesSessionsRepository) protected devicesRepository: DevicesSessionsRepository, @inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository ) {
     }
 
     async delete ( req: Request, res: Response ) {

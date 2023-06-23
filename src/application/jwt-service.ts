@@ -4,7 +4,9 @@ import {
     ObjectId
 } from "mongodb";
 import { LoginSuccessViewModel, } from "../models/modelsUsersLogin/login-view";
+import { injectable } from "inversify";
 
+@injectable()
 export class JwtService {
     async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: userId },

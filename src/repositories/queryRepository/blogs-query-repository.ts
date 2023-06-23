@@ -18,7 +18,9 @@ import {
     PostModelClass
 } from "../../models/mongoose/models";
 import mongoose from "mongoose";
+import { injectable } from "inversify";
 
+@injectable()
 export class BlogsQueryRepo {
 
     async returnOfAllBlogs

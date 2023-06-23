@@ -8,9 +8,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { userMapping } from "../functions/usersMapping";
 import { emailsManager } from "../compositions-root";
 import { EmailsManager } from "../adapter/emails-manager";
+import {
+    inject,
+    injectable
+} from "inversify";
 
+@injectable()
 export class UsersService  {
-    constructor (protected emailsManager: EmailsManager) {
+    constructor (@inject(EmailsManager) protected emailsManager: EmailsManager) {
     }
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
