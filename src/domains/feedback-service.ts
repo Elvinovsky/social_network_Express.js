@@ -14,8 +14,12 @@ import { LikeModelClass } from "../models/mongoose/models";
 import mongoose from "mongoose";
 import { feedBacksRepository } from "../compositions-root";
 import { FeedbacksDbRepository } from "../repositories/db/feedbacks-db-repository";
-import { inject } from "inversify";
+import {
+    inject,
+    injectable
+} from "inversify";
 
+@injectable()
 export class FeedbackService {
     constructor (@inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository) {
     }

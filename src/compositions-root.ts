@@ -18,8 +18,8 @@ import { Container } from "inversify";
 
 
 
-export const devicesRepository = new DevicesSessionsRepository()
-export const feedBacksRepository = new FeedbacksDbRepository()
+
+
 
 
 export const blogsQueryRepo = new BlogsQueryRepo()
@@ -31,8 +31,8 @@ export const blogsService = new BlogsService()
 export const postsService = new PostsService()
 export const jwtService = new JwtService()
 export const usersService = new UsersService(emailsManager)
-export const feedbacksService = new FeedbackService(feedBacksRepository)
-export const devicesService = new DevicesService(devicesRepository)
+
+
 
 
 
@@ -42,6 +42,7 @@ export const devicesService = new DevicesService(devicesRepository)
 //export const deleteAllDBController = new TestDeleteAllDBController(devicesRepository, feedBacksRepository )
 
 export const container = new Container()
+
 container.bind(DevicesSessionsRepository).toSelf()
 container.bind(FeedbacksDbRepository).toSelf()
 
@@ -61,3 +62,8 @@ container.bind(AuthController).toSelf()
 container.bind(DevicesController).toSelf()
 container.bind(TestDeleteAllDBController).toSelf()
 
+
+export const devicesRepository = container.get(DevicesSessionsRepository)
+export const devicesService = container.get(DevicesService)
+export const feedBacksRepository = container.get(FeedbacksDbRepository)
+export const feedbacksService = container.get(FeedbackService)

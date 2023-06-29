@@ -4,7 +4,6 @@ import { BlogDBModel } from "../models/modelsBlogs/blog-input";
 import { injectable } from "inversify";
 
 //transaction script
-
 @injectable()
 export class BlogsService {
     async findBlogById ( id: string ): Promise<BlogView | null> {
