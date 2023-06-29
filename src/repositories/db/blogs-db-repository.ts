@@ -11,7 +11,7 @@ import { BlogModelClass } from "../../models/mongoose/models";
 export const blogsRepository = {
     //тестовое удаление базы данных о блогах.
     async testingDeleteAllBlogs (): Promise<DeleteResult> {
-        return await BlogModelClass.deleteMany({})
+        return BlogModelClass.deleteMany({})
     }, //поиск блога по ID.
     async findBlogById ( id: string ): Promise<BlogView | null> {
 

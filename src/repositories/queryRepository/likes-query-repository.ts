@@ -3,8 +3,9 @@ import { LikeDBInfo } from "../../models/modelsLike/like-input";
 import { LikeModelClass } from "../../models/mongoose/models";
 import { likesInfoRepo } from "../db/likesInfo-db-repository";
 import { LikeInfoView } from "../../models/modelsLike/like-view";
+import { injectable } from "inversify";
 
-
+@injectable()
 export class LikesQueryRepo {
     async getLikesByPostId ( postId: ObjectId ): Promise<LikeDBInfo[]> {
         return LikeModelClass.find({
