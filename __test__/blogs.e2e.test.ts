@@ -39,7 +39,7 @@ describe('Mongoose integration',
             () => {
                 //DELETE ALL DATA
                 beforeAll(async() => {
-                    runDb()
+                    await runDb()
                     await request(app)
                         .delete('/testing/all-data')
                 })
@@ -87,7 +87,7 @@ describe('Mongoose integration',
                                 "name": "ELV",
                                 "description": "about me",
                                 "websiteUrl": "http://www.Elvinovsky.com",
-                                "createdAt": String,
+                                "createdAt": expect.any(String),
                                 "isMembership": false
                             })
                     })
@@ -117,10 +117,10 @@ describe('Mongoose integration',
                         expect(blog.body)
                             .toStrictEqual({
                                 "id": createResponseBlog.body.id,
-                                "name": "Not Nastya",
-                                "description": "Not about me",
+                                "name": "ELV",
+                                "description": "about me",
                                 "websiteUrl": "http://www.Elvinovsky.com",
-                                "createdAt": String,
+                                "createdAt": expect.any(String),
                                 "isMembership": false
                             })
                     })
