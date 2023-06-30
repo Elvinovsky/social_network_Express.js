@@ -16,6 +16,8 @@ export const blogSchema = new mongoose.Schema <WithId<BlogDBModel>> ({
     description: {type: String, required: true},
     websiteUrl: {type: String, required: true},
     isMembership: { type: Boolean, required: true}
+}, {
+    timestamps: true
 })
 
 export const postSchema = new mongoose.Schema<WithId<PostDBModel>>({

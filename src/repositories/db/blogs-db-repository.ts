@@ -23,7 +23,6 @@ export const blogsRepository = {
     }, //создание и добавление нового блога.
     async addNewBlog ( createdBlog: BlogDBModel ): Promise<BlogView> {
         const result = new BlogModelClass(createdBlog)
-
         await result.save()
 
         return blogMapping(result)
