@@ -2,25 +2,23 @@ export type BlogInput = {
     /**
      * name input Blog {maxLength: 15}
      */
-    name: string,
-    /**
+    name: string, /**
      * description input model {maxLength: 500}
      */
-    description: string,
-    /**
+    description: string, /**
      * websiteUrl input model {maxLength: 100}
      */
     websiteUrl: string,
 
 }
 
-export class BlogDBModel {
-    constructor ( public name: string,
-                  public description: string,
-                  public websiteUrl: string,
-                  public createdAt: string,
-                  /**
-                   * True if user has not expired membership subscription to blog
-                   */
-                  public isMembership: boolean) { }
+export type BlogDBModel = {
+    name: string,
+    description: string,
+    websiteUrl: string,
+    createdAt: string,
+    /**
+     * True if user has not expired membership subscription to blog
+     */
+    isMembership: boolean
 }
