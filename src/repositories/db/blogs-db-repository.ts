@@ -22,16 +22,11 @@ export const blogsRepository = {
         return blogMapping(blog)
     }, //создание и добавление нового блога.
     async addNewBlog ( createdBlog: BlogDBModel ): Promise<BlogView> {
-        const result = await BlogModelClass.create(createdBlog)
+        const result = new BlogModelClass(createdBlog)
 
-        return {
-            id: result._id.toString(),
-            name: createdBlog.name,
-            description: createdBlog.description,
-            websiteUrl: createdBlog.websiteUrl,
-            createdAt: createdBlog.createdAt,
-            isMembership: createdBlog.isMembership
-        }
+        await result.save()
+
+        return blogMapping(result)
     }, //обновление блога по айди.
     async updateBlogById ( id: string, name: string, description: string, websiteUrl: string ): Promise<boolean> {
         const result = await BlogModelClass.updateOne({ _id: new ObjectId(id) },

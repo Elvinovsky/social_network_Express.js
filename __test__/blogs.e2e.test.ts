@@ -24,7 +24,7 @@ export const blogFilterString05 = "арбуз";
 //TEST BLOGS
 describe('Mongoose integration',
     () => {
-        const mongoURI = 'mongodb://0.0.0.0:27017/home_works'
+        const mongoURI = "mongodb+srv://elvinovsky:Hbe0eJpHGkd0ss8L@cluster0.tw8beem.mongodb.net/?retryWrites=true&w=majority"
 
         beforeAll(async() => {
             /* Connecting to the database. */
@@ -84,10 +84,10 @@ describe('Mongoose integration',
                         expect(blog.body)
                             .toStrictEqual({
                                 "id": expect.any(String),
-                                "name": "Nastya",
+                                "name": "ELV",
                                 "description": "about me",
-                                "websiteUrl": "http://www.nastyastar.com",
-                                "createdAt": expect.any(String),
+                                "websiteUrl": "http://www.Elvinovsky.com",
+                                "createdAt": String,
                                 "isMembership": false
                             })
                     })
@@ -101,7 +101,7 @@ describe('Mongoose integration',
                             .send({
                                 name: "Not Nastya",
                                 description: "Not about me",
-                                websiteUrl: "http://www.nastyakoshka.com",
+                                websiteUrl: "http://www.Elvinovsky.com",
                             })
                             .set({ Authorization: "Basic YWRtaW46cXdlcnR5" })
                             .expect(200)
@@ -119,8 +119,8 @@ describe('Mongoose integration',
                                 "id": createResponseBlog.body.id,
                                 "name": "Not Nastya",
                                 "description": "Not about me",
-                                "websiteUrl": "http://www.nastyakoshka.com",
-                                "createdAt": expect.any(String),
+                                "websiteUrl": "http://www.Elvinovsky.com",
+                                "createdAt": String,
                                 "isMembership": false
                             })
                     })
@@ -156,7 +156,7 @@ describe('Mongoose integration',
                                     "title": "Black Sea",
                                     "shortDescription": "about sea",
                                     "content": "black sea is hot",
-                                    "createdAt": expect.any(String),
+                                    "createdAt": String,
                                     "blogId": createResponseBlog.body.id,
                                     "blogName": "ELV",
                                     "id": expect.any(String)
