@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 import {
     attemptSchema,
     blogSchema,
@@ -11,7 +11,10 @@ import {
 } from "./schemas";
 import { BlogDBModel } from "../modelsBlogs/blog-input";
 import { PostDBModel } from "../modelsPosts/post-input";
-import { UserAccountDBModel } from "../modelsUsersLogin/user-input";
+import {
+    UserDBType,
+    UserMethodModel
+} from "../modelsUsersLogin/user-input";
 import { SessionDBModel } from "../modelsDevice/device-input";
 import { CommentDBModel } from "../modelsComment/comment-input";
 import { LikeDBInfo } from "../modelsLike/like-input";
@@ -21,7 +24,9 @@ export const BlogModelClass = mongoose.model<BlogDBModel>('blogs', blogSchema)
 
 export const PostModelClass = mongoose.model<PostDBModel>('posts', postSchema)
 
-export const UserModelClass = mongoose.model<UserAccountDBModel>('users', userSchema)
+
+export type UserModelType = Model<UserDBType, {}, UserMethodModel>
+export const UserModelClass = mongoose.model<UserDBType, UserModelType>('users', userSchema)
 
 export const SessionModelClass = mongoose.model<SessionDBModel>('sessions', sessionSchema)
 

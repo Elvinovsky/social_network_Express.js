@@ -1,4 +1,4 @@
-import { UserAccountDBModel } from "../../models/modelsUsersLogin/user-input";
+import { UserDBType } from "../../models/modelsUsersLogin/user-input";
 import {
     DeleteResult,
     ObjectId,
@@ -12,10 +12,10 @@ export const usersRepository = {
     async testingDeleteAllUsers (): Promise<DeleteResult> {
         return await UserModelClass.deleteMany({})
     },
-    async findUserById ( id: string ): Promise<WithId<UserAccountDBModel> | null> {
+    async findUserById ( id: string ): Promise<WithId<UserDBType> | null> {
         return await UserModelClass.findOne({ _id: new ObjectId(id) })
     },
-    async findUserConfirmCode ( code: string ): Promise<WithId<UserAccountDBModel> | null> {
+    async findUserConfirmCode ( code: string ): Promise<WithId<UserDBType> | null> {
         return await UserModelClass.findOne({ "emailConfirmation.confirmationCode": code })
     },
     async updateConfirmCode ( code: string ): Promise<boolean> {
@@ -47,13 +47,13 @@ export const usersRepository = {
             { $set: { "emailConfirmation.confirmationCode": code } })
         return updateResult.matchedCount === 1
     },
-    async findUserForComment ( userId: string ): Promise<WithId<UserAccountDBModel> | null> {
+    async findUserForComment ( userId: string ): Promise<WithId<UserDBType> | null> {
         return await UserModelClass.findOne({ _id: new ObjectId(userId) })
     },
-    async findByLoginOrEmail ( loginOrEmail: string ): Promise<WithId<UserAccountDBModel> | null> {
+    async findByLoginOrEmail ( loginOrEmail: string ): Promise<WithId<UserDBType> | null> {
         return await UserModelClass.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     },
-    async addNewUser ( newUser: UserAccountDBModel ): Promise<UserViewModel> {
+    async addNewUser ( newUser: UserDBType ): Promise<UserViewModel> {
         const result = await UserModelClass.create(newUser)
         return {
             id: result._id.toString(),

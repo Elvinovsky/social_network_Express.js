@@ -9,7 +9,7 @@ import {
     DEFAULT_PAGE_SortBy
 } from "../../helpers/pagination-helpers";
 import { filterLoginOrEmail } from "../../functions/filters";
-import { UserAccountDBModel } from "../../models/modelsUsersLogin/user-input";
+import { UserDBType } from "../../models/modelsUsersLogin/user-input";
 import { usersMapping } from "../../functions/usersMapping";
 import {
     ObjectId,
@@ -27,7 +27,7 @@ export const usersQueryRepository = {
 
         const calculateOfFiles = await UserModelClass.countDocuments(filterLoginOrEmail(searchEmailTerm,
             searchLoginTerm))
-        const foundUsers: WithId<UserAccountDBModel>[] = await UserModelClass
+        const foundUsers: WithId<UserDBType>[] = await UserModelClass
             .find(filterLoginOrEmail(searchEmailTerm,
                 searchLoginTerm))
             .sort({

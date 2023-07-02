@@ -1,3 +1,4 @@
+
 export type UserInputModel = {
     login:	string,
     /**
@@ -13,13 +14,20 @@ export type UserInputModel = {
      */
 }
 
-export type UserAccountDBModel = {
+export type UserDBType = {
     login:	string,
     passwordHash: string,
     email: string,
     createdAt: string
     emailConfirmation: EmailConfirmationModel
 }
+
+export type UserMethodModel = {
+    canBeConfirmed: (code: string) => boolean
+}
+
+
+
 export type EmailConfirmationModel = {
     confirmationCode: string,
     expirationDate: Date | string,

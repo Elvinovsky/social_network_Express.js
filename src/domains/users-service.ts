@@ -1,4 +1,4 @@
-import { UserAccountDBModel } from "../models/modelsUsersLogin/user-input";
+import { UserDBType } from "../models/modelsUsersLogin/user-input";
 import { usersRepository } from "../repositories/db/users-db-repository";
 import bcrypt from 'bcrypt';
 import { WithId } from "mongodb";
@@ -19,7 +19,7 @@ export class UsersService  {
     }
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
-        const newUser: UserAccountDBModel = {
+        const newUser: UserDBType = {
             login: login,
             passwordHash: hash,
             email: email,
@@ -34,7 +34,7 @@ export class UsersService  {
     }
     async independentUserRegistration ( login: string, password: string, email: string ): Promise<UserViewModel | null> {
         const hash = await this._generateHash(password)
-        const newUser: UserAccountDBModel = {
+        const newUser: UserDBType = {
             login: login,
             passwordHash: hash,
             email: email,
@@ -121,7 +121,7 @@ export class UsersService  {
 
         return true
     }
-    async checkCredentials ( loginOrEmail: string, password: string ): Promise<WithId<UserAccountDBModel> | null> {
+    async checkCredentials ( loginOrEmail: string, password: string ): Promise<WithId<UserDBType> | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!user || !user.emailConfirmation.isConfirmed) {
             return null

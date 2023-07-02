@@ -3,13 +3,15 @@ import { WithId } from "mongodb";
 import { BlogDBModel } from "../modelsBlogs/blog-input";
 import { PostDBModel } from "../modelsPosts/post-input";
 import {
-    UserAccountDBModel
+    UserDBType,
+    UserMethodModel
 } from "../modelsUsersLogin/user-input";
 import { SessionDBModel } from "../modelsDevice/device-input";
 import { CommentDBModel } from "../modelsComment/comment-input";
 import {
     LikeDBInfo
 } from "../modelsLike/like-input";
+import { UserModelType } from "./models";
 
 export const blogSchema = new mongoose.Schema <WithId<BlogDBModel>> ({
     name: {type: String, required: true},
@@ -29,7 +31,7 @@ export const postSchema = new mongoose.Schema<WithId<PostDBModel>>({
     createdAt: {type: String, required: true},
 })
 
-export const userSchema = new mongoose.Schema<WithId<UserAccountDBModel>>({
+export const userSchema = new mongoose.Schema<WithId<UserDBType>, UserModelType, UserMethodModel>({
     login: {type: String, required: true},
     passwordHash: {type: String, required: true},
     email: {type: String, required: true},
