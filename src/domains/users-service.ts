@@ -17,6 +17,7 @@ import {
 export class UsersService  {
     constructor (@inject(EmailsManager) protected emailsManager: EmailsManager) {
     }
+    //todo перенести логику регистрации юзера в отдельный модуль.
     async userByAnAdminRegistration ( login: string, password: string, email: string ): Promise<UserViewModel> {
         const hash = await this._generateHash(password)
         const newUser: UserDBType = {
