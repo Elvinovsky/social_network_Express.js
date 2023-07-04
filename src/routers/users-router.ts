@@ -39,7 +39,7 @@ usersRouter.get('/',
 usersRouter.post('/',
     validatorUserBodyRegistrationForSuperAdmin,
     async( req: RequestInputBody<UserInputModel>, res: ResponseViewBody<UserViewModel> ) => {
-        const newUser = await usersService.userByAnAdminRegistration(req.body.login,
+        const newUser = await usersService.userByAdminRegistration(req.body.login,
             req.body.password,
             req.body.email)
         res.status(201)

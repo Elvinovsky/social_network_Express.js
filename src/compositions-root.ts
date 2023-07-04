@@ -15,6 +15,7 @@ import { BlogsController } from "./controllers/blogs-controller";
 import { BlogsService } from "./domains/blogs-service";
 import { EmailsManager } from "./adapter/emails-manager";
 import { Container } from "inversify";
+import { AuthService } from "./domains/auth-service";
 
 
 
@@ -44,6 +45,7 @@ import { Container } from "inversify";
 export const container = new Container()
 container.bind(DevicesSessionsRepository).toSelf()
 container.bind(FeedbacksDbRepository).toSelf()
+container.bind(AuthService).toSelf()
 
 container.bind(BlogsQueryRepo).toSelf()
 container.bind(LikesQueryRepo).toSelf()
