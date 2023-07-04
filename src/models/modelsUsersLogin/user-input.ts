@@ -22,12 +22,9 @@ export type UserDBType = {
     emailConfirmation: EmailConfirmationModel
 }
 
-export type UserMethodModel = {
-    canBeConfirmed: (code: string) => boolean
+export type UserMethodType = {
+    canBeConfirmed: () => boolean
 }
-
-
-
 export type EmailConfirmationModel = {
     confirmationCode: string,
     expirationDate: Date | string,

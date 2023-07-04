@@ -4,7 +4,7 @@ import { BlogDBModel } from "../modelsBlogs/blog-input";
 import { PostDBModel } from "../modelsPosts/post-input";
 import {
     UserDBType,
-    UserMethodModel
+    UserMethodType
 } from "../modelsUsersLogin/user-input";
 import { SessionDBModel } from "../modelsDevice/device-input";
 import { CommentDBModel } from "../modelsComment/comment-input";
@@ -31,18 +31,18 @@ export const postSchema = new mongoose.Schema<WithId<PostDBModel>>({
     createdAt: {type: String, required: true},
 })
 
-export const userSchema = new mongoose.Schema<WithId<UserDBType>, UserModelType, UserMethodModel>({
+export const userSchema = new mongoose.Schema<UserDBType, UserModelType, UserMethodType>({
     login: {type: String, required: true},
     passwordHash: {type: String, required: true},
     email: {type: String, required: true},
     createdAt: {type: String, required: true},
     emailConfirmation: {type: Object, required: true}
 })
-
-userSchema.method("canBeConfirmed", function canBeConfirmed (code: string) {
+    userSchema.method("canBeConfirmed", function canBeConfirmed () {
     const that = this as UserDBType
     return !that || that.emailConfirmation.expirationDate < new Date() || that.emailConfirmation.isConfirmed
 } )
+
 export const sessionSchema = new mongoose.Schema<WithId<SessionDBModel>>({
     deviceId: {type: String, required: true},
     issuedAt: {type: Number, required: true},

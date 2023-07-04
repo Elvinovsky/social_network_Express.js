@@ -65,6 +65,7 @@ export const checksEmailResending = body('email')
         if (!validationEmail || validationEmail.emailConfirmation.isConfirmed) {
             throw new Error("your mailing address is already registered");
         }
+
     });
 export const checksEmailByCustom = body('email')
     .bail()
@@ -80,7 +81,7 @@ export const checksEmailPattern = body('email')
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
     .withMessage("is not a link to the email")
 
-const checkInputLoginOrEmail = body('loginOrEmail')//todo доделать
+const checkInputLoginOrEmail = body('loginOrEmail')
     .isString()
     .withMessage("is not a string")
 
@@ -88,8 +89,11 @@ export const checksConfirmationEmail = body('code',)
     .isString()
     .withMessage("is not a string")
     .custom(async( code: string ) => {
-        const isValidConfirmed = await usersRepository.findUserConfirmCode(code)
-        if (!isValidConfirmed || isValidConfirmed.emailConfirmation.expirationDate < new Date() || isValidConfirmed.emailConfirmation.isConfirmed) {
+        const user = await usersRepository.findUserConfirmCode(code)
+        if(!user){
+            throw new Error("incorrect code")
+        }
+        if (user.emailConfirmation.expirationDate < new Date() || user.emailConfirmation.isConfirmed) {
             throw new Error("confirmation code is incorrect, expired or already been applied");
         }
     })

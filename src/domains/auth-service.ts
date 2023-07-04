@@ -61,6 +61,7 @@ export class AuthService {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
             newCode)
+
         if (!codeReplacement) {
             return false
         }
