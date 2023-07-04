@@ -3,6 +3,7 @@ import { WithId } from "mongodb";
 import { BlogDBModel } from "../modelsBlogs/blog-input";
 import { PostDBModel } from "../modelsPosts/post-input";
 import {
+    EmailConfirmationModel,
     UserDBType,
     UserMethodType
 } from "../modelsUsersLogin/user-input";
@@ -31,12 +32,17 @@ export const postSchema = new mongoose.Schema<WithId<PostDBModel>>({
     createdAt: {type: String, required: true},
 })
 
+const emailConfirmationModel = new mongoose.Schema<EmailConfirmationModel>({
+    confirmationCode: String,
+    expirationDate: Date || String,
+    isConfirmed: Boolean
+})
 export const userSchema = new mongoose.Schema<UserDBType, UserModelType, UserMethodType>({
     login: {type: String, required: true},
     passwordHash: {type: String, required: true},
     email: {type: String, required: true},
     createdAt: {type: String, required: true},
-    emailConfirmation: {type: Object, required: true}
+    emailConfirmation: {type: emailConfirmationModel, required: true}
 })
     userSchema.method("canBeConfirmed", function canBeConfirmed () {
     const that = this as UserDBType
