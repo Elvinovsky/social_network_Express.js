@@ -6,6 +6,7 @@ import {
 } from "mongodb";
 import { UserViewModel } from "../../models/modelsUsersLogin/user-view";
 import { UserModelClass } from "../../models/mongoose/models";
+import { userMapping } from "../../functions/usersMapping";
 
 
 export const usersRepository = {
@@ -54,13 +55,9 @@ export const usersRepository = {
         return await UserModelClass.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     },
     async addNewUser ( newUser: UserDBType ): Promise<UserViewModel> {
-        const result = await UserModelClass.create(newUser)
-        return {
-            id: result._id.toString(),
-            login: newUser.login,
-            email: newUser.email,
-            createdAt: newUser.createdAt
-        }
+        const user = new UserModelClass(newUser)
+        await user.save()
+        return userMapping(user)
     },
     async userByIdDelete ( id: string ): Promise<boolean> {
         const deleteResult = await UserModelClass.deleteOne({ _id: new ObjectId(id) })
