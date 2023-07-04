@@ -90,7 +90,7 @@ export class AuthService {
                 newCode)
         } catch (error) {
             const user = await usersRepository.findByLoginOrEmail(email)
-            await usersRepository.userByIdDelete(user!._id.toString()) // емайл подтвержден! user валидириуется при запросе на эндпоинт экспресс валидаторомю
+            await usersRepository.userByIdDelete(user!._id.toString()) // емайл подтвержден! user валидириуется при запросе на эндпоинт экспресс валидатором
             console.error(error)
             return false
         }
