@@ -2,7 +2,7 @@ import {
     Router,
 } from "express";
 import {
-    checksConfirmationCode,
+    checksConfirmationEmail,
     checksEmailByCustom,
     checksEmailPattern,
     checksEmailResending,
@@ -47,7 +47,7 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation',
     ipLimiter,
-    checksConfirmationCode,
+    checksConfirmationEmail,
     checkForErrors,
     authController.registrationConfirm.bind(authController))
 

@@ -57,7 +57,7 @@ export class AuthService {
     async confirmCode ( code: string ): Promise<boolean> {
         return await usersRepository.updateConfirmCode(code)
     }
-    async emailConfirmation ( email: string ): Promise<boolean> {
+    async confirmEmail ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
             newCode)

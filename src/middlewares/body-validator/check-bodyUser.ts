@@ -84,7 +84,7 @@ const checkInputLoginOrEmail = body('loginOrEmail')//todo доделать
     .isString()
     .withMessage("is not a string")
 
-export const checksConfirmationCode = body('code',)
+export const checksConfirmationEmail = body('code',)
     .isString()
     .withMessage("is not a string")
     .custom(async( code: string ) => {
