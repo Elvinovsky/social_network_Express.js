@@ -49,10 +49,5 @@ export class FeedbacksDbRepository {
         const resultDeleted = await CommentModelClass.deleteOne({ _id: new ObjectId(id) })
         return resultDeleted.deletedCount === 1
     }
-
-    async changeLikeTotalCounts ( id: string, likesCount: number, dislikesCount: number ) { // todo to realize
-        const result = await CommentModelClass.updateOne({ _id: new ObjectId(id) },
-            { $set: { "likeInfo.likesCount": likesCount } })
-    }
 }
 

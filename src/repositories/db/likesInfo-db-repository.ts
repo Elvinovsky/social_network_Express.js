@@ -1,4 +1,8 @@
-import { LikeModelClass } from "../../models/mongoose/models";
+import {
+    CommentModelClass,
+    LikeModelClass
+} from "../../models/mongoose/models";
+import { ObjectId } from "mongodb";
 
 export const likesInfoRepo = {
 
@@ -33,6 +37,9 @@ export const likesInfoRepo = {
 
         await newLikeInfo.save()
         return !!newLikeInfo
+    },
+    async changeLikeTotalCounts ( id: string, likesCount: number, dislikesCount: number ) { // todo to realize
+        const result = await CommentModelClass.updateOne({ _id: new ObjectId(id) },
+            { $set: { "likeInfo.likesCount": likesCount } })
     }
-
 }

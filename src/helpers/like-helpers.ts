@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
 
-export enum Status { 'None', 'Like', 'Dislike'}
+export enum Status { None = 'None', Like = 'Like', Dislike = 'Dislike'}
 
 export const likesOrDisCount = async( id: string | ObjectId ): Promise<{ likes: number; disLikes: number }> => {
 
