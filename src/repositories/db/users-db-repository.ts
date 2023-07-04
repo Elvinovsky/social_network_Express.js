@@ -1,4 +1,7 @@
-import { UserDBType } from "../../models/modelsUsersLogin/user-input";
+import {
+    UserDBType,
+    UserMethodType
+} from "../../models/modelsUsersLogin/user-input";
 import {
     DeleteResult,
     ObjectId,
@@ -16,8 +19,9 @@ export const usersRepository = {
     async findUserById ( id: string ): Promise<WithId<UserDBType> | null> {
         return await UserModelClass.findOne({ _id: new ObjectId(id) })
     },
-    async findUserConfirmCode ( code: string ): Promise<WithId<UserDBType> | null> {
-        return await UserModelClass.findOne({ "emailConfirmation.confirmationCode": code })
+    async findUserConfirmCode ( code: string ): Promise<WithId<UserDBType&UserMethodType> | null> {
+        const user = await UserModelClass.findOne({ "emailConfirmation.confirmationCode": code })
+        return user
     },
     async updateConfirmCode ( code: string ): Promise<boolean> {
         const updateResult = await UserModelClass.updateOne(

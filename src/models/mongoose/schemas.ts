@@ -46,7 +46,7 @@ export const userSchema = new mongoose.Schema<UserDBType, UserModelType, UserMet
 })
     userSchema.method("canBeConfirmed", function canBeConfirmed () {
     const that = this as UserDBType
-    return !that || that.emailConfirmation.expirationDate < new Date() || that.emailConfirmation.isConfirmed
+    return that.emailConfirmation.expirationDate < new Date() || that.emailConfirmation.isConfirmed
 } )
 
 export const sessionSchema = new mongoose.Schema<WithId<SessionDBModel>>({

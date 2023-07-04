@@ -94,7 +94,7 @@ export const checksConfirmationEmail = body('code',)
             throw new Error("incorrect code")
         }
         if (user.emailConfirmation.expirationDate < new Date() || user.emailConfirmation.isConfirmed) {
-            throw new Error("confirmation code is incorrect, expired or already been applied");
+            throw new Error("confirmation code is already confirmed, expired or already been applied");
         }
     })
 export const checksRecoveryCode = body('recoveryCode')

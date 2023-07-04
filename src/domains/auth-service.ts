@@ -56,7 +56,9 @@ export class AuthService {
         return isRestored
     }
     async confirmCode ( code: string ): Promise<boolean> {
+
         return await usersRepository.updateConfirmCode(code)
+
     }
     async confirmEmail ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
