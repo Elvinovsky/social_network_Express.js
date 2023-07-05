@@ -1,5 +1,5 @@
 {
-  "name": "blogs_posts_hosting",
+  "name": "blogs_posts_Express",
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
