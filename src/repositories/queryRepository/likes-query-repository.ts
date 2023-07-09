@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import { LikeDBInfo } from "../../models/modelsLike/like-input";
 import { LikeModelClass } from "../../models/mongoose/models";
-import { likesInfoRepo } from "../db/likesInfo-db-repository";
 import { LikeInfoView } from "../../models/modelsLike/like-view";
 import { injectable } from "inversify";
+import { likesInfoRepo } from "../../compositions-root";
 
 @injectable()
 export class LikesQueryRepo {
