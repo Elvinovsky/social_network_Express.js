@@ -16,6 +16,7 @@ import { BlogsService } from "./domains/blogs-service";
 import { EmailsManager } from "./adapter/emails-manager";
 import { Container } from "inversify";
 import { AuthService } from "./domains/auth-service";
+import { LikesInfoRepo } from "./repositories/db/likesInfo-db-repository";
 
 
 
@@ -49,6 +50,7 @@ container.bind(AuthService).toSelf()
 
 container.bind(BlogsQueryRepo).toSelf()
 container.bind(LikesQueryRepo).toSelf()
+container.bind(LikesInfoRepo).toSelf()
 
 container.bind(EmailsManager).toSelf()
 container.bind(BlogsService).toSelf()
@@ -75,4 +77,5 @@ export const blogsService = container.get(BlogsService)
 export const postsService = container.get(PostsService)
 export const jwtService = container.get(JwtService)
 export const usersService = container.get(UsersService)
+export const likesInfoRepo = container.get(LikesInfoRepo)
 
