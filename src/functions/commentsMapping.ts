@@ -2,7 +2,7 @@ import { WithId } from "mongodb";
 import { CommentViewModel } from "../models/modelsComment/comment-view";
 import { CommentDBModel } from "../models/modelsComment/comment-input";
 import {
-    likesOrDisCount
+    likesAndDisCount
 } from "../helpers/like-helpers";
 import { likesQueryRepo } from "../compositions-root";
 
@@ -14,7 +14,7 @@ export const commentsMapping = ( array: Array<WithId<CommentDBModel>>, userId?: 
             const status = await likesQueryRepo.getLikeStatusCurrentUser(el._id,
                 userId)
 
-            const countsLikeAndDis = await likesOrDisCount(el._id)
+            const countsLikeAndDis = await likesAndDisCount(el._id)
 
             return {
                 id: el._id.toString(),
@@ -38,7 +38,7 @@ export const commentMapping = async( comment: WithId<CommentDBModel>, userId?: s
     const status = await likesQueryRepo.getLikeStatusCurrentUser(comment._id,
         userId)
 
-    const countsLikeAndDis = await likesOrDisCount(comment._id)
+    const countsLikeAndDis = await likesAndDisCount(comment._id)
 
     return {
         id: comment._id.toString(),
