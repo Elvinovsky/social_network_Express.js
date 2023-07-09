@@ -1,7 +1,7 @@
 import { PostView } from "../models/modelsPosts/post-view";
 import { WithId } from "mongodb";
 import { PostDBModel } from "../models/modelsPosts/post-input";
-import { likesOrDisCount } from "../helpers/like-helpers";
+import { likesAndDisCount } from "../helpers/like-helpers";
 import { LikeInfoView } from "../models/modelsLike/like-view";
 import { LikeModelClass } from "../models/mongoose/models";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
@@ -15,7 +15,7 @@ export const postsMapping = async( array: Array<WithId<PostDBModel>>, userId?: s
             const status = await likesQueryRepo.getLikeStatusCurrentUser(el._id,
                 userId)
 
-            const countsLikeAndDis = await likesOrDisCount(el._id)
+            const countsLikeAndDis = await likesAndDisCount(el._id)
 
 
             const lastLikes: LikeInfoView[] = await likesQueryRepo.getLastLikes(el._id)
@@ -42,7 +42,7 @@ export const postMapping = async( post: WithId<PostDBModel>, userId?: string ): 
     const status = await likesQueryRepo.getLikeStatusCurrentUser(post._id,
         userId)
 
-    const countsLikeAndDis = await likesOrDisCount(post._id)
+    const countsLikeAndDis = await likesAndDisCount(post._id)
 
     const likes: LikeDBInfo[] = await LikeModelClass.find({
         postOrCommentId: post._id.toString(),
