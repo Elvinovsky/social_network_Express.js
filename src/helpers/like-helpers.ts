@@ -5,7 +5,7 @@ import { LikeDBInfo } from "../models/modelsLike/like-input";
 
 export enum Status { None = 'None', Like = 'Like', Dislike = 'Dislike'}
 
-export const likesOrDisCount = async( id: string | ObjectId ): Promise<{ likes: number; disLikes: number }> => {
+export const likesAndDisCount = async( id: string | ObjectId ): Promise<{ likes: number; disLikes: number }> => {
 
     if (typeof id === "string") {
 
