@@ -7,11 +7,8 @@ import {
 } from "../models/modelsComment/comment-input";
 import { PostDBModel } from "../models/modelsPosts/post-input";
 import { userMapping } from "../functions/usersMapping";
-import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
-import { ObjectId } from "mongodb";
+import { LikesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
-import { LikeModelClass } from "../models/mongoose/models";
-import mongoose from "mongoose";
 import { feedBacksRepository } from "../compositions-root";
 import { FeedbacksDbRepository } from "../repositories/db/feedbacks-db-repository";
 import {
@@ -21,8 +18,9 @@ import {
 
 @injectable()
 export class FeedbackService {
-    constructor (@inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository) {
+    constructor ( @inject(FeedbacksDbRepository) protected feedBacksRepository: FeedbacksDbRepository, @inject(LikesInfoRepo) protected likesInfoRepo: LikesInfoRepo ) {
     }
+
     async getComment ( id: string, userId?: string ): Promise<CommentViewModel | null> {
         return await this.feedBacksRepository.getCommentById(id,
             userId)
@@ -62,13 +60,13 @@ export class FeedbackService {
     }
 
     async createOrUpdateLike ( postOrCommentId: string, userId: string, userLogin: string, statusType: string ) {
-       try {
-            const isAlreadyLiked: LikeDBInfo | null = await likesInfoRepo.getLikeInfo(userId,
+        try {
+            const isAlreadyLiked: LikeDBInfo | null = await this.likesInfoRepo.getLikeInfo(userId,
                 postOrCommentId)
 
             //если пользователь не ставил ранне оценку коментарию или посту
             if (!isAlreadyLiked) {
-                const newLikeInfo = await likesInfoRepo.addLikeInfo(userId,
+                const newLikeInfo = await this.likesInfoRepo.addLikeInfo(userId,
                     userLogin,
                     postOrCommentId,
                     statusType)
@@ -82,15 +80,16 @@ export class FeedbackService {
             }
 
             // если отправленный статус не совпадает с существующий статусом в БД
-            const changeLikeInfo = await likesInfoRepo.updateLikeInfo(userId,
+            const changeLikeInfo = await this.likesInfoRepo.updateLikeInfo(userId,
                 postOrCommentId,
                 statusType)
 
-           return changeLikeInfo
+            return changeLikeInfo
 
         } catch (error) {
-           console.log("FeedbackService.createOrUpdateLike", error)
-           return false
-       }
+            console.log("FeedbackService.createOrUpdateLike",
+                error)
+            return false
+        }
     }
 }
