@@ -1,6 +1,6 @@
 import { LikeModelClass } from "../models/mongoose/models";
 import { ObjectId } from "mongodb";
-import { likesInfoRepo } from "../repositories/db/likesInfo-db-repository";
+import { LikesInfoRepo } from "../repositories/db/likesInfo-db-repository";
 import { LikeDBInfo } from "../models/modelsLike/like-input";
 
 export enum Status { None = 'None', Like = 'Like', Dislike = 'Dislike'}
