@@ -8,7 +8,7 @@ import { injectable } from "inversify";
 @injectable()
 export class PostsService {
 
-    async searchBlogIdForPost ( blogId: string ): Promise<WithId<BlogDBModel> | null> {
+    async findBlogIdForPost ( blogId: string ): Promise<WithId<BlogDBModel> | null> {
         return await postsRepository.findBlogIdForPost(blogId)
     }
 

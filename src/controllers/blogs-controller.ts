@@ -76,7 +76,7 @@ export class BlogsController {
     }
     async createPostForBlog(req: RequestParamsAndInputBody<{ blogId: string }, BlogPostInputModel>,
                             res: ResponseViewBody<PostView>) {
-        const validatorBlogIdForCreatePost = await this.postsService.searchBlogIdForPost(req.params.blogId)
+        const validatorBlogIdForCreatePost = await this.postsService.findBlogIdForPost(req.params.blogId)
         if (!validatorBlogIdForCreatePost) {
             res.sendStatus(404)
             return;
