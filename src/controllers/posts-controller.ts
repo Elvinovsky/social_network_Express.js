@@ -3,6 +3,7 @@ import {
     RequestInputBody,
     RequestParamsAndInputBody,
     RequestParamsAndInputQuery,
+    RequestParamsId,
     RequestQuery,
     ResponseViewBody
 } from "../types/req-res-types";
@@ -102,33 +103,45 @@ export class PostsController {
             return;
         }
     }
-    async updateLikeByPost( req: Request, res: Response ) {
-    try {
-    const statusType = req.body.likeStatus
-    const userId = req.user!.id
-    const userLogin = req.user!.login
-    const postId = req.params.postId
 
-    const validatorPostByIdForUpdate = await postsService.findPostById(postId)
-    if (!validatorPostByIdForUpdate) {
-    res.sendStatus(404)
-    return;
-}
+    async updateLikeByPost ( req: Request, res: Response ) {
+        try {
+            const statusType = req.body.likeStatus
+            const userId = req.user!.id
+            const userLogin = req.user!.login
+            const postId = req.params.postId
 
-const result = await feedbacksService.createOrUpdateLike(postId,
-    userId,
-    userLogin,
-    statusType)
-if (result) {
-    res.sendStatus(204)
-    return
-}
-res.sendStatus(500)
-return
+            const validatorPostByIdForUpdate = await postsService.findPostById(postId)
+            if (!validatorPostByIdForUpdate) {
+                res.sendStatus(404)
+                return;
+            }
 
-} catch (error) {
-    console.log(error)
-    res.sendStatus(500)
-}
-}
+            const result = await feedbacksService.createOrUpdateLike(postId,
+                userId,
+                userLogin,
+                statusType)
+            if (result) {
+                res.sendStatus(204)
+                return
+            }
+            res.sendStatus(500)
+            return
+
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500)
+        }
+    }
+
+    async deletePost ( req: RequestParamsId<{ id: string }>, res: Response ) {
+        const foundPostDelete = await postsService.postByIdDelete(req.params.id)
+        if (!foundPostDelete) {
+            res.sendStatus(404)
+            return;
+        }
+        res.sendStatus(204)
+        return;
+    }
+
 }
