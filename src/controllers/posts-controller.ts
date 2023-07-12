@@ -67,15 +67,34 @@ export class PostsController {
         res.status(201)
            .send(comment)
     }
-    async createPost( req: RequestInputBody<PostInput>, res: ResponseViewBody<PostView> ) {
 
-    const createdNewPost = await postsService.createPost(req.body.title,
-        req.body.shortDescription,
-        req.body.content,
-        req.body.blogId)
+    async createPost ( req: RequestInputBody<PostInput>, res: ResponseViewBody<PostView> ) {
 
-    res.status(201)
-.send(createdNewPost)
+        const createdNewPost = await postsService.createPost(req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.body.blogId)
+
+        res.status(201)
+           .send(createdNewPost)
+        return;
+    }
+    async updatePost( req: RequestParamsAndInputBody<{ id: string }, PostInput>, res: ResponseViewBody<{}> ) {
+
+    const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)
+    if (!validatorPostByIdForUpdate) {
+    res.sendStatus(404)
     return;
+}
+const postForUpdate = await postsService
+    .updatePostById(req.params.id,
+        req.body.title,
+        req.body.shortDescription,
+        req.body.content)
+
+if (postForUpdate) {
+    res.sendStatus(204)
+    return;
+}
 }
 }
