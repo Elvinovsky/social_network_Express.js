@@ -17,6 +17,7 @@ import { EmailsManager } from "./adapter/emails-manager";
 import { Container } from "inversify";
 import { AuthService } from "./domains/auth-service";
 import { LikesInfoRepo } from "./repositories/db/likesInfo-db-repository";
+import { PostsController } from "./controllers/posts-controller";
 
 
 
@@ -55,12 +56,14 @@ container.bind(LikesInfoRepo).toSelf()
 container.bind(EmailsManager).toSelf()
 container.bind(BlogsService).toSelf()
 container.bind(PostsService).toSelf()
+
 container.bind(JwtService).toSelf()
 container.bind(UsersService).toSelf()
 container.bind(FeedbackService).toSelf()
 container.bind(DevicesService).toSelf()
 
 container.bind(BlogsController).toSelf()
+container.bind(PostsController).toSelf()
 container.bind(AuthController).toSelf()
 container.bind(DevicesController).toSelf()
 container.bind(TestDeleteAllDBController).toSelf()
