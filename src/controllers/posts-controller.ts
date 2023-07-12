@@ -20,6 +20,10 @@ import {
     postsService
 } from "../compositions-root";
 import { PostInput } from "../models/modelsPosts/post-input";
+import {
+    Request,
+    Response
+} from "express";
 
 @injectable()
 export class PostsController {
@@ -79,22 +83,52 @@ export class PostsController {
            .send(createdNewPost)
         return;
     }
-    async updatePost( req: RequestParamsAndInputBody<{ id: string }, PostInput>, res: ResponseViewBody<{}> ) {
 
-    const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)
+    async updatePost ( req: RequestParamsAndInputBody<{ id: string }, PostInput>, res: ResponseViewBody<{}> ) {
+
+        const validatorPostByIdForUpdate = await postsService.findPostById(req.params.id)
+        if (!validatorPostByIdForUpdate) {
+            res.sendStatus(404)
+            return;
+        }
+        const postForUpdate = await postsService
+            .updatePostById(req.params.id,
+                req.body.title,
+                req.body.shortDescription,
+                req.body.content)
+
+        if (postForUpdate) {
+            res.sendStatus(204)
+            return;
+        }
+    }
+    async updateLikeByPost( req: Request, res: Response ) {
+    try {
+    const statusType = req.body.likeStatus
+    const userId = req.user!.id
+    const userLogin = req.user!.login
+    const postId = req.params.postId
+
+    const validatorPostByIdForUpdate = await postsService.findPostById(postId)
     if (!validatorPostByIdForUpdate) {
     res.sendStatus(404)
     return;
 }
-const postForUpdate = await postsService
-    .updatePostById(req.params.id,
-        req.body.title,
-        req.body.shortDescription,
-        req.body.content)
 
-if (postForUpdate) {
+const result = await feedbacksService.createOrUpdateLike(postId,
+    userId,
+    userLogin,
+    statusType)
+if (result) {
     res.sendStatus(204)
-    return;
+    return
+}
+res.sendStatus(500)
+return
+
+} catch (error) {
+    console.log(error)
+    res.sendStatus(500)
 }
 }
 }
