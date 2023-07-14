@@ -43,7 +43,7 @@ export const checksNewPassword = body('newPassword')
     .isString()
     .withMessage("is not a string")
 const checksEmail = body('email')
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
     .withMessage("is not a link to the email")
     .bail()
     .isString()
@@ -55,7 +55,7 @@ const checksEmail = body('email')
         }
     });
 export const checksEmailResending = body('email')
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+    .matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
     .withMessage("is not a link to the email")
     .bail()
     .isString()
@@ -78,7 +78,7 @@ export const checksEmailByCustom = body('email')
         }
     });
 export const checksEmailPattern = body('email')
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+    .matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
     .withMessage("is not a link to the email")
 
 const checkInputLoginOrEmail = body('loginOrEmail')
@@ -109,9 +109,9 @@ export const checksRecoveryCode = body('recoveryCode')
         if (isValidConfirmed.emailConfirmation.expirationDate < new Date()) {
             throw new Error("confirmation code is expired")
         }
-       /* if (isValidConfirmed.emailConfirmation.isConfirmed) { тесты не валидирует код на isConfirmed
+        if (isValidConfirmed.emailConfirmation.isConfirmed) { // todo тесты не валидирует код на isConfirmed
             throw new Error("confirmation code has already been applied");
-        }*/
+        }
     })
 
 
