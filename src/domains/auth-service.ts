@@ -52,15 +52,14 @@ export class AuthService {
         }
 
         const hash = await this._generateHash(password)
-        const isRestored = await usersRepository.updatePasswordHash(hash, code)
-        return isRestored
+         return usersRepository.updatePasswordHash(hash, code)
     }
     async confirmCode ( code: string ): Promise<boolean> {
 
         return await usersRepository.updateConfirmCode(code)
 
     }
-    async confirmEmail ( email: string ): Promise<boolean> {
+    async emailResending ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
             newCode)
