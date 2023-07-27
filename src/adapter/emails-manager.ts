@@ -10,7 +10,7 @@ dotenv.config()
 
 @injectable()
 export class EmailsManager {
-    async sendEmailConformationMessage ( email: string, newCode: string ): Promise<void> {
+    async sendEmailConformationMessage ( email: string, newCode: string ) {
         const transporter = createTransport({
             host: "smtp.mail.ru",
             port: 465,

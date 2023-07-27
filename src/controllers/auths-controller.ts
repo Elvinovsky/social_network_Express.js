@@ -102,7 +102,7 @@ export class AuthController {
     }
 
     async emailResending ( req: RequestInputBody<RegistrationEmailResending>, res: Response ) {
-        const isSentCode = await this.authService.confirmEmail(req.body.email)
+        const isSentCode = await this.authService.emailResending(req.body.email)
         if (isSentCode) {
             res.sendStatus(204)
             return
