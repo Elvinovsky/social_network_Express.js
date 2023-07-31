@@ -14,8 +14,9 @@ import { EmailsManager } from "../adapter/emails-manager";
 
 @injectable()
 export class AuthService {
-    constructor (@inject(EmailsManager) protected emailsManager: EmailsManager) {
+    constructor ( @inject(EmailsManager) protected emailsManager: EmailsManager ) {
     }
+
     async userRegistration ( login: string, password: string, email: string ): Promise<UserViewModel | null> {
         const hash = await this._generateHash(password)
         const newUser: UserDBType = {
@@ -36,7 +37,8 @@ export class AuthService {
         const result = await usersRepository.addNewUser(newUser)
 
         try {
-            await emailsManager.sendEmailConformationMessage(email, newUser.emailConfirmation.confirmationCode)
+            await emailsManager.sendEmailConformationMessage(email,
+                newUser.emailConfirmation.confirmationCode)
         } catch (error) {
             console.error(error)
             await usersRepository.userByIdDelete(result.id)
@@ -44,7 +46,8 @@ export class AuthService {
         }
         return result
     }
-    async passwordRecovery ( password: string, code: string ):Promise <boolean | null> {
+
+    async passwordRecovery ( password: string, code: string ): Promise<boolean | null> {
         const isConfirmed = await this.confirmCode(code)
         const isOneUser = await usersRepository.getUsersByConfirmationCode(code)
         if (!isConfirmed && isOneUser) {
@@ -52,13 +55,16 @@ export class AuthService {
         }
 
         const hash = await this._generateHash(password)
-         return usersRepository.updatePasswordHash(hash, code)
+        return usersRepository.updatePasswordHash(hash,
+            code)
     }
+
     async confirmCode ( code: string ): Promise<boolean> {
 
         return await usersRepository.updateConfirmCode(code)
 
     }
+
     async emailResending ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
@@ -79,6 +85,7 @@ export class AuthService {
         }
         return true
     }
+
     async sendPasswordRecovery ( email: string ): Promise<boolean> {
         const newCode = uuidv4()
         const codeReplacement = await usersRepository.updateConfirmationCodeByEmail(email,
@@ -100,6 +107,7 @@ export class AuthService {
 
         return true
     }
+
     async checkCredentials ( loginOrEmail: string, password: string ): Promise<WithId<UserDBType> | null> {
         const user = await usersRepository.findByLoginOrEmail(loginOrEmail)
         if (!user || !user.emailConfirmation.isConfirmed) {
@@ -114,10 +122,12 @@ export class AuthService {
             return null
         }
     }
+
     async _generateHash ( password: string ): Promise<string> {
         return await bcrypt.hash(password,
             7)
     }
+
     async _isPasswordCorrect ( password: string, hash: string ): Promise<boolean> {
         return await bcrypt.compare(password,
             hash)

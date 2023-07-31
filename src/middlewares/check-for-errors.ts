@@ -1,7 +1,7 @@
 import {
+    NextFunction,
     Request,
-    Response,
-    NextFunction
+    Response
 } from "express";
 import {
     ValidationError,

@@ -60,7 +60,8 @@ export const postMapping = async( post: WithId<PostDBModel>, userId?: string ): 
                                                                      login: lastLikes.userLogin
                                                                  }
                                                              })
-                                                             .slice(0, 3))
+                                                             .slice(0,
+                                                                 3))
 
     return {
         id: post._id.toString(),

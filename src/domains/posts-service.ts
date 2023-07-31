@@ -12,7 +12,7 @@ export class PostsService {
         return await postsRepository.findBlogIdForPost(blogId)
     }
 
-    async findPostById ( id: string): Promise<boolean> {
+    async findPostById ( id: string ): Promise<boolean> {
         return await postsRepository.findPostById(id)
     }
 

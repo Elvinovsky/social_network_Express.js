@@ -14,11 +14,12 @@ export class BlogsService {
     async createBlog ( name: string, description: string, websiteUrl: string ): Promise<BlogView> {
 
         const createdBlog: BlogDBModel = {
-           name: name,
-            description:description,
+            name: name,
+            description: description,
             websiteUrl: websiteUrl,
-           createdAt: new Date().toString(),
-            isMembership: false}
+            createdAt: new Date().toString(),
+            isMembership: false
+        }
 
 
         return await blogsRepository.addNewBlog(createdBlog)

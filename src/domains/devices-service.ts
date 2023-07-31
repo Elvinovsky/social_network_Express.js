@@ -1,9 +1,7 @@
 import { ObjectId } from "mongodb";
 import { SessionDBModel } from "../models/modelsDevice/device-input";
 import add from "date-fns/add";
-import {
-    DevicesSessionsRepository
-} from "../repositories/db/devices-sessions-repository";
+import { DevicesSessionsRepository } from "../repositories/db/devices-sessions-repository";
 import {
     inject,
     injectable
@@ -11,7 +9,7 @@ import {
 
 @injectable()
 export class DevicesService {
-    constructor (@inject(DevicesSessionsRepository) protected devicesSessionsRepository: DevicesSessionsRepository) {
+    constructor ( @inject(DevicesSessionsRepository) protected devicesSessionsRepository: DevicesSessionsRepository ) {
     }
 
     async createDeviceSession ( userId: ObjectId, deviceId: string, issuedAt: number, ip: string | null, deviceName?: string ) {
