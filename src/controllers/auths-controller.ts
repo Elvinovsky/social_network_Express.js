@@ -34,6 +34,7 @@ export class AuthController {
     ) {}
 
     async createLogin(req: Request, res: Response) {
+        //поиск юзера, сверка паролей.
         const user = await this.authService.checkCredentials(
             req.body.loginOrEmail,
             req.body.password
