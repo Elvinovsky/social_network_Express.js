@@ -8,6 +8,11 @@ import { injectable } from "inversify";
 
 @injectable()
 export class JwtService {
+    /**
+     * Создает JWT access token с указанным userId.
+     * @param userId Идентификатор пользователя (ObjectId).
+     * @returns Объект с access token.
+     */
     async createJWTAccessToken ( userId: ObjectId ): Promise<LoginSuccessViewModel> {
         const accessToken = jwt.sign({ userId: userId },
             settings.ACCESS_JWT_SECRET,
@@ -17,9 +22,13 @@ export class JwtService {
         }
     }
 
-
+    /**
+     * Создает JWT refresh token с указанными userId и deviceId.
+     * @param userId Идентификатор пользователя (ObjectId).
+     * @param deviceId Уникальный идентификатор устройства.
+     * @returns Строка с refresh token.
+     */
     async createJWTRefreshToken ( userId: ObjectId, deviceId: string ): Promise<string> {
-
         return jwt.sign({
                 userId: userId,
                 deviceId
@@ -28,7 +37,11 @@ export class JwtService {
             { expiresIn: '10h' })
     }
 
-
+    /**
+     * Получает идентификатор пользователя из access token.
+     * @param token Access token.
+     * @returns Идентификатор пользователя (ObjectId) или null в случае ошибки.
+     */
     async getUserIdByAccessToken ( token: string ) {
         try {
             const userId = jwt.verify(token,
@@ -40,7 +53,11 @@ export class JwtService {
         }
     }
 
-
+    /**
+     * Получает идентификатор пользователя из refresh token.
+     * @param token Refresh token.
+     * @returns Идентификатор пользователя (ObjectId) или null в случае ошибки.
+     */
     async getUserIdByRefreshToken ( token: string ) {
         try {
             const payload = jwt.verify(token,
@@ -51,7 +68,11 @@ export class JwtService {
         }
     }
 
-
+    /**
+     * Получает идентификатор устройства из refresh token.
+     * @param token Refresh token.
+     * @returns Идентификатор устройства или null в случае ошибки.
+     */
     async getDeviceIdRefreshToken ( token: string ) {
         try {
             const payload = jwt.verify(token,
@@ -62,7 +83,11 @@ export class JwtService {
         }
     }
 
-
+    /**
+     * Получает время создания (IAT) из refresh token.
+     * @param token Refresh token.
+     * @returns Время создания или null в случае ошибки.
+     */
     async getIATByRefreshToken ( token: string ): Promise<number | undefined | null> {
         try {
             const decoded = jwt.decode(token,
@@ -73,4 +98,3 @@ export class JwtService {
         }
     }
 }
-
