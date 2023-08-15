@@ -55,7 +55,7 @@ export class FeedbackService {
             content)
     }
 
-    async deletedCountComment ( id: string ): Promise<boolean> {
+    async deleteComment ( id: string ): Promise<boolean> {
         return await feedBacksRepository.deleteComment(id)
     }
 
