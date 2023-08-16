@@ -3,8 +3,7 @@ import {
 } from "express";
 import {
     checksConfirmationEmail,
-    checksEmailByCustom,
-    checksEmailPattern,
+    checksEmailCustom,
     checksEmailResending,
     checksNewPassword,
     checksRecoveryCode,
@@ -59,9 +58,8 @@ authRouter.post('/registration-email-resending',
 
 authRouter.post('/password-recovery',
     ipLimiter,
-    checksEmailPattern,
     checkForErrors,
-    checksEmailByCustom,
+    checksEmailCustom,
     checkForEmailToDB,
     authController.passwordRecovery.bind(authController))
 
