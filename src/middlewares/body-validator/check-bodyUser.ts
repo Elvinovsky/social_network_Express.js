@@ -67,19 +67,18 @@ export const checksEmailResending = body('email')
         }
 
     });
-export const checksEmailByCustom = body('email')
+export const checksEmailCustom = body('email')
     .bail()
     .isString()
     .withMessage("is not a string")
+    .matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+    .withMessage("is not a link to the email")
     .custom(async( email: string ) => {
         const validationEmail = await usersRepository.findByLoginOrEmail(email)
         if (!validationEmail || !validationEmail.emailConfirmation.isConfirmed) {
             throw new Error("your email is unconfirmed");
         }
     });
-export const checksEmailPattern = body('email')
-    .matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/) //^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
-    .withMessage("is not a link to the email")
 
 const checkInputLoginOrEmail = body('loginOrEmail')
     .isString()
