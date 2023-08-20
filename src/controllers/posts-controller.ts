@@ -129,7 +129,7 @@ export class PostsController {
                 res.sendStatus(204)
                 return
             }
-            res.sendStatus(500)
+            res.sendStatus(417)
             return
 
         } catch (error) {
