@@ -27,6 +27,7 @@ import {
     inject,
     injectable
 } from "inversify";
+import { objectIdValidator } from "../middlewares/objectId-validator";
 
 @injectable()
 export class BlogsController {
@@ -49,11 +50,19 @@ export class BlogsController {
     }
     async getBlog (req: RequestParamsId<{ id: string }>,
                    res: ResponseViewBody<BlogView>) {
-        const getByIdBlog = await this.blogsService.findBlogById(req.params.id)
+        const id = objectIdValidator(req.params.id)
+
+        if (!id) {
+            res.sendStatus(404)
+            return;
+        }
+
+        const getByIdBlog = await this.blogsService.findBlogById(id)
         if (!getByIdBlog) {
             res.sendStatus(404)
             return;
         }
+
         res.send(getByIdBlog)
         return;
     }
@@ -97,7 +106,14 @@ export class BlogsController {
     }
     async updateBlog(req: RequestParamsAndInputBody<{ id: string }, BlogInput>,
                      res: Response) {
-        const searchBlogByIdForUpdate = await this.blogsService.findBlogById(req.params.id)
+        const id = objectIdValidator(req.params.id)
+
+        if (!id) {
+            res.sendStatus(404)
+            return;
+        }
+
+        const searchBlogByIdForUpdate = await this.blogsService.findBlogById(id)
         if (!searchBlogByIdForUpdate) {
             res.sendStatus(404)
             return;
